@@ -1,0 +1,23 @@
+{
+  "name": "Core Improvement Proposals",
+  "short_name": "CIP",
+  "description": "Proposals for Core Blockchain improvements.",
+  "display": "standalone",
+  "icons": [{
+    "src": "img/touch/cip-48.png",
+    "sizes": "48x48",
+    "type": "image/png"
+  }, {
+    "src": "img/touch/cip-72.png",
+    "sizes": "72x72",
+    "type": "image/png"
+  }, {
+    "src": "img/touch/cip-96.png",
+    "sizes": "96x96",
+    "type": "image/png"
+  }, {
+    "src": "img/touch/cip-144.png",
+    "sizes": "144x144",
+    "type": "image/png"
+  }]
+}

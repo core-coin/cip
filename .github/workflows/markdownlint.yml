@@ -1,0 +1,22 @@
+name: CIP linter
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "docs/src/cip/*.md"
+      - ".github/workflows/markdownlint.yml"
+      - ".github/.markdownlint.json"
+
+jobs:
+  cip-linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Markdown Lint
+        uses: ruzickap/action-my-markdown-linter@v1
+        with:
+          config_file: .github/lintconfig.yml
+          search_paths: |
+            docs/src/cip/*.md

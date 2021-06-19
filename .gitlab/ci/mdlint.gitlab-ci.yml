@@ -1,0 +1,7 @@
+markdownlint:
+  stage: linting
+  image: pipelinecomponents/markdownlint:latest
+  script:
+    - mdl --style all -w -u .gitlab/mdlint.ruleset.rb -r ~MD001,~MD004,~MD012,~MD013,~MD014,~MD022,~MD024,~MD025,~MD026,~MD028,~MD031,~MD032,~MD034,~MD036,~MD040,~MD041 docs/src/cip/*.md
+  only:
+    - merge_requests

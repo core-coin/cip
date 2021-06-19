@@ -1,4 +1,7 @@
-# Core Improvement Proposals
+---
+title: Core Improvement Proposals
+---
+# CIP
 
 > Core Improvement Proposal (CIP) describe standards for the Core platform, including core protocol specifications, client APIs, and contract standards.
 
@@ -8,12 +11,12 @@ First you can open your proposal under [issues of this repository](https://githu
 
 ### Review:
 
-- [What is CIP][what-is-cip]
-- [CIP rationale][cip-rationale]
-- [CIP categories][cip-categories]
-- [CIP workflow][cip-workflow]
-- [CIP editors][cip-editors]
-- [CIP example][cip-0]
+- [What is CIP](what-is-cip)
+- [CIP rationale](cip-rationale)
+- [CIP categories](cip-categories)
+- [CIP workflow](cip-workflow)
+- [CIP editors](cip-editors)
+- [CIP example](cip-0)
 
 ### How to start:
 
@@ -59,14 +62,3 @@ CIPs are separated into a number of types, and each has its own list of CIPs.
 - [RSS](https://cip.coreblockchain.cc/rss.xml)
 - [Atom](https://cip.coreblockchain.cc/feed.atom)
 - [Json](https://cip.coreblockchain.cc/feed.json)
-
-## License
-
-[CORE license](LICENSE)
-
-[what-is-cip]: https://cip.coreblockchain.cc/what-is-cip
-[cip-rationale]: https://cip.coreblockchain.cc/cip-rationale
-[cip-categories]: https://cip.coreblockchain.cc/cip-categories
-[cip-workflow]: https://cip.coreblockchain.cc/cip-workflow
-[cip-editors]: https://cip.coreblockchain.cc/cip-editors
-[cip-0]: https://cip.coreblockchain.cc/cip-0
