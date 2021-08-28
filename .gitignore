@@ -1,7 +1,6 @@
 pids
 logs
 node_modules
-npm-debug.log
 coverage/
 run
 dist
@@ -10,4 +9,9 @@ dist
 .basement
 config.local.js
 basement_dist
-/blog/.vuepress/dist/
+/docs/src/.vuepress/dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+yarn.lock
+package-lock.json
