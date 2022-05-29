@@ -11,12 +11,12 @@ First you can open your proposal under [issues of this repository](https://githu
 
 ### Review:
 
-- [What is CIP](cip/what-is-cip)
-- [CIP rationale](cip/cip-rationale)
-- [CIP categories](cip/cip-categories)
-- [CIP workflow](cip/cip-workflow)
-- [CIP editors](cip/cip-editors)
-- [CIP example](cip/cip-0)
+- [What is CIP](cip/docs/what-is-cip.md)
+- [CIP rationale](cip/docs/cip-rationale.md)
+- [CIP categories](cip/docs/cip-categories.md)
+- [CIP workflow](cip/docs/cip-workflow.md)
+- [CIP editors](cip/docs/cip-editors.md)
+- [CIP example](cip/example/cip-0.md)
 
 ### How to start:
 
