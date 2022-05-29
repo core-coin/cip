@@ -127,11 +127,5 @@ export default defineUserConfig({
   		green: "#46b549",
   		orange: "#fb9b5f",
   	},
-
-    /*algolia: {
-      apiKey: "0b973c97ef8a89ce61592c675d05e2cc",
-      indexName: "CIP",
-      appId: "EWQHECM4QZ",
-    },*/
   }),
 });
