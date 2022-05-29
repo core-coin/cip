@@ -1,5 +1,14 @@
 ---
 title: Core Improvement Proposals
+isOriginal: true
+author: Core Foundation
+date: 2022-01-01
+category:
+  - tutorial
+tag:
+  - tutorial
+star: true
+comment: false
 ---
 # CIP
 
@@ -7,24 +16,24 @@ title: Core Improvement Proposals
 
 ## Contributing
 
-First you can open your proposal under [issues of this repository](https://github.com/core-coin/cip/issues) as well as in the discussion in [Core ◆ Talk](https://coretalk.space/tags/cip).
+First you can open your proposal under [issues of this repository](https://github.com/core-coin/cip/issues).
 
-### Review:
+### Review
 
-- [What is CIP](cip/what-is-cip)
-- [CIP rationale](cip/cip-rationale)
-- [CIP categories](cip/cip-categories)
-- [CIP workflow](cip/cip-workflow)
-- [CIP editors](cip/cip-editors)
-- [CIP example](cip/cip-0)
+- [What is CIP](/docs/what-is-cip)
+- [CIP rationale](/docs/cip-rationale)
+- [CIP categories](/docs/cip-categories)
+- [CIP workflow](/docs/cip-workflow)
+- [CIP editors](/docs/cip-editors)
+- [CIP example](/example/cip-0)
 
-### How to start:
+### How to start
 
 - [Fork](https://github.com/core-coin/cip/fork) this repository.
 - Change the template [cip-0](https://github.com/core-coin/cip/blob/master/cip/example/cip-0.md) and move it to [`cip` folder](https://github.com/core-coin/cip/blob/master/cip/posts).
 - [Submit a Pull Request](https://github.com/core-coin/cip/compare) to Core's CIP repository.
 
-Put any graphical content into [CIP image directory](https://github.com/core-coin/cip/blob/master/cip/images) `@img/cip-x` under your cip-x (x is the cip number). You can link images with path `@img/cip-0/cip-0-1.png`.
+Put any graphical content into [CIP image directory](https://github.com/core-coin/cip/blob/master/cip/images) `/cip/images/cip-x` under your cip-x (x is the cip number). You can link images with path `@img/cip-0/cip-0-1.png`.
 
 ## CIP tags
 
@@ -54,11 +63,3 @@ CIPs are separated into a number of types, and each has its own list of CIPs.
 
 - [Core ◆ Talk](https://coretalk.space/tags/cip)
 - [GH Discussions](https://github.com/core-coin/cip/discussions)
-
-## License of the content
-
-[CC0 “No Rights Reserved”](https://creativecommons.org/share-your-work/public-domain/cc0/)
-
-## License of the app
-
-[CORE License](LICENSE)

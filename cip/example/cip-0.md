@@ -1,11 +1,11 @@
 ---
-cip:
-title:
-author:
+cip: 0
+title: CIP0 example
+author: Author (@author@server.pod)
 lang: en-US
 tag: draft
-category: <!-- core | networking | interface | crc | meta | informational -->
-date: <!-- Date created on, in ISO 8601 (YYYY-MM-DD or YYYY/MM/DD hh:mm:ss) format -->
+category: 
+date: 2022-01-01
 ---
 
 <!-- This is the suggested template for new CIP. Note that a CIP number will be assigned by an editor. When opening a pull request to submit your CIP, please use an abbreviated title in the filename, `cip-ID.md`, where "ID" is CIP ID. The title should be 44 characters or less. -->

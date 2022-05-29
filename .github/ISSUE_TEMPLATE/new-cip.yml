@@ -1,0 +1,141 @@
+name: Create new CIP
+description: Create new CIP draft
+title: "[CIP] "
+labels:
+  - cip
+  - draft
+assignees:
+  - raisty
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is the suggested template for new CIP. Note that a CIP number will be assigned by an editor. When opening a pull request to submit your CIP, please use an abbreviated title in the filename, `cip-ID.md`, where "ID" is CIP ID. The title should be 44 characters or less.
+
+  - type: dropdown
+    id: lang
+    attributes:
+      label: Language
+      options:
+        - en-US
+        - en-GB
+        - en-IE
+        - en-CA
+        - en-AU
+        - en-NZ
+        - en-ZA
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: CIP categories
+      multiple: false
+      options:
+        - core
+        - networking
+        - interface
+        - crc
+        - meta
+        - informational
+    validations:
+      required: true
+
+  - type: input
+    id: abstract
+    attributes:
+      label: Abstract
+      description: A short (~200 words) description of the technical issue being addressed.
+      placeholder: Abstract
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: The motivation is critical for CIP that wants to change the Core protocol. It should clearly explain why the existing protocol specification is inadequate to address the problem that the CIP solves. CIP submissions without sufficient motivation may be rejected outright.
+    validations:
+      required: true
+
+  - type: textarea
+    id: specification
+    attributes:
+      label: Specification
+      description: The technical specification should describe the syntax and semantics of any new feature. The specification should be detailed enough to allow competing, interoperable implementations for any of the current Core platforms.
+    validations:
+      required: true
+
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Rationale
+      description: The rationale fleshes out the specification by describing what motivated the design and why particular design decisions were made. It should describe alternate designs that were considered and related work. The rationale may also provide evidence of consensus within the community, and should discuss important objections or concerns raised during the discussion.
+    validations:
+      required: true
+
+  - type: textarea
+    id: backwards-compatibility
+    attributes:
+      label: Backwards Compatibility
+      description: All CIPs that introduce backward incompatibilities must include a section describing these incompatibilities and their severity. The CIP must explain how the author proposes to deal with these incompatibilities. CIP submissions without a sufficient backward compatibility treatise may be rejected outright.
+    validations:
+      required: false
+
+  - type: textarea
+    id: test-cases
+    attributes:
+      label: Test Cases
+      description: Test cases for implementation are mandatory for CIPs that are affecting consensus changes. Other CIPs can choose to include links to test cases if applicable.
+    validations:
+      required: false
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Implementation
+      description: The implementations must be completed before any CIP is given status "Final", but it need not be completed before the CIP is accepted. While there is merit to the approach of reaching consensus on the specification and rationale before writing code, the principle of "rough consensus and running code" is still useful when it comes to resolving many discussions of API details.
+    validations:
+      required: false
+
+  - type: textarea
+    id: security-considerations
+    attributes:
+      label: Security Considerations
+      description: All CIPs must contain a section that discusses the security implications/considerations relevant to the proposed change. Include information that might be important for security discussions, surface risks, and can be used throughout the life cycle of the proposal. CIP submissions missing the "Security Considerations" section will be rejected. A CIP cannot proceed to status "Final" without a Security Considerations discussion deemed sufficient by the reviewers.
+    validations:
+      required: false
+
+  - type: input
+    id: requires
+    attributes:
+      label: Requires
+      description: CIP number(s)
+      placeholder: Requires
+    validations:
+      required: false
+
+  - type: input
+    id: replaces
+    attributes:
+      label: Replaces
+      description: CIP number(s)
+      placeholder: Replaces
+    validations:
+      required: false
+
+  - type: input
+    id: superseded-by
+    attributes:
+      label: Superseded by
+      description: CIP number(s)
+      placeholder: Superseded by
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
