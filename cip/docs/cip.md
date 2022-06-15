@@ -29,6 +29,11 @@ First you can open your proposal under [issues of this repository](https://githu
 
 ### How to start
 
+- Review the template [cip-0](https://github.com/core-coin/cip/blob/master/cip/example/cip-0.md)
+- [Create CIP in the Online Editor](https://github.com/core-coin/cip/new/master?filename=cip/posts/cip-0.md&message=CIP%20Proposal&description=CIP%20Proposal%20Draft&value=---%0Acip%3A%20%0Atitle%3A%20%0Aauthor%3A%20%0Alang%3A%20en-US%0Atag%3A%20draft%0Acategory%3A%20%0Adate%3A%20%0A---%0A%0A)
+
+or
+
 - [Fork](https://github.com/core-coin/cip/fork) this repository.
 - Change the template [cip-0](https://github.com/core-coin/cip/blob/master/cip/example/cip-0.md) and move it to [`cip` folder](https://github.com/core-coin/cip/blob/master/cip/posts).
 - [Submit a Pull Request](https://github.com/core-coin/cip/compare) to Core's CIP repository.
