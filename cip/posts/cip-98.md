@@ -10,7 +10,7 @@ date: 2022-06-16
 
 ### Abstract
 
-The following standard describes the cryptography scheme in Core Blockchain
+The following standard describes the cryptography scheme in Core Blockchain.
 
 ### Motivation
 
