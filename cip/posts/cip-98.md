@@ -1,7 +1,7 @@
 ---
 cip: 98
 title: Core Coin cryptography scheme
-author: @todesstile
+author: Dmitry (@todesstile)
 lang: en-US
 tag: final
 category: core
