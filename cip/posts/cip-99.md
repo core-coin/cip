@@ -1,7 +1,7 @@
 ---
 cip: 99
 title: Core Coin HD-Wallet scheme
-author: @todesstille
+author: Dmitry (@todesstile)
 lang: en-US
 tag: final
 category: core
