@@ -1,6 +1,6 @@
 ---
 home: true
-layout: Blog
+layout: BlogHome
 title: CIP
 heroText: CIP
 tagline: Core Improvement Proposals
@@ -10,7 +10,7 @@ projects:
   - icon: article
     name: Core Web
     desc: Core Blockchain website
-    link: https://coreblockchain.cc
+    link: https://coreblockchain.net
 
   - icon: link
     name: Core ◆ Talk
@@ -20,10 +20,10 @@ projects:
   - icon: book
     name: Dev Portal
     desc: Core Development Portal
-    link: https://dev.coreblockchain.cc
+    link: https://dev.coreblockchain.net
 
   - icon: article
     name: Blog
     desc: Core Blog
-    link: https://blog.coreblockchain.cc
+    link: https://blog.coreblockchain.net
 ---

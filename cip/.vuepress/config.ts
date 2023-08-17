@@ -1,6 +1,5 @@
 import { defineUserConfig } from "vuepress";
 import { hopeTheme } from "vuepress-theme-hope";
-import { feedPlugin } from "vuepress-plugin-feed2";
 import * as navbar from "./navbar";
 import path from "path";
 
@@ -11,7 +10,7 @@ export default defineUserConfig({
 
   head: [
     ["link", { rel: "shortcut icon", type: "image/png", href: `/favicon.png` }],
-    ["meta", { property: "wallet:xcb", content: "cb57bbbb54cdf60fa666fd741be78f794d4608d67109" }],
+    ["meta", { property: "ican:xcb", content: "cb57bbbb54cdf60fa666fd741be78f794d4608d67109" }],
     ["meta", { name: "description", content: "Core Improvement Proposals" }],
     ["meta", { property: "og:title", content: "CIP" }],
     ["meta", { property: "og:description", content: "Core Improvement Proposals" }],
@@ -26,19 +25,12 @@ export default defineUserConfig({
     },
   },
 
-  alias: {
-    "@img": path.resolve(__dirname, "../images"),
-    "@aux": path.resolve(__dirname, "../auxiliaries"),
-  },
-
-  pure: true,
-
   theme: hopeTheme({
-    hostname: "https://cip.coreblockchain.cc",
+    hostname: "https://cip.coreblockchain.net",
 
   	author: {
   		name: "Core Foundation",
-  		url: "https://coreblockchain.cc",
+  		url: "https://coreblockchain.net",
   	},
 
   	iconPrefix: "iconfont icon-",
@@ -69,7 +61,7 @@ export default defineUserConfig({
   			navbar: navbar.en,
 
   			footer:
-  				"<a href='https://coreblockchain.cc' target='_blank'>Core web</a> &bull; <a href='https://dev.coreblockchain.cc' target='_blank'>Dev portal</a> &bull; <a href='https://coretalk.info' target='_blank'>Core ◆ Talk</a> &bull; <a href='https://blog.coreblockchain.cc' target='_blank'>Core Blog</a> &bull; <a href='https://github.com/core-coin' target='_blank'>GitHub</a> &bull; <a href='https://twitter.com/corecoincc' target='_blank'>Twitter</a>",
+  				"<a href='https://coreblockchain.net' target='_blank'>Core Web</a> &bull; <a href='https://dev.coreblockchain.net' target='_blank'>Dev Portal</a> &bull; <a href='https://coretalk.space' target='_blank'>Core ◆ Talk</a> &bull; <a href='https://blog.coreblockchain.net' target='_blank'>Core Blog</a> &bull; <a href='https://github.com/core-coin' target='_blank'>GitHub</a> &bull; <a href='https://x.com/corecoincc' target='_blank'>𝕏</a>",
 
   			displayFooter: true,
         blogLocales: {
@@ -88,18 +80,7 @@ export default defineUserConfig({
 
   	plugins: {
   		blog: {
-  			autoExcerpt: true,
-  		},
-
-  		comment: {
-  			type: "giscus",
-  			repo: "core-coin/cip",
-        mapping: "title",
-  			repoId: "MDEwOlJlcG9zaXRvcnkzNzg0MzIyODY=",
-  			category: "CIP",
-  			categoryId: "DIC_kwDOFo5rHs4CPWEt",
-        inputPosition: "top",
-        loading: "lazy",
+  			excerpt: true,
   		},
 
   		feed: {
@@ -108,24 +89,15 @@ export default defineUserConfig({
   			rss: true,
         channel: {
           ttl: 60,
-          author: "Core Foundation",
           copyright: "CC0",
         },
   		},
 
   		mdEnhance: {
-  			enableAll: false,
-  			presentation: {
-  				plugins: ["highlight", "math", "search", "notes", "zoom"],
-  			},
+  			imgSize: true,
+        katex: true,
+        mermaid: true,
   		},
-  	},
-
-  	themeColor: {
-  		blue: "#2196f3",
-  		red: "#f26d6d",
-  		green: "#46b549",
-  		orange: "#fb9b5f",
   	},
   }),
 });

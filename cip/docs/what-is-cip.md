@@ -14,4 +14,4 @@ comment: false
 
 > CIP stands for Core Improvement Proposal.
 
-A CIP is a design document providing information to the Core community, or describing a new feature for Core or its processes and environment. The CIP should provide a concise technical specification of the feature and a rationale for the feature. The CIP author is responsible for building consensus within the community and documenting dissenting opinions.
+A CIP is a design document that offers information to the Core community or introduces a new feature to Core, its processes, or its environment. The document should present a clear technical specification and a rationale for the proposed feature. It is the responsibility of the CIP author to build consensus within the community and to document any dissenting opinions.

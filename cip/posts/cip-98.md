@@ -1,73 +1,73 @@
 ---
 cip: 98
-title: Core Coin cryptography scheme
+title: Core Coin Cryptography Scheme
 author: Dmitry (@todesstile)
 lang: en-US
 tag: final
 category: core
 date: 2022-06-16
 ---
-
 ## Abstract
 
-The following standard describes the cryptography scheme in Core Blockchain.
+This standard details the cryptography scheme employed in the Core Blockchain.
 
 ## Motivation
 
-This standard allows overcoming the ed448 restrictions and developing an HD-derivations scheme, similar to BIP32.
+The goal of this standard is to circumvent the limitations of ed448 and create an HD derivation scheme analogous to BIP32.
 
 ## Specification
 
 ### Conventions
 
-Our cryptography scheme is based on Ed448 elliptic cryptography, described in RFC 8032. Terms "private key", "public key", "secret scalar", "signature" etc. used in this text, have the same meaning and MUST BE serialized according to that document.
+Our cryptographic approach leans on the Ed448 elliptic cryptography described in RFC 8032. Terms such as "private key", "public key", "secret scalar", "signature", etc., utilized in this text, retain their original meanings and MUST BE serialized following the guidelines of the referenced document.
 
-### Dual cryptography
+### Dual Cryptography
 
-Ed25519 and Ed448 signature schemes are quite different from Secp256k1. Instead of using a private key as a secret scalar, the Ed448 scheme uses the private key to calculate SHAKE256(privateKey, 114) to get 114-bytes output. This output is split into two 57-bytes parts, using the left part as the secret scalar, and right part as secret nonce.
+The signature schemes of Ed25519 and Ed448 differ significantly from Secp256k1. In the Ed448 scheme, rather than using a private key as a secret scalar, it applies the function SHAKE256(privateKey, 114) to achieve a 114-byte output. This output is then bifurcated into two 57-byte segments. The left segment is used as the secret scalar, and the right as the secret nonce.
 
-This scheme gives us an indirect way to calculate public key or sign the message, using only the secret scalar (left part of the output). We will abuse this possibility, and define a new scheme, based on scalar criptography. We will call it "Scheme1". We will refer to the classical scheme, described in RFC 8032 as "Scheme0"
+We've identified a method to calculate the public key or sign a message using only the secret scalar (left part of the output). We will capitalize on this opportunity and introduce a new scheme rooted in scalar cryptography, dubbed "Scheme1". The conventional scheme, outlined in RFC 8032, will be referenced as "Scheme0".
 
 ### Reasoning
 
-A classical HD derivation scheme, implemented in BIP32, depends on linear dependence between the private key and the public key. In Ed448, this dependence is eliminated by the first step, when we calculate the hash of the private key to obtain the secret scalar. To restore this dependence, we should implement a new scheme, that will keep it alive.
+BIP32's classical HD derivation scheme hinges on the linear relationship between the private and public keys. In Ed448, this relationship is disrupted during the initial stage when the hash of the private key is computed to extract the secret scalar. To reinstate this dependency, we propose the implementation of a novel scheme that preserves it.
 
-### Private key types
+### Private Key Types
 
-We will use both signature schemes, depending on the type of private key. We will use the last bit of the last byte of a private key (little-ending) to mark the type of a key. If it's equal to 0 - we will use the classical scheme (Scheme0). If it is equal to 1 - we will use the new scheme (Scheme1).
+The choice between signature schemes will hinge on the type of private key in use. The final bit of the last byte of a private key (little-endian) will dictate the key's classification. A value of 0 denotes the use of the conventional Scheme0. A value of 1 signifies the utilization of Scheme1.
 
-So, when the most significant bit of the last byte (little endian) is 0, we just repeat all the steps from RFC 8032 with no changes.
+Thus, if the most significant bit of the last byte (in little endian) is 0, the steps from RFC 8032 are carried out unchanged.
 
-### Sheme1
+### Scheme1
 
-When the most significant bit of the last byte (little endian) of a private key is 1, we will use the Scheme1 instead. We will consider this key as a secret scalar. We will make all the steps defined in RFC 8032 that should be done to the secret scalar (i.e. setting the lowest 2 bits of the first byte to 0, setting the last byte to 0, setting next-to-last byte to 1). Now we could calculate public key from it, or sign the message, using the same string as the nonce does.
+If the most significant bit of the last byte (little endian) of the private key is set to 1, Scheme1 is applied. This key is treated as a secret scalar. All the stipulations defined in RFC 8032 pertaining to the secret scalar will be executed (e.g., the lowest 2 bits of the first byte are set to 0, the last byte to 0, and the penultimate byte to 1). With this scalar, one can compute the public key or sign the message, leveraging the same string the nonce uses.
 
-### Overall cryptography scheme
+### Overall Cryptography Scheme
 
-So, the overall scheme could be described this way, implying we have the privateKey = byte[57] 
+Given that the `privateKey` is represented by `byte[57]`, the overarching scheme can be elucidated as follows:
 
 ```
 if (privateKey[56] & 0x80 == 0x00) {
-         // Most significant bit of the last byte is equal to 0, so process as usuall:
+         // Most significant bit of the last byte equals 0, process as usual:
          output = SHAKE256(privateKey, 114)
          left = output[0:57]
          right = output[57:114]
          // ....
 } else {
-         // Most significant bit of the last byte is equal to 1, so:
+         // Most significant bit of the last byte equals 1:
          scalar = privateKey
-         scalar[0] = scalar[0] & 0xfc
+         scalar[0] &= 0xfc
          scalar[56] = 0
-         scalar[55] = scalar[55] | 0x80
+         scalar[55] |= 0x80
          left = scalar
          right = scalar
-         // then as usual
+         // then proceed as usual
 }
 ```
 
 ## Rationale
 
-This scheme was made to provide an alternative between the classical Ed448 signature mechanism and the possibility to generate HD-wallet keys in a BIP32-like-way. That means that anyone who wants to use the classical scheme must generate a private key with the last bit set to 0, and anyone who wants to apply a HD-derivation scheme must set this bit to 1.
+This design provides a choice between the classic Ed448 signature technique and the ability to generate HD-wallet keys similar to BIP32. Consequently, those desiring the conventional approach should ensure the last bit of their private key is set to 0. Conversely, users aiming for an HD-derivation scheme should set this bit to 1.
 
 ## Copyright
+
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).

@@ -29,7 +29,7 @@ or
 - Change the template [cip-0](https://github.com/core-coin/cip/blob/master/cip/example/cip-0.md) and move it to [`cip` folder](https://github.com/core-coin/cip/blob/master/cip/posts).
 - [Submit a Pull Request](https://github.com/core-coin/cip/compare) to Core's CIP repository.
 
-Put any graphical content into [CIP image directory](https://github.com/core-coin/cip/blob/master/cip/images) `@img/cip-x` under your cip-x (x is the cip number). You can link images with path `@img/cip-0/cip-0-1.png`.
+Put any graphical content into [CIP image directory](https://github.com/core-coin/cip/blob/master/cip/.vuepress/public/images) `/images/cip-x` under your cip-x (x is the cip number). You can link images with path `/images/cip-0/cip-0-1.png`.
 
 ## CIP tags
 
@@ -48,7 +48,7 @@ CIPs are separated into a number of types, and each has its own list of CIPs.
    - Includes improvements around devp2p, network protocol specifications of whisper and swarm.
 - Interface
    - Includes improvements around client API/RPC specifications and standards, and also certain language-level standards like method names and contract ABIs. The label “interface” aligns with the interfaces repo. Discussion should primarily occur in that repository before a CIP is submitted to the CIPs repository.
-- CRC
+- CBC
    - Application-level standards and conventions, including contract standards such as token standards, name registries, URI schemes, library/package formats and wallet formats.
 - Informational
    - Describes a Core design issue, or provides general guidelines or information to the Core community, but does not propose a new feature. Informational CIPs do not necessarily represent Core community consensus or a recommendation, so users and implementers are free to ignore Informational CIPs or follow their advice.
