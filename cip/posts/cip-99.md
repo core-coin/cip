@@ -1,6 +1,6 @@
 ---
 cip: 99
-title: Core Coin HD-Wallet scheme
+title: Core Coin HD-Wallet Scheme
 author: Dmitry (@todesstile)
 lang: en-US
 tag: final
@@ -10,31 +10,31 @@ date: 2022-06-16
 
 ## Abstract
 
-The following standard defines the HD-wallet derivation scheme.
+This standard outlines the HD-wallet derivation scheme for Core Coin.
 
 ## Motivation
 
-Since the classical BIP32 scheme is not compatible with Ed448, this standard defines a bit different implementation of the HD-derivation, based on a revised Core Coin cryptography mechanism.
+Given that the classical BIP32 scheme is incompatible with Ed448, this standard presents an alternative implementation of HD-derivation. This alternative is grounded in the modified Core Coin cryptographic mechanism.
 
 ## Specification
 
 ### Definitions
 
+```plaintext
+||   : concatenation
++    : regular addition of two numbers
++++  : addition of two points on Ed448
+H(x, salt) : 57 bytes of the hash function HMAC-SHA512 with 2048 cycles of pbkdf2: PBKDF2(HMAC-SHA512, x, salt, 57, 2048))
+chain, privKey, publicKey : [57]byte
 ```
-|| concatenation
-+ usual sum of two numbers
-+++ sum of two points on Ed448
-H(x, salt) - 57 bytes of hash function HMAC-SHA512 with 2048 cycles of pbkdf2: PBKDF2(HMAC-SHA512, x, salt, 57, 2048))
-chain, privKey, publicKey [57]byte
-```
 
-### Extended keys
+### Extended Keys
 
-The extended key is a [114]byte array. It is obtained by `chaincode || privateKey` or `chaincode || publicKey`. Since only Scheme1 supports HD-wallet derivation, all private keys have the most significant bit of the last `byte == 1`. Details could be obtained from "Core Coin cryptography scheme" CIP.
+An extended key is represented by a [114]byte array. It is derived from `chaincode || privateKey` or `chaincode || publicKey`. As only Scheme1 supports HD-wallet derivation, all private keys must have the most significant bit of the last `byte == 1`. More details can be found in the "Core Coin Cryptography Scheme" CIP.
 
-### Master key
+### Master Key
 
-The master key is the root of the HD-derivation tree and one can get it from the mnemonics using a slightly modified BIP39 scheme. You should follow this scheme until you get the seed = BIP39 Seed, and then get master key by:
+The master key forms the root of the HD-derivation tree. It can be derived from mnemonics using a slightly modified version of the BIP39 scheme. You should adhere to this scheme until obtaining the seed (BIP39 Seed). The master key can then be derived as:
 
 ```
 chain = H(seed, "mnemonicforthechain")
@@ -42,85 +42,84 @@ key = H(seed, "mnemonicforthekey")
 masterKey = chain || key
 ```
 
-Finally, for security reasons you should:
+For enhanced security, you should:
 
 ```
 set the most significant bit of the last byte to 1 (masterKey[113] |= 0x80)
 set the most significant bit of the next-to-last byte to 1 (masterKey[112] |= 0x80)
-set the second significant bit of the next-to-last byte to 0 (masterKey[112] &= 0xbf)
+clear the second significant bit of the next-to-last byte (masterKey[112] &= 0xbf)
 ```
 
-The master key is exactly the `m` from the `m/44'/...` derivation path.
+This master key corresponds exactly to the `m` in the `m/44'/...` derivation path.
 
-### Child pair generation: chain code
+### Child Pair Generation: Chain Code
 
-Note that you could always generate pubKey from privKey. We will denote this operation as private2public.
+You can always generate `pubKey` from `privKey`. This operation will be denoted as `private2public`.
 
-Generating a child chaincode is different for usual and hardened keys. To generate a usual key:
-
-```
-pubKey = private2public(privKey)
-childChain = H(0x03 || pubKey || i , chain), i < 2^31
-```
-
-In case you needed to generate a hardened key:
-
-```
-childChain = H(0x01 || privKey || i , chain), i >= 2^31
-```
-
-### Child pair generation: private key 2 private key
-
-Generating a child private key is also different for usual and hardened keys. In case of a usual key:
+Child chaincode generation varies between usual and hardened keys. For a usual key:
 
 ```
 pubKey = private2public(privKey)
-template = H(0x02 || pubKey || i , chain), i < 2^31
+childChain = H(0x03 || pubKey || i , chain), where i < 2^31
 ```
 
-In case of a hardened key:
+For a hardened key:
 
 ```
-template = H(0x00 || privKey || i , chain), i >= 2^31
+childChain = H(0x01 || privKey || i , chain), where i >= 2^31
 ```
 
-Now we nullify the high 4 bytes and last 2 bit of the template. This is a security requirement. Let the result be `clampedTemplate = clamp(template)`. Then we calculate the child privKey as:
+### Child Pair Generation: Private Key to Private Key
+
+Child private key generation also differs between usual and hardened keys. For a usual key:
+
+```
+pubKey = private2public(privKey)
+template = H(0x02 || pubKey || i , chain), where i < 2^31
+```
+
+For a hardened key:
+
+```
+template = H(0x00 || privKey || i , chain), where i >= 2^31
+```
+
+Next, nullify the top 4 bytes and the last 2 bits of the template for security reasons, resulting in the `clampedTemplate = clamp(template)`. Then, the child `privKey` can be computed as:
 
 ```
 childPrivKey = privKey + clampedTemplate
 ```
 
-Note, that there wiill not be an overflow due to high bytes of the template set to 0. The EdDSA security standards require the 9th bit of privateKey to be == 1, to avoid rho-attacks. So we clamped the template, because we want to add it to ptivateKey, and we want the 9th bit of the result to remain secure. Since we nullified 32 bits, so 23 bits after the 9th one are zeroes, and we could do at least $2^{22}$ operations of adding to the privateKey. This limits the hierarchy level of the tree to, say, $2^{20}$.
+Note: There won't be an overflow since the upper bytes of the template are set to zero. EdDSA security standards necessitate the 9th bit of `privateKey` to be 1 to defend against rho-attacks. We clamped the template because we want to add it to `privateKey` while ensuring that the 9th bit of the result remains secure. As 32 bits following the 9th bit are zero, we can perform at least \(2^{22}\) addition operations on the `privateKey`. This restricts the tree's hierarchy level to approximately \(2^{20}\).
 
-### Child pair generation: private key 2 public key
+### Child Pair Generation: Private Key to Public Key
 
-Public keys are generated by `privatetKey2privateKey` generation, and then deriving public from privateKey as usual.
+Public keys are generated using the `privateKey2privateKey` method, and then deriving the public key from the private key as usual.
 
-### Child pair generation: public key 2 public
+### Child Pair Generation: Public Key to Public
 
-It is impossible to generate a child public key from a public hardened key. Actually, this is the main property of hardened keys. They are constructed to make such derivation impossible.
+It is impossible to generate a child public key from a hardened public key, which is the primary attribute of hardened keys: they are designed to prevent such derivation.
 
-Usual child public keys could be derived from a usual parent public key.
-
-At first we calculate clampedTemplate as above:
+However, usual child public keys can be derived from a usual parent public key. First, calculate the `clampedTemplate` as described above:
 
 ```
-template = H(0x02 || publicKey || i , chain), i < 2^31
+template = H(0x02 || publicKey || i , chain), where i < 2^31
 template -> clampedTemplate
 ```
 
-Then we calculate a point on Ed448, corresponding to the clampedTemplate and add it to the publicKey (using point addition for Ed448):
+Next, compute a point on Ed448 corresponding to the `clampedTemplate` and add it to the `publicKey` using point addition for Ed448:
 
 ```
 point = private2public(clampedTemplate)
 childPublicKey = publicKey +++ point
 ```
 
-This public key corresponds to private key, generated by the `private2private` method.
+This public key aligns with the private key generated by the `private2private` method.
 
 ## Rationale
 
-This scheme was made to provide an alternative between the classical Ed448 signature mechanism and the possibility to generate HD-wallet keys in BIP32-like way. 
+This scheme offers an alternative between the classical Ed448 signature mechanism and the ability to generate HD-wallet keys in a BIP32-like manner.
 
 ## Copyright
+
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).

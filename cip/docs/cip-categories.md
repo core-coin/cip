@@ -1,5 +1,5 @@
 ---
-title: CIP categories
+title: CIP Categories
 isOriginal: true
 author: Core Foundation
 date: 2022-01-01
@@ -10,36 +10,38 @@ tag:
 star: true
 comment: false
 ---
-# CIP categories
+# CIP Categories
 
-> We have six categories of CIP
+> We have six categories for CIP.
 
 ## Core
 
-Improvements requiring a consensus fork, as well as changes that are not necessarily consensus critical but may be relevant to “core dev” discussions.
+Improvements that require a consensus fork, as well as those that aren't necessarily consensus-critical but might be relevant to "core dev" discussions.
 
 ## Networking
 
-Includes improvements around devp2p and Light Core Subprotocol, as well as proposed improvements to network protocol specifications of whisper and swarm.
+This includes improvements related to devp2p and Light Core Subprotocol, as well as proposed enhancements to the network protocol specifications of Whisper and Swarm.
 
 ## Interface
 
-Includes improvements around client [API/RPC] specifications and standards, and also certain language-level standards like method names and [contract ABIs]. The label “interface” aligns with the [interfaces repo] and discussion should primarily occur in that repository before a CIP is submitted to the CIPs repository.
+This category involves improvements around client API/RPC specifications and standards. It also includes certain language-level standards, such as method names and contract ABIs. The label “interface” aligns with the [interfaces repo], and discussions should primarily take place in that repository before a CIP is submitted to the CIPs repository.
 
-## CRC
+## CBC
 
-Application-level standards and conventions, including contract standards, such as token standards, name registries, URI schemes, library/package formats, and wallet formats.
+Application-level standards and conventions, including contract standards like token standards, name registries, URI schemes, library/package formats, and wallet formats.
 
 ## Informational
 
-Describes a Core design issue, or provides general guidelines or information to the Core community, but does not propose a new feature. Informational CIPs do not necessarily represent Core community consensus or a recommendation, so users and implementers are free to ignore Informational CIPs or follow their advice.
+This describes a Core design issue or provides general guidelines or information to the Core community. It doesn't propose a new feature. Informational CIPs don't necessarily represent the consensus of the Core community or a recommendation. Thus, users and implementers can either heed or ignore Informational CIPs.
 
 ## Meta
 
-Describes a process surrounding Core or proposes a change to (or an event in) a process. Process CIPs are like Standards Track CIPs but apply to areas other than the Core protocol itself. They may propose an implementation, but not to Core's codebase; they often require community consensus. Unlike Informational CIPs, they are more than recommendations, and users are typically not free to ignore them. Examples include procedures, guidelines, changes to the decision-making process, and changes to the tools or environment used in Core development. Any meta-CIP is also considered a Process CIP.
+This describes a process related to Core or suggests a change to (or an event in) a process. Process CIPs resemble Standards Track CIPs but pertain to areas other than the Core protocol. They might propose an implementation, but not to the Core's codebase. Often, they require community consensus. Unlike Informational CIPs, they are more directive, and users typically can't ignore them. Examples include procedures, guidelines, changes to the decision-making process, and alterations to the tools or environment utilized in Core development. All meta-CIPs are also deemed Process CIPs.
 
 ---
 
-> It is highly recommended that a single CIP contain a single key proposal or a new idea. The more focused the CIP, the more successful it tends to be. A change to one client doesn't require a CIP; a change that affects multiple clients, or defines a standard for multiple apps to use, does.
+> It's strongly advised that a single CIP should encompass just one primary proposal or idea. The more concise a CIP is, the more likely it is to succeed. A modification to one client doesn't mandate a CIP. However, a change that impacts multiple clients or sets a standard for various apps does.
 
-> A CIP must meet certain minimum criteria. It must be a clear and complete description of the proposed enhancement. The enhancement must represent a net improvement. The proposed implementation, if applicable, must be solid and must not complicate the protocol unduly.
+> A CIP must meet certain essential criteria. It should clearly and comprehensively describe the proposed enhancement. This enhancement should represent a net benefit. If there's a suggested implementation, it needs to be robust and must not unduly complicate the protocol.
+
+---
