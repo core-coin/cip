@@ -6,10 +6,11 @@ lang: en-US
 tag: final
 category: cbc
 date: 2022-05-28
+star: true
 ---
-## Simple Summary
-
 A standard interface for tokens.
+
+<!--truncate-->
 
 ## Abstract
 

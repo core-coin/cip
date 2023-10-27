@@ -7,8 +7,8 @@ category:
   - tutorial
 tag:
   - tutorial
-star: true
 comment: false
+sidebar_position: 3
 ---
 # CIP Rationale
 

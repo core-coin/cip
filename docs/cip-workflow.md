@@ -7,19 +7,21 @@ category:
   - tutorial
 tag:
   - tutorial
-star: true
 comment: false
+sidebar_position: 5
 ---
 # CIP Work Flow
 
 **Key Stakeholders**:
+
 - **You**, the champion or *CIP author*
-- **CIP editors** [(details)](cip/docs/cip-editors)
+- **CIP editors** [(details)](/docs/cip-editors)
 - **Core Developers**
 
 Before diving in, validate your idea with the Core community. It's efficient to ascertain the originality and broad applicability of your concept before investing time. Relying solely on online searches might not provide comprehensive insights. Ensure the proposal isn't limited in its benefits to just you, the author. An idea may seem brilliant individually but may not cater to the wider Core community.
 
 As a champion, your tasks encompass:
+
 - Drafting the CIP in the prescribed format
 - Steering discussions in relevant forums
 - Building community consensus
@@ -29,32 +31,34 @@ The typical journey of a successful CIP is:
 
 Every stage transition requires the CIP author's request and subsequent approval by the CIP editors. Employ a pull request to modify the status and append a link guiding further discussions.
 
-### Status Definitions:
+## Status Definitions
 
 - **Active**: Some Informational and Process CIPs remain active indefinitely.
 - **Work in progress (WIP)**: After gauging community support, the champion drafts a CIP via a pull request, which may also include an initial implementation to facilitate review.
-  * ✔️ **Draft**: A CIP editor, upon agreement, assigns a CIP number (typically derived from related issue or PR) and integrates your pull request.
-  * ❌ **Draft**: Grounds for refusal include lack of focus, vastness, redundant effort, technical fallacies, insufficient motivation, compatibility issues, or deviation from Core's ethos.
+  - ✔️ **Draft**: A CIP editor, upon agreement, assigns a CIP number (typically derived from related issue or PR) and integrates your pull request.
+  - ❌ **Draft**: Grounds for refusal include lack of focus, vastness, redundant effort, technical fallacies, insufficient motivation, compatibility issues, or deviation from Core's ethos.
 - **Draft**: Post the initial merge, iterate on your draft via subsequent pull requests until it matures for the next stage. A draft, especially if it impacts consensus, should ideally have a working implementation.
-  * ✔️ **Last Call**: CIP editors, if in agreement, mark the status and set a 14-day review window.
-  * ❌ **Last Call**: A request might be turned down if substantial edits to the draft are anticipated.
-- **Last Call**: Prominent listing of the CIP on [Core CIP Website](http://cip.coreblockchain.cc/).
-  * ❌: Significant alterations or unresolved technical concerns revert the CIP to draft.
-  * ✔️ **Accepted**: Applicable only to Core CIPs. A smooth Last Call leads to acceptance.
-  * ✔️ **Final**: For non-core CIPs, a smooth Last Call culminates in a Final status.
+  - ✔️ **Last Call**: CIP editors, if in agreement, mark the status and set a 14-day review window.
+  - ❌ **Last Call**: A request might be turned down if substantial edits to the draft are anticipated.
+- **Last Call**: Prominent listing of the CIP on [Core CIP Website](http://cip.coreblockchain.net).
+  - ❌: Significant alterations or unresolved technical concerns revert the CIP to draft.
+  - ✔️ **Accepted**: Applicable only to Core CIPs. A smooth Last Call leads to acceptance.
+  - ✔️ **Final**: For non-core CIPs, a smooth Last Call culminates in a Final status.
 - **Accepted**: Pertains solely to Core CIPs. The decision to incorporate it in client builds through a hard fork isn't under CIP purview.
-  * ✔️ **Final**: A Core CIP has to be implemented across a minimum of three viable Core clients for "Final" consideration. Upon wide community adoption, it's designated "Final".
+  - ✔️ **Final**: A Core CIP has to be implemented across a minimum of three viable Core clients for "Final" consideration. Upon wide community adoption, it's designated "Final".
 - **Final**: Reflects the current pinnacle. A "Final" CIP gets updated strictly for error rectifications.
 
-### Other Unique Statuses:
+## Other Unique Statuses
+
 - **Deferred**: For core CIPs postponed for an upcoming hard fork.
 - **Rejected**: Either a fundamentally flawed CIP or a Core CIP declined by Core Devs.
 - **Active**: Similar to Final, but can undergo updates without changing the CIP number.
 - **Superseded**: A once-final CIP no longer represents the zenith. Another "Final" CIP references the outdated one.
 
-## Pillars of a Successful CIP:
+## Pillars of a Successful CIP
 
-Each CIP should encapsulate:
+Each CIP should encapsulate
+
 - **Preamble**: RFC 822 headers detailing CIP metadata.
 - **Simple Summary**: An easy-to-understand synopsis.
 - **Abstract**: A concise (~200 words) technical summary.
@@ -74,7 +78,7 @@ Draft CIPs using [markdown](https://guides.github.com/features/mastering-markdow
 
 Mandatory and optional headers should adhere to the RFC 822 style.
 
-### Author Header:
+### Author Header
 
 Represents author details in various permissible formats.
 
