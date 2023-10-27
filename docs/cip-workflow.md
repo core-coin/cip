@@ -15,7 +15,7 @@ sidebar_position: 5
 **Key Stakeholders**:
 
 - **You**, the champion or *CIP author*
-- **CIP editors** [(details)](cip/docs/cip-editors)
+- **CIP editors** [(details)](/docs/cip-editors)
 - **Core Developers**
 
 Before diving in, validate your idea with the Core community. It's efficient to ascertain the originality and broad applicability of your concept before investing time. Relying solely on online searches might not provide comprehensive insights. Ensure the proposal isn't limited in its benefits to just you, the author. An idea may seem brilliant individually but may not cater to the wider Core community.
