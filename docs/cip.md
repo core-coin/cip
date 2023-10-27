@@ -7,8 +7,8 @@ category:
   - tutorial
 tag:
   - tutorial
-star: true
 comment: false
+sidebar_position: 1
 ---
 # CIP
 
@@ -25,29 +25,29 @@ You can begin by opening your proposal under the [issues section of this reposit
 - [CIP categories](/docs/cip-categories)
 - [CIP workflow](/docs/cip-workflow)
 - [CIP editors](/docs/cip-editors)
-- [CIP example](/example/cip-0)
+- [CIP example](/docs/cip-0)
 
 ### How to start
 
-1. Review the template [cip-0](https://github.com/core-coin/cip/blob/master/cip/example/cip-0.md)
-2. [Create a CIP in the Online Editor](https://github.com/core-coin/cip/new/master?filename=cip/posts/cip-0.md&message=CIP%20Proposal&description=CIP%20Proposal%20Draft&value=---%0Acip%3A%20%0Atitle%3A%20%0Aauthor%3A%20%0Alang%3A%20en-US%0Atag%3A%20draft%0Acategory%3A%20%0Adate%3A%20%0A---%0A%0A)
+1. Review the template [cip-0](https://github.com/core-coin/cip/blob/master/cip/docs/cip-0.md)
+2. [Create a CIP in the Online Editor](https://github.com/core-coin/cip/new/master?filename=cip/cip-0.md&message=CIP%20Proposal&description=CIP%20Proposal%20Draft&value=---%0Acip%3A%20%0Atitle%3A%20%0Aauthor%3A%20%0Alang%3A%20en-US%0Atag%3A%20draft%0Acategory%3A%20%0Adate%3A%202022-12-01%0A---%0A%3C%21--Introduction--%3E%0A%0A%3C%21--truncate--%3E%0A%0A%23%23%20Abstract%0A%0A%0A%0A%23%23%20Motivation%0A%0A%0A%0A%23%23%20Specification%0A%0A%0A%0A%23%23%20Rationale%0A%0A%0A%0A%23%23%20Backwards%20Compatibility%0A%0A%0A%0A%23%23%20Test%20Cases%0A%0A%0A%0A%23%23%20Implementation%0A%0A%0A%0A%23%23%20Security%20Considerations%0A%0A%0A%0A%23%23%20Copyright%0A%0ACopyright%20and%20related%20rights%20waived%20via%20%5BCC0%5D%28https%3A%2F%2Fcreativecommons.org%2Fpublicdomain%2Fzero%2F1.0%2F%29.%0A)
 
 Or
 
 1. [Fork](https://github.com/core-coin/cip/fork) this repository.
-2. Modify the template [cip-0](https://github.com/core-coin/cip/blob/master/cip/example/cip-0.md) and move it to the [`cip` folder](https://github.com/core-coin/cip/blob/master/cip/posts).
+2. Modify the template [cip-0](https://github.com/core-coin/cip/blob/master/cip/docs/cip-0.md) and move it to the [`cip` folder](https://github.com/core-coin/cip/blob/master/cip).
 3. [Submit a Pull Request](https://github.com/core-coin/cip/compare) to the Core CIP repository.
 
-For graphical content, place it in the [CIP image directory](https://github.com/core-coin/cip/blob/master/cip/.vuepress/public/images) `/cip/.vuepress/public/images/cip-x`, where 'x' is the CIP number. Link images using the path `/images/cip-x/cip-x-1.png`.
+For graphical content, place it in the [CIP image directory](https://github.com/core-coin/cip/blob/master/cip) `/cip/cip-x`, where 'x' is the CIP number. Link images using the path `/cip/cip-x/cip-x-1.png`.
 
-## CIP tags
+## Tags
 
 - `Draft`: Consideration phase for a CIP.
 - `Accepted`: A CIP set for immediate adoption, often slated for the next hard fork (relevant for Core/Consensus layer CIPs).
 - `Final`: A CIP adopted in a prior hard fork (pertinent to Core/Consensus layer CIPs).
 - `Deferred`: A CIP not up for immediate adoption, but might be reconsidered for future hard forks.
 
-## CIP categories
+## Categories
 
 CIPs are categorized into various types, each with its own list:
 
@@ -61,4 +61,4 @@ CIPs are categorized into various types, each with its own list:
 ## Channels
 
 - [Core ◆ Talk](https://coretalk.space/tags/cip)
-- [GH Discussions](https://github.com/core-coin/cip/discussions)
+- [GH Issues](https://github.com/core-coin/cip/issues)

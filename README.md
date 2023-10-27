@@ -1,64 +1,55 @@
----
-title: Core Improvement Proposals
----
 # CIP
 
-> Core Improvement Proposal (CIP) describes standards for the Core platform, including core protocol specifications, client APIs, and contract standards.
+> The Core Improvement Proposal (CIP) sets standards for the Core platform, encompassing core protocol specifications, client APIs, and contract standards.
 
 ## Contributing
 
-First you can open your proposal under [issues of this repository](https://github.com/core-coin/cip/issues).
+You can begin by opening your proposal under the [issues section of this repository](https://github.com/core-coin/cip/issues).
 
-### Review:
+### Review
 
-- [What is CIP](cip/docs/what-is-cip.md)
-- [CIP rationale](cip/docs/cip-rationale.md)
-- [CIP categories](cip/docs/cip-categories.md)
-- [CIP workflow](cip/docs/cip-workflow.md)
-- [CIP editors](cip/docs/cip-editors.md)
-- [CIP example](cip/example/cip-0.md)
+- [What is CIP](/docs/what-is-cip)
+- [CIP rationale](/docs/cip-rationale)
+- [CIP categories](/docs/cip-categories)
+- [CIP workflow](/docs/cip-workflow)
+- [CIP editors](/docs/cip-editors)
+- [CIP example](/docs/cip-0)
 
-### How to start:
+### How to start
 
-- Review the template [cip-0](https://github.com/core-coin/cip/blob/master/cip/example/cip-0.md)
-- [Create CIP in the Online Editor](https://github.com/core-coin/cip/new/master?filename=cip/posts/cip-0.md&message=CIP%20Proposal&description=CIP%20Proposal%20Draft&value=---%0Acip%3A%20%0Atitle%3A%20%0Aauthor%3A%20%0Alang%3A%20en-US%0Atag%3A%20draft%0Acategory%3A%20%0Adate%3A%20%0A---%0A%0A)
+1. Review the template [cip-0](https://github.com/core-coin/cip/blob/master/cip/docs/cip-0.md)
+2. [Create a CIP in the Online Editor](https://github.com/core-coin/cip/new/master?filename=cip/cip-0.md&message=CIP%20Proposal&description=CIP%20Proposal%20Draft&value=---%0Acip%3A%20%0Atitle%3A%20%0Aauthor%3A%20%0Alang%3A%20en-US%0Atag%3A%20draft%0Acategory%3A%20%0Adate%3A%202022-12-01%0A---%0A%3C%21--Introduction--%3E%0A%0A%3C%21--truncate--%3E%0A%0A%23%23%20Abstract%0A%0A%0A%0A%23%23%20Motivation%0A%0A%0A%0A%23%23%20Specification%0A%0A%0A%0A%23%23%20Rationale%0A%0A%0A%0A%23%23%20Backwards%20Compatibility%0A%0A%0A%0A%23%23%20Test%20Cases%0A%0A%0A%0A%23%23%20Implementation%0A%0A%0A%0A%23%23%20Security%20Considerations%0A%0A%0A%0A%23%23%20Copyright%0A%0ACopyright%20and%20related%20rights%20waived%20via%20%5BCC0%5D%28https%3A%2F%2Fcreativecommons.org%2Fpublicdomain%2Fzero%2F1.0%2F%29.%0A)
 
-or
+Or
 
-- [Fork](https://github.com/core-coin/cip/fork) this repository.
-- Change the template [cip-0](https://github.com/core-coin/cip/blob/master/cip/example/cip-0.md) and move it to [`cip` folder](https://github.com/core-coin/cip/blob/master/cip/posts).
-- [Submit a Pull Request](https://github.com/core-coin/cip/compare) to Core's CIP repository.
+1. [Fork](https://github.com/core-coin/cip/fork) this repository.
+2. Modify the template [cip-0](https://github.com/core-coin/cip/blob/master/cip/docs/cip-0.md) and move it to the [`cip` folder](https://github.com/core-coin/cip/blob/master/cip).
+3. [Submit a Pull Request](https://github.com/core-coin/cip/compare) to the Core CIP repository.
 
-Put any graphical content into [CIP image directory](https://github.com/core-coin/cip/blob/master/cip/.vuepress/public/images) `/images/cip-x` under your cip-x (x is the cip number). You can link images with path `/images/cip-0/cip-0-1.png`.
+For graphical content, place it in the [CIP image directory](https://github.com/core-coin/cip/blob/master/cip) `/cip/cip-x`, where 'x' is the CIP number. Link images using the path `/cip/cip-x/cip-x-1.png`.
 
-## CIP tags
+## Tags
 
-- `Draft` a CIP that is open for consideration.
-- `Accepted` a CIP that is planned for immediate adoption, i.e. expected to be included in the next hard fork (for Core/Consensus layer CIPs).
-- `Final` a CIP that has been adopted in a previous hard fork (for Core/Consensus layer CIPs).
-- `Deferred` a CIP that is not being considered for immediate adoption. May be reconsidered in the future for a subsequent hard fork.
+- `Draft`: Consideration phase for a CIP.
+- `Accepted`: A CIP set for immediate adoption, often slated for the next hard fork (relevant for Core/Consensus layer CIPs).
+- `Final`: A CIP adopted in a prior hard fork (pertinent to Core/Consensus layer CIPs).
+- `Deferred`: A CIP not up for immediate adoption, but might be reconsidered for future hard forks.
 
-## CIP categories
+## Categories
 
-CIPs are separated into a number of types, and each has its own list of CIPs.
+CIPs are categorized into various types, each with its own list:
 
-- Core
-   - Improvements requiring a consensus fork, as well as changes that are not necessarily consensus critical but may be relevant to “core dev” discussions.
-- Networking
-   - Includes improvements around devp2p, network protocol specifications of whisper and swarm.
-- Interface
-   - Includes improvements around client API/RPC specifications and standards, and also certain language-level standards like method names and contract ABIs. The label “interface” aligns with the interfaces repo. Discussion should primarily occur in that repository before a CIP is submitted to the CIPs repository.
-- CBC
-   - Application-level standards and conventions, including contract standards such as token standards, name registries, URI schemes, library/package formats and wallet formats.
-- Informational
-   - Describes a Core design issue, or provides general guidelines or information to the Core community, but does not propose a new feature. Informational CIPs do not necessarily represent Core community consensus or a recommendation, so users and implementers are free to ignore Informational CIPs or follow their advice.
-- Meta
-   - Describes a process surrounding Core or proposes a change to (or an event in) a process. Process CIPs are like Standards Track CIPs but apply to areas other than the Core protocol itself. They may propose an implementation, but not to Core's codebase; they often require community consensus. Unlike Informational CIPs, they are more than recommendations, and users are typically not free to ignore them. Examples include procedures, guidelines, changes to the decision-making process, and changes to the tools or environment used in Core development. Any meta-CIP is also considered a Process CIP.
+- **Core**: Improvements involving a consensus fork or changes significant to core development discussions.
+- **Networking**: Enhancements concerning devp2p and network protocol specs for whisper and swarm.
+- **Interface**: Focuses on client API/RPC specs, language standards like method names, and contract ABIs. Discussions should mainly take place in the interfaces repo before submitting a CIP here.
+- **CBC**: Application standards and conventions like token standards and name registries.
+- **Informational**: Addresses Core design issues or offers guidelines to the Core community without suggesting new features.
+- **Meta**: Outlines processes around Core or proposes process changes. These are more binding than informational CIPs and often necessitate community consensus.
 
 ## Channels
 
 - [Core ◆ Talk](https://coretalk.space/tags/cip)
-- [GH Discussions](https://github.com/core-coin/cip/discussions)
+- [GH Issues](https://github.com/core-coin/cip/issues)
 
 ## License of the content
 

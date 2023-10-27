@@ -1,12 +1,15 @@
 ---
 cip: 99
-title: Core Coin HD-Wallet Scheme
+title: Core HD-Wallet Scheme
 author: Dmitry (@todesstile)
 lang: en-US
 tag: final
 category: core
 date: 2022-06-16
 ---
+This standard outlines the HD-wallet derivation scheme for Core Coin.
+
+<!--truncate-->
 
 ## Abstract
 

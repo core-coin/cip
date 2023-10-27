@@ -4,7 +4,8 @@ on:
     branches:
       - master
     paths:
-      - "cip/posts/*.md"
+      - "cip/*.md"
+      - "cip/*.mdx"
       - ".github/workflows/markdownlint.yml"
       - ".github/.markdownlint.json"
 
@@ -12,11 +13,12 @@ jobs:
   cip-linter:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Markdown Lint
         uses: ruzickap/action-my-markdown-linter@v1
         with:
           config_file: .github/lintconfig.yml
           search_paths: |
-            cip/posts/*.md
+            cip/*.md
+            cip/*.mdx

@@ -1,15 +1,15 @@
 ---
 cip: 98
-title: Core Coin Cryptography Scheme
+title: Core Cryptography Scheme
 author: Dmitry (@todesstile)
 lang: en-US
 tag: final
 category: core
 date: 2022-06-16
 ---
-## Abstract
-
 This standard details the cryptography scheme employed in the Core Blockchain.
+
+<!--truncate-->
 
 ## Motivation
 
