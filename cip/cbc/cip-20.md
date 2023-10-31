@@ -1,12 +1,13 @@
 ---
 cip: 20
 title: Token Standard
+description: A standard interface for tokens.
+keywords: [cip, cip-20, token, standard]
 author: Mojtaba
 lang: en-US
-tag: final
-category: cbc
+tags: [final]
+categories: [cbc]
 date: 2022-05-28
-star: true
 ---
 A standard interface for tokens.
 
@@ -27,6 +28,7 @@ A standard interface allows any tokens on Core to be re-used by other applicatio
 #### Methods
 
 **NOTES**:
+
 - The following specifications use syntax from Ylem `0.8.4` (or above).
 - Callers MUST handle `false` from `returns (bool success)`. They MUST NOT assume that `false` is never returned!
 

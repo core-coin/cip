@@ -1,12 +1,7 @@
 ---
 title: Core Improvement Proposals
-isOriginal: true
 author: Core Foundation
 date: 2022-01-01
-category:
-  - tutorial
-tag:
-  - tutorial
 comment: false
 sidebar_position: 1
 ---
@@ -20,7 +15,7 @@ You can begin by opening your proposal under the [issues section of this reposit
 
 ### Review
 
-- [What is CIP](/docs/what-is-cip)
+- [What is a CIP](/docs/what-is-cip)
 - [CIP rationale](/docs/cip-rationale)
 - [CIP categories](/docs/cip-categories)
 - [CIP workflow](/docs/cip-workflow)
@@ -29,8 +24,12 @@ You can begin by opening your proposal under the [issues section of this reposit
 
 ### How to start
 
-1. Review the template [cip-0](https://github.com/core-coin/cip/blob/master/cip/docs/cip-0.md)
-2. [Create a CIP in the Online Editor](https://github.com/core-coin/cip/new/master?filename=cip/cip-0.md&message=CIP%20Proposal&description=CIP%20Proposal%20Draft&value=---%0Acip%3A%20%0Atitle%3A%20%0Aauthor%3A%20%0Alang%3A%20en-US%0Atag%3A%20draft%0Acategory%3A%20%0Adate%3A%202022-12-01%0A---%0A%3C%21--Introduction--%3E%0A%0A%3C%21--truncate--%3E%0A%0A%23%23%20Abstract%0A%0A%0A%0A%23%23%20Motivation%0A%0A%0A%0A%23%23%20Specification%0A%0A%0A%0A%23%23%20Rationale%0A%0A%0A%0A%23%23%20Backwards%20Compatibility%0A%0A%0A%0A%23%23%20Test%20Cases%0A%0A%0A%0A%23%23%20Implementation%0A%0A%0A%0A%23%23%20Security%20Considerations%0A%0A%0A%0A%23%23%20Copyright%0A%0ACopyright%20and%20related%20rights%20waived%20via%20%5BCC0%5D%28https%3A%2F%2Fcreativecommons.org%2Fpublicdomain%2Fzero%2F1.0%2F%29.%0A)
+Begin by contributing to the [issues section of this repository](https://github.com/core-coin/cip/issues/new/choose). Once done, you'll be able to draft a CIP using the associated issue number (if available).
+
+**Next steps:**
+
+1. Review the template [cip-0](/docs/cip-0.md)
+2. [Create a CIP in the Online Editor](https://github.com/core-coin/cip/new/master?filename=cip/cip-0.md&message=CIP%20Proposal&description=CIP%20Proposal%20Draft&value=---%0Acip%3A%20%0Atitle%3A%20%0Adescription%3A%20%0Akeywords%3A%20%5B%5D%0Aauthor%3A%20%0Alang%3A%20en-US%0Atags%3A%20%5Bdraft%5D%0Acategories%3A%20%5B%5D%0Adate%3A%202022-12-01%0Adiscussions-to%3A%20%0A---%0A%3C%21--Introduction--%3E%0A%0A%3C%21--truncate--%3E%0A%0A%23%23%20Abstract%0A%0A%0A%0A%23%23%20Motivation%0A%0A%0A%0A%23%23%20Specification%0A%0A%0A%0A%23%23%20Rationale%0A%0A%0A%0A%23%23%20Backwards%20Compatibility%0A%0A%0A%0A%23%23%20Test%20Cases%0A%0A%0A%0A%23%23%20Implementation%0A%0A%0A%0A%23%23%20Security%20Considerations%0A%0A%0A%0A%23%23%20Copyright%0A%0ACopyright%20and%20related%20rights%20waived%20via%20%5BCC0%5D%28https%3A%2F%2Fcreativecommons.org%2Fpublicdomain%2Fzero%2F1.0%2F%29.%0A)
 
 Or
 

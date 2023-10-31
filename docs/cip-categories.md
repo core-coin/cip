@@ -1,12 +1,7 @@
 ---
 title: CIP Categories
-isOriginal: true
 author: Core Foundation
 date: 2022-01-01
-category:
-  - tutorial
-tag:
-  - tutorial
 comment: false
 sidebar_position: 4
 ---

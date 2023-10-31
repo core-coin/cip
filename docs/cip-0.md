@@ -1,14 +1,30 @@
 ---
-cip: 0
 title: CIP-0 example
-author: Author (@author@server.pod)
-lang: en-US
-tag: draft
-category: example
+description: CIP-0 example template
+author: Core Foundation
+comment: false
 date: 2022-01-01
 sidebar_position: 7
 ---
-> This is the suggested template for new CIPs. Note that a CIP number will be assigned by an editor. When opening a pull request to submit your CIP, please use an abbreviated title in the filename, `cip-ID.md`, where "ID" is the CIP ID. The title should be 44 characters or fewer.
+**Frontmatter:**
+
+```yaml
+---
+cip: 0
+title: CIP-0 example
+description: CIP-0 example template
+keywords: [cip, cip-0, example, template]
+author: Author (@author@server.pod)
+lang: en-US
+tags: [draft]
+categories: [example]
+date: 2022-01-01
+discussions-to: <URL>
+requires: <CIP number(s)> # Only required when you reference an CIP in the `Specification` section. Otherwise, remove this field.
+---
+```
+
+> This is the suggested template for new CIPs. Note that a CIP number will be assigned by an editor. When opening a pull request to submit your CIP, please, use an abbreviated title in the filename, `cip-ID.md`, where "ID" is the CIP ID. The title should be 44 characters or fewer.
 
 > Provide a simplified and layperson-accessible explanation of the CIP.
 
@@ -44,7 +60,7 @@ sidebar_position: 7
 
 ## Security Considerations
 
-> All CIPs must contain a section discussing the security implications and considerations relevant to the proposed change. This section should provide details important for security discussions, highlight potential risks, and be referenced throughout the lifecycle of the proposal. CIP submissions lacking the "Security Considerations" section will be rejected. A CIP cannot proceed to "Final" status without a Security Considerations discussion deemed satisfactory by the reviewers.
+> All CIPs must contain a section discussing the security implications and considerations relevant to the proposed change. This section should provide details important for security discussions, highlight potential risks, and be referenced throughout the lifecycle of the proposal. CIP submissions lacking the "Security Considerations" section will be rejected. A CIP cannot proceed to the "Final" status without a Security Considerations discussion deemed satisfactory by the reviewers.
 
 ## Copyright
 

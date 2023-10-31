@@ -1,5 +1,5 @@
-import React from 'react';
 import clsx from 'clsx';
+import Heading from '@theme/Heading';
 import styles from './styles.module.css';
 
 type FeatureItem = {
@@ -51,9 +51,9 @@ function Feature({title, Img, link, description}: FeatureItem) {
         </a>
       </div>
       <div className="text--center padding-horiz--md">
-        <h3>
+        <Heading as="h3">
           <a href={link} target={link.startsWith('http') ? "_blank" : "_self"} rel="noopener noreferrer">{title}</a>
-        </h3>
+        </Heading>
         <p>{description}</p>
       </div>
     </div>

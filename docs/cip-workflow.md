@@ -1,12 +1,7 @@
 ---
 title: CIP Work Flow
-isOriginal: true
 author: Core Foundation
 date: 2022-01-01
-category:
-  - tutorial
-tag:
-  - tutorial
 comment: false
 sidebar_position: 5
 ---
@@ -53,11 +48,11 @@ Every stage transition requires the CIP author's request and subsequent approval
 - **Deferred**: For core CIPs postponed for an upcoming hard fork.
 - **Rejected**: Either a fundamentally flawed CIP or a Core CIP declined by Core Devs.
 - **Active**: Similar to Final, but can undergo updates without changing the CIP number.
-- **Superseded**: A once-final CIP no longer represents the zenith. Another "Final" CIP references the outdated one.
+- **Superseeded**: A once-final CIP no longer represents the zenith. Another "Final" CIP references the outdated one.
 
 ## Pillars of a Successful CIP
 
-Each CIP should encapsulate
+Each CIP should encapsulate:
 
 - **Preamble**: RFC 822 headers detailing CIP metadata.
 - **Simple Summary**: An easy-to-understand synopsis.

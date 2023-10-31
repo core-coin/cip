@@ -1,10 +1,12 @@
 ---
 cip: 98
 title: Core Cryptography Scheme
+description: The cryptography scheme employed in the Core Blockchain.
+keywords: [cip, cip-98, cryptography, scheme, core, blockchain]
 author: Dmitry (@todesstile)
 lang: en-US
-tag: final
-category: core
+tags: [final]
+categories: [core]
 date: 2022-06-16
 ---
 This standard details the cryptography scheme employed in the Core Blockchain.
@@ -45,22 +47,22 @@ If the most significant bit of the last byte (little endian) of the private key 
 
 Given that the `privateKey` is represented by `byte[57]`, the overarching scheme can be elucidated as follows:
 
-```
+```go
 if (privateKey[56] & 0x80 == 0x00) {
-         // Most significant bit of the last byte equals 0, process as usual:
-         output = SHAKE256(privateKey, 114)
-         left = output[0:57]
-         right = output[57:114]
-         // ....
+        // Most significant bit of the last byte equals 0, process as usual:
+        output = SHAKE256(privateKey, 114)
+        left = output[0:57]
+        right = output[57:114]
+        // ....
 } else {
-         // Most significant bit of the last byte equals 1:
-         scalar = privateKey
-         scalar[0] &= 0xfc
-         scalar[56] = 0
-         scalar[55] |= 0x80
-         left = scalar
-         right = scalar
-         // then proceed as usual
+        // Most significant bit of the last byte equals 1:
+        scalar = privateKey
+        scalar[0] &= 0xfc
+        scalar[56] = 0
+        scalar[55] |= 0x80
+        left = scalar
+        right = scalar
+        // then proceed as usual
 }
 ```
 
