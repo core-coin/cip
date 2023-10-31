@@ -1,10 +1,12 @@
 ---
 cip: 99
 title: Core HD-Wallet Scheme
+description: The HD-wallet derivation scheme for Core Coin.
+keywords: [cip, cip-99, hd-wallet, scheme, core, coin]
 author: Dmitry (@todesstile)
 lang: en-US
-tag: final
-category: core
+tags: [final]
+categories: [core]
 date: 2022-06-16
 ---
 This standard outlines the HD-wallet derivation scheme for Core Coin.
@@ -39,7 +41,7 @@ An extended key is represented by a [114]byte array. It is derived from `chainco
 
 The master key forms the root of the HD-derivation tree. It can be derived from mnemonics using a slightly modified version of the BIP39 scheme. You should adhere to this scheme until obtaining the seed (BIP39 Seed). The master key can then be derived as:
 
-```
+```go
 chain = H(seed, "mnemonicforthechain")
 key = H(seed, "mnemonicforthekey")
 masterKey = chain || key
@@ -47,7 +49,7 @@ masterKey = chain || key
 
 For enhanced security, you should:
 
-```
+```txt
 set the most significant bit of the last byte to 1 (masterKey[113] |= 0x80)
 set the most significant bit of the next-to-last byte to 1 (masterKey[112] |= 0x80)
 clear the second significant bit of the next-to-last byte (masterKey[112] &= 0xbf)
@@ -61,14 +63,14 @@ You can always generate `pubKey` from `privKey`. This operation will be denoted 
 
 Child chaincode generation varies between usual and hardened keys. For a usual key:
 
-```
+```go
 pubKey = private2public(privKey)
 childChain = H(0x03 || pubKey || i , chain), where i < 2^31
 ```
 
 For a hardened key:
 
-```
+```go
 childChain = H(0x01 || privKey || i , chain), where i >= 2^31
 ```
 
@@ -76,20 +78,20 @@ childChain = H(0x01 || privKey || i , chain), where i >= 2^31
 
 Child private key generation also differs between usual and hardened keys. For a usual key:
 
-```
+```go
 pubKey = private2public(privKey)
 template = H(0x02 || pubKey || i , chain), where i < 2^31
 ```
 
 For a hardened key:
 
-```
+```go
 template = H(0x00 || privKey || i , chain), where i >= 2^31
 ```
 
 Next, nullify the top 4 bytes and the last 2 bits of the template for security reasons, resulting in the `clampedTemplate = clamp(template)`. Then, the child `privKey` can be computed as:
 
-```
+```go
 childPrivKey = privKey + clampedTemplate
 ```
 
@@ -105,14 +107,14 @@ It is impossible to generate a child public key from a hardened public key, whic
 
 However, usual child public keys can be derived from a usual parent public key. First, calculate the `clampedTemplate` as described above:
 
-```
+```go
 template = H(0x02 || publicKey || i , chain), where i < 2^31
 template -> clampedTemplate
 ```
 
 Next, compute a point on Ed448 corresponding to the `clampedTemplate` and add it to the `publicKey` using point addition for Ed448:
 
-```
+```go
 point = private2public(clampedTemplate)
 childPublicKey = publicKey +++ point
 ```

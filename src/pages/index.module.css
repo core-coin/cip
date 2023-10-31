@@ -3,7 +3,7 @@
  * and scoped locally.
  */
 
-.heroBanner {
+ .heroBanner {
   background-position: center center;
   background-color: #18181F;
   color: var(--ifm-color-primary);

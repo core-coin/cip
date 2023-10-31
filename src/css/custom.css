@@ -42,3 +42,18 @@
 .footer {
   background-color: #18181F;
 }
+
+a.header-github-link {
+  background-image: url('/img/github.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  margin: 4px;
+}
+
+a.header-github-link > svg {
+  display: none;
+}
