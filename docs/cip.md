@@ -37,7 +37,7 @@ Or
 2. Modify the template [cip-0](https://github.com/core-coin/cip/blob/master/cip/docs/cip-0.md) and move it to the [`cip` folder](https://github.com/core-coin/cip/blob/master/cip).
 3. [Submit a Pull Request](https://github.com/core-coin/cip/compare) to the Core CIP repository.
 
-For graphical content, place it in the [CIP image directory](https://github.com/core-coin/cip/blob/master/cip) `/cip/cip-x`, where 'x' is the CIP number. Link images using the path `/cip/cip-x/cip-x-1.png`.
+For graphical content, place it in the [CIP image directory](https://github.com/core-coin/cip/blob/master/static/cip) `/static/cip/cip-x`, where 'x' is the CIP number. Link images using the path `/cip/cip-x/cip-x-1.png`.
 
 ## Tags
 
