@@ -67,7 +67,7 @@ Each CIP should encapsulate:
 
 ## CIP Formats and Templates
 
-Draft CIPs using [markdown](https://guides.github.com/features/mastering-markdown/). Images should reside in the CIP-specific subdirectory, `/cip/.vuepress/public/images`.
+Draft CIPs using [markdown](https://guides.github.com/features/mastering-markdown/). Images should reside in the CIP-specific subdirectory, `/static/cip`.
 
 ## CIP Header Preamble
 
@@ -76,6 +76,14 @@ Mandatory and optional headers should adhere to the RFC 822 style.
 ### Author Header
 
 Represents author details in various permissible formats.
+
+Supported formats:
+
+- `First Last <url>`: URL, ENS, IPFS can be a personal website or blog.
+- `First Last <email>`: Email address.
+- `First Last (@github)`: GitHub username.
+- `First Last (@nickname@pod.tld)`: Nickname and pod (e.g., @coretalk.space).
+- `First Last` `(cb00…@cp)` or `<corepass:cb00…>`: CoreID from CorePass.
 
 ## Auxiliary Files
 

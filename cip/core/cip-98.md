@@ -3,7 +3,7 @@ cip: 98
 title: Core Cryptography Scheme
 description: The cryptography scheme employed in the Core Blockchain.
 keywords: [cip, cip-98, cryptography, scheme, core, blockchain]
-author: Dmitry (@todesstile)
+author: Dmitry
 lang: en-US
 tags: [final]
 categories: [core]
