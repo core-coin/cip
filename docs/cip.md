@@ -51,7 +51,7 @@ For graphical content, place it in the [CIP image directory](https://github.com/
 CIPs are categorized into various types, each with its own list:
 
 - **Core**: Improvements involving a consensus fork or changes significant to core development discussions.
-- **Networking**: Enhancements concerning devp2p and network protocol specs for whisper and swarm.
+- **Networking**: Enhancements concerning network protocol specs.
 - **Interface**: Focuses on client API/RPC specs, language standards like method names, and contract ABIs. Discussions should mainly take place in the interfaces repo before submitting a CIP here.
 - **CBC**: Application standards and conventions like token standards and name registries.
 - **Informational**: Addresses Core design issues or offers guidelines to the Core community without suggesting new features.

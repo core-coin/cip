@@ -54,6 +54,10 @@ a.header-github-link {
   margin: 4px;
 }
 
+html[data-theme='dark'] a.header-github-link {
+  background-image: url('/img/github-light.svg');
+}
+
 a.header-github-link > svg {
   display: none;
 }

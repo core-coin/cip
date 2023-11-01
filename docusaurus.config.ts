@@ -51,8 +51,6 @@ const config: Config = {
           blogSidebarCount: 0,
           blogTitle: 'CIP Register',
           postsPerPage: 6,
-          blogListComponent: '@site/src/components/BlogListPage',
-          blogPostComponent: '@site/src/components/BlogPostPage',
           feedOptions: {
             type: 'all',
             copyright: `Core Foundation ⛬ Copyright and related rights waived via CC0`,
@@ -191,9 +189,14 @@ const config: Config = {
       darkTheme: prismThemes.dracula,
     },
     algolia: {
-      appId: '6BNEFFU7K3',
-      apiKey: 'c149ac2035f0b47db92d69b9bfa4f227',
-      indexName: 'cip-coreblockchain-net',
+      appId: 'M0QDB2GLJF',
+      apiKey: '3f55dea7b27fe168448d76b9ec202f47',
+      indexName: 'coreblockchain',
+      contextualSearch: true,
+      searchPagePath: 'search',
+      searchParameters: {
+        facetFilters: ['language:en'],
+      },
     },
   } satisfies Preset.ThemeConfig,
 };
