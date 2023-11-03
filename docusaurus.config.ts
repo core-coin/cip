@@ -3,19 +3,23 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: 'CIP',
-  tagline: 'Core Improvement Proposals',
+  title: process.env.title || 'CIP',
+  tagline: process.env.tagline || 'Core Improvement Proposals',
   favicon: 'img/favicon.png',
 
   // Set the production url of your site here
-  url: 'https://cip.coreblockchain.net',
+  url: process.env.url || 'https://cip.coreblockchain.net',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
 
+  customFields: {
+    ican: 'cb57bbbb54cdf60fa666fd741be78f794d4608d67109',
+  },
+
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'Core Foundation', // Usually your GitHub org/user name.
+  organizationName: process.env.org || 'Core Foundation',
   projectName: 'cip', // Usually your repo name.
 
   onBrokenLinks: 'throw',
@@ -53,7 +57,7 @@ const config: Config = {
           postsPerPage: 6,
           feedOptions: {
             type: 'all',
-            copyright: `Core Foundation ⛬ Copyright and related rights waived via CC0`,
+            copyright: `${process.env.org || 'Core Foundation'} ⛬ Copyright and related rights waived via CC0`,
             createFeedItems: async (params) => {
               const {blogPosts, defaultCreateFeedItems, ...rest} = params;
               return defaultCreateFeedItems({
@@ -182,16 +186,16 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Core Foundation ⛬ Copyright and related rights waived via CC0.`,
+      copyright: `${process.env.org || 'Core Foundation'} ⛬ Copyright and related rights waived via CC0.`,
     },
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
     },
     algolia: {
-      appId: 'M0QDB2GLJF',
-      apiKey: '3f55dea7b27fe168448d76b9ec202f47',
-      indexName: 'coreblockchain',
+      appId: '6BNEFFU7K3',
+      apiKey: 'c149ac2035f0b47db92d69b9bfa4f227',
+      indexName: 'cip-coreblockchain-net',
       contextualSearch: true,
       searchPagePath: 'search',
       searchParameters: {
