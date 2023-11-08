@@ -4,6 +4,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import Heading from '@theme/Heading';
+import Translate from '@docusaurus/Translate';
 
 import styles from './index.module.css';
 
@@ -18,7 +19,11 @@ function HomepageHeader() {
           <Link
             className="button button--secondary button--lg"
             to="/cip">
-            Browse CIPs
+              <Translate
+                id="homepage.actionbutton"
+                description="The CIP action button on the homepage">
+                Browse CIPs
+              </Translate>
           </Link>
         </div>
       </div>
