@@ -29,8 +29,25 @@ const config: Config = {
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: 'en-US',
+    locales: ['en-US', 'de-DE', 'ja-JP', 'es-ES', 'sk-SK'],
+    localeConfigs: {
+      'en-US': {
+        label: 'English (US)',
+      },
+      'de-DE': {
+        label: 'Deutsch',
+      },
+      'ja-JP': {
+        label: '日本語',
+      },
+      'es-ES': {
+        label: 'Español',
+      },
+      'sk-SK': {
+        label: 'Slovenčina',
+      },
+    },
   },
 
   presets: [
@@ -42,14 +59,14 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/core-coin/cip/tree/master/docs/',
+            'https://github.com/core-coin/cip/tree/master/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/core-coin/cip/tree/master/cip/',
+            'https://github.com/core-coin/cip/tree/master/',
           path: 'cip',
           routeBasePath: 'cip',
           blogSidebarCount: 0,
@@ -112,6 +129,10 @@ const config: Config = {
           position: 'right',
           className: 'header-github-link',
           'aria-label': 'GitHub repository',
+        },
+        {
+          type: 'localeDropdown',
+          position: 'right',
         },
       ],
     },
