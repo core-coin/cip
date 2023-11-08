@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import Heading from '@theme/Heading';
+import { translate } from '@docusaurus/Translate';
 import styles from './styles.module.css';
 
 type FeatureItem = {
@@ -11,38 +12,56 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'What is a CIP?',
+    title: translate({
+      message: 'What is a CIP?',
+      description: 'Title No.1 for what is a CIP section',
+    }),
     Img: '/img/mountain.png',
     link: '/docs/what-is-cip',
     description: (
       <>
-        A CIP is a design document that offers information to the Core community or introduces a new feature to Core. Learn more about CIP and its importance.
+        {translate({
+          message: 'A CIP is a design document providing information to the Core community or introducing a new feature to Core. Learn more about CIP and its importance.',
+          description: 'The CIP description on the homepage',
+        })}
       </>
     ),
   },
   {
-    title: 'Core Improvement Proposals',
+    title: translate({
+      message: 'Core Improvement Proposals',
+      description: 'Title No.2 for Core Improvement Proposals section',
+    }),
     Img: '/img/park.png',
     link: '/docs/cip',
     description: (
       <>
-        The Core Improvement Proposal (CIP) sets standards for the Core platform. Discover how to contribute, the different categories of CIPs, and more.
+        {translate({
+          message: 'The Core Improvement Proposal (CIP) sets standards for the Core platform. Discover how to contribute, the different categories of CIPs, and more.',
+          description: 'Description for Core Improvement Proposals section',
+        })}
       </>
     ),
   },
   {
-    title: 'Contribute to CIP',
+    title: translate({
+      message: 'Contribute to CIP',
+      description: 'Title No.3 for Contribute to CIP section',
+    }),
     Img: '/img/workshop.png',
     link: '/docs/cip#how-to-start',
     description: (
       <>
-        Start by reviewing the template, creating a CIP online, or forking the repository. Contribute to the improvement of the Core platform.
+        {translate({
+          message: 'Start by reviewing the template, creating a CIP online, or forking the repository. Contribute to the improvement of the Core platform.',
+          description: 'Description for how to contribute to CIP section',
+        })}
       </>
     ),
   },
 ];
 
-function Feature({title, Img, link, description}: FeatureItem) {
+function Feature({ title, Img, link, description }: FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">
