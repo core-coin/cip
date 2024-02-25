@@ -2,6 +2,11 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
+import remarkAbbr from 'remark-abbr';
+import fediverseUser from "remark-fediverse-user";
+import remarkCorepass from "remark-corepass";
+import remarkCorebc from "remark-corebc";
+
 const config: Config = {
   title: process.env.title || 'CIP',
   tagline: process.env.tagline || 'Core Improvement Proposals',
@@ -89,6 +94,12 @@ const config: Config = {
               });
             },
           },
+          remarkPlugins: [
+            [remarkAbbr, { expandFirst: true }],
+            fediverseUser,
+            remarkCorepass,
+            remarkCorebc,
+          ],
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -106,10 +117,42 @@ const config: Config = {
       { property: 'og:description', content: 'Core Improvement Proposals' },
       { property: 'og:type', content: 'website' },
       {
-        "name": "keywords",
-        "content": "author, categories, champion, cip, cips, consensus, core, design, document, each, editor, editors, encompassing, features, flow, fork, github, have, improvement, improvements, information, intended, key, mechanisms, members, new, offers, platform, primary, proposal, proposing, protocol, rationale, require, responsibilities, serve, sets, six, specifications, stakeholders, standards, stands, team, we, what, work, you",
+        name: "keywords",
+        content: "author, categories, champion, cip, cips, consensus, core, design, document, each, editor, editors, encompassing, features, flow, fork, github, have, improvement, improvements, information, intended, key, mechanisms, members, new, offers, platform, primary, proposal, proposing, protocol, rationale, require, responsibilities, serve, sets, six, specifications, stakeholders, standards, stands, team, we, what, work, you",
       },
       { property: 'ican:xcb', content: 'cb57bbbb54cdf60fa666fd741be78f794d4608d67109' },
+      { name: "theme-color", content: "#3b9a3e"},
+      { name: "apple-mobile-web-app-capable", content: "yes"},
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent"},
+    ],
+    headTags: [
+      {
+        tagName: "link",
+        attributes: {
+          rel: "manifest",
+          href: "/manifest.json",
+        },
+      },
+      {
+        tagName: "meta",
+        attributes: {
+          name: "generator",
+          content: "CoreWeb Generator",
+        },
+      },
+      {
+        tagName: 'script',
+        attributes: {
+          type: 'application/ld+json',
+        },
+        innerHTML: JSON.stringify({
+          '@context': 'https://schema.org/',
+          '@type': 'Organization',
+          name: 'CORE FOUNDATION',
+          url: 'https://coreblockchain.net',
+          logo: 'https://cip.coreblockchain.net/img/logo.svg',
+        }),
+      },
     ],
     colorMode: {
       defaultMode: 'light',

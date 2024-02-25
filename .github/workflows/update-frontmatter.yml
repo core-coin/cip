@@ -1,0 +1,28 @@
+name: Update Front Matter
+
+on:
+  schedule:
+    - cron: '0 0 */2 * *' # Runs at 00:00 UTC every 2 days
+
+jobs:
+  update-front-matter:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install Dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        pip3 install python-frontmatter pyyaml
+
+    - name: Update Front Matter in Markdown Files
+      run: python3 update_frontmatter.py
+
+    - name: Commit changes
+      run: |
+        git config --global user.email "action@github.com"
+        git config --global user.name "GitHub Action"
+        git add -A
+        git diff --staged --quiet || git commit -m "Update front matter tags based on dates"
+        git push
