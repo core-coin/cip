@@ -83,7 +83,7 @@ Supported formats:
 - `First Last <email>`: Email address.
 - `First Last (@github)`: GitHub username.
 - `First Last (@nickname@pod.tld)`: Nickname and pod (e.g., @coretalk.space).
-- `First Last` `(cb00…@cp)` or `<corepass:cb00…>`: CoreID from CorePass.
+- `First Last` `[cb00…@coreid]` or `<corepass:cb00…>`: CoreID from CorePass.
 
 ## Auxiliary Files
 
