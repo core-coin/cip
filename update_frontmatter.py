@@ -1,9 +1,14 @@
 import frontmatter
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, date
 
 def parse_date(date_str):
-    formats = ['%Y-%m-%d', '%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ']
+    if isinstance(date_str, datetime):
+        return date_str
+    elif isinstance(date_str, date):
+        return datetime(date_str.year, date_str.month, date_str.day)
+
+    formats = ['%Y-%m-%d', '%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ', '%Y-%m-%dT%H:%M', '%Y-%m-%d %H:%M']
     for fmt in formats:
         try:
             return datetime.strptime(date_str, fmt)
