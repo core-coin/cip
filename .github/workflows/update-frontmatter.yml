@@ -11,13 +11,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
     - name: Install Dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        pip3 install python-frontmatter pyyaml
+      run: npm install gray-matter glob
 
     - name: Update Front Matter in Markdown Files
-      run: python3 update_frontmatter.py
+      run: node update_frontmatter.mjs
 
     - name: Commit changes
       run: |
