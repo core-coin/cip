@@ -2,9 +2,10 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
-import fediverseUser from "remark-fediverse-user";
 import remarkCorepass from "remark-corepass";
 import remarkCorebc from "remark-corebc";
+import remarkCurrencyFormatter from 'remark-currency-formatter';
+import remarkFediverseUser from "remark-fediverse-user";
 
 const config: Config = {
   title: process.env.title || 'CIP',
@@ -94,9 +95,10 @@ const config: Config = {
             },
           },
           remarkPlugins: [
-            fediverseUser,
             remarkCorepass,
             remarkCorebc,
+            remarkFediverseUser,
+            remarkCurrencyFormatter,
           ],
         },
         theme: {
@@ -104,6 +106,36 @@ const config: Config = {
         },
       } satisfies Preset.Options,
     ],
+  ],
+
+  headTags: [
+    {
+      tagName: "link",
+      attributes: {
+        rel: "manifest",
+        href: "/manifest.json",
+      },
+    },
+    {
+      tagName: "meta",
+      attributes: {
+        name: "generator",
+        content: "CoreWeb Generator",
+      },
+    },
+    {
+      tagName: 'script',
+      attributes: {
+        type: 'application/ld+json',
+      },
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org/',
+        '@type': 'Organization',
+        name: 'CORE FOUNDATION',
+        url: 'https://coreblockchain.net',
+        logo: 'https://cip.coreblockchain.net/img/logo.svg',
+      }),
+    },
   ],
 
   themeConfig: {
@@ -122,35 +154,6 @@ const config: Config = {
       { name: "theme-color", content: "#3b9a3e"},
       { name: "apple-mobile-web-app-capable", content: "yes"},
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent"},
-    ],
-    headTags: [
-      {
-        tagName: "link",
-        attributes: {
-          rel: "manifest",
-          href: "/manifest.json",
-        },
-      },
-      {
-        tagName: "meta",
-        attributes: {
-          name: "generator",
-          content: "CoreWeb Generator",
-        },
-      },
-      {
-        tagName: 'script',
-        attributes: {
-          type: 'application/ld+json',
-        },
-        innerHTML: JSON.stringify({
-          '@context': 'https://schema.org/',
-          '@type': 'Organization',
-          name: 'CORE FOUNDATION',
-          url: 'https://coreblockchain.net',
-          logo: 'https://cip.coreblockchain.net/img/logo.svg',
-        }),
-      },
     ],
     colorMode: {
       defaultMode: 'light',
