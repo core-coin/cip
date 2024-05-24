@@ -8,12 +8,12 @@ You can begin by opening your proposal under the [issues section of this reposit
 
 ### Review
 
-- [What is a CIP](/docs/what-is-cip)
-- [CIP rationale](/docs/cip-rationale)
-- [CIP categories](/docs/cip-categories)
-- [CIP workflow](/docs/cip-workflow)
-- [CIP editors](/docs/cip-editors)
-- [CIP example](/docs/cip-0)
+- [What is a CIP](/docs/what-is-cip.md)
+- [CIP rationale](/docs/cip-rationale.md)
+- [CIP categories](/docs/cip-categories.md)
+- [CIP workflow](/docs/cip-workflow.md)
+- [CIP editors](/docs/cip-editors.md)
+- [CIP example](/docs/cip-0.md)
 
 ### How to start
 
