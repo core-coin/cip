@@ -19,7 +19,7 @@ This standard outlines the HD-wallet derivation scheme for Core Coin.
 
 ## Motivation
 
-Given that the classical BIP32 scheme is incompatible with Ed448, this standard presents an alternative implementation of HD-derivation. This alternative is grounded in the modified Core Coin cryptographic mechanism.
+Given that the classical BIP32 scheme is incompatible with Ed448, this standard presents an alternative implementation of HD-derivation. This alternative is based on the modified Core Coin cryptographic mechanism.
 
 ## Specification
 
@@ -29,17 +29,17 @@ Given that the classical BIP32 scheme is incompatible with Ed448, this standard 
 ||   : concatenation
 +    : regular addition of two numbers
 +++  : addition of two points on Ed448
-H(x, salt) : 57 bytes of the hash function HMAC-SHA512 with 2048 cycles of pbkdf2: PBKDF2(HMAC-SHA512, x, salt, 57, 2048))
+H(x, salt) : 57 bytes of the hash function HMAC-SHA512 with 2048 cycles of PBKDF2: PBKDF2(HMAC-SHA512, x, salt, 57, 2048)
 chain, privKey, publicKey : [57]byte
 ```
 
 ### Extended Keys
 
-An extended key is represented by a [114]byte array. It is derived from `chaincode || privateKey` or `chaincode || publicKey`. As only Scheme1 supports HD-wallet derivation, all private keys must have the most significant bit of the last `byte == 1`. More details can be found in the "Core Coin Cryptography Scheme" CIP.
+An extended key is represented by a [114]byte array. It is derived from `chaincode || privateKey` or `chaincode || publicKey`. As only Scheme1 supports HD-wallet derivation, all private keys must have the most significant bit of the last byte equal to 1. More details can be found in the "Core Coin Cryptography Scheme" CIP.
 
 ### Master Key
 
-The master key forms the root of the HD-derivation tree. It can be derived from mnemonics using a slightly modified version of the BIP39 scheme. You should adhere to this scheme until obtaining the seed (BIP39 Seed). The master key can then be derived as:
+The master key forms the root of the HD-derivation tree. It can be derived from mnemonics using a slightly modified version of the BIP39 scheme. You should follow this scheme until obtaining the seed (BIP39 Seed). The master key can then be derived as:
 
 ```go
 chain = H(seed, "mnemonicforthechain")
@@ -95,13 +95,13 @@ Next, nullify the top 4 bytes and the last 2 bits of the template for security r
 childPrivKey = privKey + clampedTemplate
 ```
 
-Note: There won't be an overflow since the upper bytes of the template are set to zero. EdDSA security standards necessitate the 9th bit of `privateKey` to be 1 to defend against rho-attacks. We clamped the template because we want to add it to `privateKey` while ensuring that the 9th bit of the result remains secure. As 32 bits following the 9th bit are zero, we can perform at least \(2^{22}\) addition operations on the `privateKey`. This restricts the tree's hierarchy level to approximately \(2^{20}\).
+Note: There won't be an overflow since the upper bytes of the template are set to zero. EdDSA security standards require the 9th bit of `privateKey` to be 1 to defend against rho-attacks. We clamp the template because we want to add it to `privateKey` while ensuring that the 9th bit of the result remains secure. As 32 bits following the 9th bit are zero, we can perform at least \(2^{22}\) addition operations on the `privateKey`. This limits the tree's hierarchy level to approximately \(2^{20}\).
 
 ### Child Pair Generation: Private Key to Public Key
 
 Public keys are generated using the `privateKey2privateKey` method, and then deriving the public key from the private key as usual.
 
-### Child Pair Generation: Public Key to Public
+### Child Pair Generation: Public Key to Public Key
 
 It is impossible to generate a child public key from a hardened public key, which is the primary attribute of hardened keys: they are designed to prevent such derivation.
 

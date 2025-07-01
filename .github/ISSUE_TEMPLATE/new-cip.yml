@@ -56,7 +56,7 @@ body:
     id: motivation
     attributes:
       label: Motivation
-      description: The motivation is crucial for CIPs that aim to change the Core protocol. Clearly explain why the existing protocol specification is inadequate to address the problem the CIP aims to solve. CIP submissions lacking sufficient motivation may be outright rejected.
+      description: The motivation is crucial for CIPs that aim to change the Core protocol. Clearly explain why the existing protocol specification is inadequate to address the problem the CIP aims to solve. CIP submissions lacking sufficient motivation may be rejected outright.
     validations:
       required: true
 
@@ -80,7 +80,7 @@ body:
     id: backwards-compatibility
     attributes:
       label: Backwards Compatibility
-      description: All CIPs introducing backward incompatibilities must include a section detailing these incompatibilities and their severity. The CIP should explain how the author proposes to address these incompatibilities. CIP submissions without a comprehensive backward compatibility analysis may be outright rejected.
+      description: All CIPs introducing backward incompatibilities must include a section detailing these incompatibilities and their severity. The CIP should explain how the author proposes to address these incompatibilities. CIP submissions without a comprehensive backward compatibility analysis may be rejected outright.
     validations:
       required: false
 

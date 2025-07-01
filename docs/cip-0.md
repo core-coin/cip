@@ -20,12 +20,11 @@ tags: [draft]
 categories: [example]
 date: 2022-01-01
 discussions-to: <URL>
-requires: <CIP number(s)> # Only required when you reference an CIP in the `Specification` section. Otherwise, remove this field.
+requires: <CIP number(s)> # Only required when you reference a CIP in the `Specification` section. Otherwise, remove this field.
 ---
 ```
 
-> This is the suggested template for new CIPs. Note that a CIP number will be assigned by an editor. When opening a pull request to submit your CIP, please, use an abbreviated title in the filename, `cip-ID.md`, where "ID" is the CIP ID. The title should be 44 characters or fewer.
-
+> This is the suggested template for new CIPs. Note that a CIP number will be assigned by an editor. When opening a pull request to submit your CIP, please use an abbreviated title in the file name, `cip-ID.md`, where "ID" is the CIP ID. The title should be 44 characters or fewer.
 > Provide a simplified and layperson-accessible explanation of the CIP.
 
 <!--truncate-->
@@ -56,11 +55,11 @@ requires: <CIP number(s)> # Only required when you reference an CIP in the `Spec
 
 ## Implementation
 
-> Implementations must be finalized before any CIP is given the "Final" status, but they don't need to be completed before the CIP is accepted. While achieving consensus on the specification and rationale before initiating coding is beneficial, the principle of "rough consensus and running code" can be instrumental in resolving many API details discussions.
+> Implementations must be finalized before any CIP is given "Final" status, but they don't need to be completed before the CIP is accepted. While achieving consensus on the specification and rationale before initiating coding is beneficial, the principle of "rough consensus and running code" can be instrumental in resolving many API details discussions.
 
 ## Security Considerations
 
-> All CIPs must contain a section discussing the security implications and considerations relevant to the proposed change. This section should provide details important for security discussions, highlight potential risks, and be referenced throughout the lifecycle of the proposal. CIP submissions lacking the "Security Considerations" section will be rejected. A CIP cannot proceed to the "Final" status without a Security Considerations discussion deemed satisfactory by the reviewers.
+> All CIPs must contain a section discussing the security implications and considerations relevant to the proposed change. This section should provide details important for security discussions, highlight potential risks, and be referenced throughout the lifecycle of the proposal. CIP submissions lacking the "Security Considerations" section will be rejected. A CIP cannot proceed to "Final" status without a Security Considerations discussion deemed satisfactory by the reviewers.
 
 ## Copyright
 

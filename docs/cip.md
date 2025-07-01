@@ -5,8 +5,6 @@ date: 2022-01-01
 comment: false
 sidebar_position: 1
 ---
-# CIP
-
 > The Core Improvement Proposal (CIP) sets standards for the Core platform, encompassing core protocol specifications, client APIs, and contract standards.
 
 ## Contributing
@@ -55,9 +53,9 @@ CIPs are categorized into various types, each with its own list:
 - **Interface**: Focuses on client API/RPC specs, language standards like method names, and contract ABIs. Discussions should mainly take place in the interfaces repo before submitting a CIP here.
 - **CBC**: Application standards and conventions like token standards and name registries.
 - **Informational**: Addresses Core design issues or offers guidelines to the Core community without suggesting new features.
-- **Meta**: Outlines processes around Core or proposes process changes. These are more binding than informational CIPs and often necessitate community consensus.
+- **Meta**: Outlines processes around Core or proposes process changes. These are more binding than informational CIPs and often require community consensus.
 
 ## Channels
 
-- [Core ◆ Talk](https://coretalk.space/tags/cip)
+- [Discussions](https://github.com/core-coin/cip/discussions)
 - [GH Issues](https://github.com/core-coin/cip/issues)

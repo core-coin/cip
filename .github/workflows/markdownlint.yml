@@ -18,7 +18,7 @@ jobs:
       - name: Markdown Lint
         uses: ruzickap/action-my-markdown-linter@v1
         with:
-          config_file: .github/lintconfig.yml
+          config_file: .github/.markdownlint.json
           search_paths: |
             cip/*.md
             cip/*.mdx
