@@ -11,16 +11,41 @@
 	display: inline-block;
 	background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
 	color: #222;
-	font-size: 0.7em;
+	font-size: 1.3em;
 	font-weight: bold;
-	padding: 0.1em 0.7em;
-	border-radius: 1.2em;
-	margin-right: 0.5em;
-	box-shadow: 0 2px 8px rgba(67, 233, 123, 0.10);
-	letter-spacing: 0.04em;
+	padding: 0.25em 1em;
+	border-radius: 2em;
+	margin-right: 0.75em;
+	box-shadow: 0 2px 8px rgba(67, 233, 123, 0.15);
+	letter-spacing: 0.05em;
 }
 
 .cipTitleText {
 	font-size: 1em;
 	font-weight: 600;
+}
+
+.cipTagsRow {
+	display: flex;
+	align-items: center;
+	gap: 0.5em;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.cipTag {
+	display: inline-block;
+	background: #222;
+	color: #43e97b;
+	border: 1px solid #43e97b;
+	border-radius: 1em;
+	padding: 0.1em 0.8em;
+	font-size: 0.85em;
+	font-weight: 500;
+	margin-left: 0.2em;
+}
+
+.cipBadgeRow {
+	display: block;
+	margin: 0.5em 0 1.2em 0;
 }

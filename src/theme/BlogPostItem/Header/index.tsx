@@ -9,21 +9,20 @@ export default function BlogPostItemHeader() {
 	const cipNumber = frontMatter.cip;
 
 	const TitleTag = isBlogPostPage ? 'h1' : 'h2';
-	const TitleContent = (
-		<span>
-			{cipNumber && <span className={styles.cipBadge}>{`CIP-${cipNumber}`}</span>}
-			<span className={styles.cipTitleText}>{title}</span>
-		</span>
-	);
 
 	return (
 		<header>
-			{isBlogPostPage ? (
-				<TitleTag className={styles.cipTitle}>{TitleContent}</TitleTag>
-			) : (
-				<TitleTag className={styles.cipTitle}>
-					<Link to={permalink}>{TitleContent}</Link>
-				</TitleTag>
+			<TitleTag className={styles.cipTitle}>
+				{isBlogPostPage ? (
+					title
+				) : (
+					<Link to={permalink}>{title}</Link>
+				)}
+			</TitleTag>
+			{cipNumber && (
+				<div className={styles.cipBadgeRow}>
+					<span className={styles.cipBadge}>{`CIP-${cipNumber}`}</span>
+				</div>
 			)}
 		</header>
 	);
