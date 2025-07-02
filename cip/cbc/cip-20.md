@@ -5,8 +5,8 @@ description: A standard interface for tokens.
 keywords: [cip, cip-20, token, standard]
 author: Mojtaba
 lang: en-US
-tags: [final]
-categories: [cbc]
+status: [final]
+tags: [cbc]
 date: 2022-05-28
 ---
 A standard interface for tokens.

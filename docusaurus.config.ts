@@ -82,10 +82,11 @@ const config: Config = {
           routeBasePath: 'cip',
           blogSidebarCount: 0,
           blogTitle: 'CIP Register',
-          postsPerPage: 6,
+          postsPerPage: 10,
+          pageBasePath: 'page',
           feedOptions: {
             type: 'all',
-            copyright: `${process.env.org || 'Core Foundation'} ⛬ Copyright and related rights waived via CC0`,
+            copyright: `⊛ CORE ${process.env.org || 'Core Foundation'}`,
             createFeedItems: async (params) => {
               const {blogPosts, defaultCreateFeedItems, ...rest} = params;
               return defaultCreateFeedItems({
@@ -100,6 +101,17 @@ const config: Config = {
             remarkFediverseUser,
             remarkCurrencyFormatter,
           ],
+          processBlogPosts: async ({blogPosts}) => {
+            const sorted = blogPosts.sort((a, b) => {
+              const cipA = parseInt(String(a.metadata?.frontMatter?.cip ?? ''), 10);
+              const cipB = parseInt(String(b.metadata?.frontMatter?.cip ?? ''), 10);
+              if (isNaN(cipA) && isNaN(cipB)) return 0;
+              if (isNaN(cipA)) return 1;
+              if (isNaN(cipB)) return -1;
+              return cipA - cipB;
+            });
+            return sorted;
+          },
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -168,6 +180,7 @@ const config: Config = {
       },
       items: [
         {to: '/cip', label: 'CIPs', position: 'left'},
+        {to: '/cip/tags', label: 'Tags', position: 'left'},
         {
           type: 'docSidebar',
           sidebarId: 'tutorialSidebar',
@@ -203,6 +216,10 @@ const config: Config = {
             {
               label: 'Tags',
               to: '/cip/tags',
+            },
+            {
+              label: 'Archive',
+              to: '/cip/archive',
             },
           ],
         },
@@ -257,7 +274,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `${process.env.org || 'Core Foundation'} ⛬ Copyright and related rights waived via CC0.`,
+      copyright: `⊛ CORE ${process.env.org || 'Core Foundation'}`,
     },
     prism: {
       theme: prismThemes.github,

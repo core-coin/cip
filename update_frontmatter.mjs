@@ -15,7 +15,7 @@ function parseDate(dateStr) {
 	return date;
 }
 
-function updateTags(fileContent, today) {
+function updateStatus(fileContent, today) {
 	try {
 		const post = matter(fileContent);
 
@@ -25,30 +25,24 @@ function updateTags(fileContent, today) {
 			return null;
 		}
 
-		if (!post.data.tags || !Array.isArray(post.data.tags)) {
-			console.warn('No tags array found in frontmatter');
-			return null;
-		}
-
 		const creationDate = parseDate(post.data.date);
 		if (!creationDate) {
 			return null;
 		}
 
 		const diff = (today - creationDate) / (1000 * 60 * 60 * 24); // Difference in days
-		let newTag = null;
+		let newStatus = 'draft';
 
 		if (diff >= 42) {
-			newTag = 'final';
+			newStatus = 'final';
 		} else if (diff >= 28) {
-			newTag = 'accepted';
+			newStatus = 'accepted';
 		} else if (diff >= 14) {
-			newTag = 'last call';
+			newStatus = 'last call';
 		}
 
-		if (newTag && !post.data.tags.includes(newTag)) {
-			post.data.tags = post.data.tags.filter(tag => !['draft', 'last call', 'accepted', 'final'].includes(tag));
-			post.data.tags.push(newTag);
+		if (post.data.status !== newStatus) {
+			post.data.status = newStatus;
 			return matter.stringify(post.content, post.data);
 		}
 		return null;
@@ -67,11 +61,11 @@ async function processMarkdownFiles() {
 			try {
 				const content = fs.readFileSync(file, 'utf8');
 				const today = new Date();
-				const updatedContent = updateTags(content, today);
+				const updatedContent = updateStatus(content, today);
 
 				if (updatedContent) {
 					fs.writeFileSync(file, updatedContent, 'utf8');
-					console.log(`Updated tags in: ${file}`);
+					console.log(`Updated status in: ${file}`);
 				}
 			} catch (error) {
 				console.error(`Error processing file ${file}: ${error.message}`);

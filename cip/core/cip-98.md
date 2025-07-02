@@ -5,8 +5,8 @@ description: The cryptography scheme employed in the Core Blockchain.
 keywords: [cip, cip-98, cryptography, scheme, core, blockchain]
 author: Dmitry
 lang: en-US
-tags: [final]
-categories: [core]
+status: [final]
+tags: [core]
 date: 2022-06-16
 ---
 This standard details the cryptography scheme employed in the Core Blockchain.

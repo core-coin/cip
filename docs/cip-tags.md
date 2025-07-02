@@ -1,11 +1,11 @@
 ---
-title: CIP Categories
+title: CIP Tags
 author: Core Foundation
 date: 2022-01-01
 comment: false
 sidebar_position: 4
 ---
-> We have six categories for CIPs.
+> We have six tags for CIPs.
 
 ## Core
 

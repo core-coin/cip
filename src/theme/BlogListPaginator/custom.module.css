@@ -1,0 +1,36 @@
+.pagination-nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  flex-wrap: nowrap;
+  gap: 1.5em;
+}
+
+.pagination-nav-col {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+}
+
+.pagination-nav-left {
+  justify-content: flex-start;
+}
+
+.pagination-nav-center {
+  flex: 0 0 auto;
+  justify-content: center;
+  gap: 0.5em;
+}
+
+.pagination-nav-right {
+  justify-content: flex-end;
+}
+
+.pagination-nav__input {
+  width: 60px;
+}
+
+.pagination-nav__go {
+  cursor: pointer;
+}

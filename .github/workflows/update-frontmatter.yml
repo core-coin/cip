@@ -2,7 +2,7 @@ name: Update Front Matter
 
 on:
   schedule:
-    - cron: '0 0 */2 * *' # Runs at 00:00 UTC every 2 days
+    - cron: '0 0 */1 * *' # Runs at 00:00 UTC every 1 day
 
 permissions:
   contents: write

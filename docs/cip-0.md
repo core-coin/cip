@@ -16,8 +16,8 @@ description: CIP-0 example template
 keywords: [cip, cip-0, example, template]
 author: Author (@author@server.pod)
 lang: en-US
-tags: [draft]
-categories: [example]
+status: [draft]
+tags: [example]
 date: 2022-01-01
 discussions-to: <URL>
 requires: <CIP number(s)> # Only required when you reference a CIP in the `Specification` section. Otherwise, remove this field.
