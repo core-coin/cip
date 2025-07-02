@@ -5,17 +5,15 @@ date: 2022-01-01
 comment: false
 sidebar_position: 6
 ---
-# CIP Editors
-
-CIP editors are members of the [GitHub team — Cip](https://github.com/orgs/core-coin/teams/cip).
+CIP editors are members of the [GitHub team — CIP](https://github.com/orgs/core-coin/teams/cip).
 
 ## CIP Editor Responsibilities
 
 *For each new CIP submission, an editor undertakes the following tasks:*
 
-- Review the CIP to ensure it is sound and comprehensive. The ideas presented must be technically coherent, even if they might not seem likely to reach the final status.
-- Ensure the title accurately encapsulates the content.
-- Review the CIP for language aspects (spelling, grammar, sentence structure, etc.), markup (using Github flavoured Markdown), and code style.
+- Review the CIP to ensure it is sound and comprehensive. The ideas presented must be technically coherent, even if they might not seem likely to reach final status.
+- Ensure the title accurately describes the content.
+- Review the CIP for language aspects (spelling, grammar, sentence structure, etc.), markup (using GitHub-flavored Markdown), and code style.
 
 Should the CIP fall short of being ready, the editor will return it to the author with specific revision instructions.
 
@@ -25,6 +23,6 @@ Should the CIP fall short of being ready, the editor will return it to the autho
 - Merge the associated pull request.
 - Notify the CIP author about the next steps.
 
-Many CIPs are crafted and overseen by developers who have writing access to the Core codebase. The CIP editors keep an eye on CIP alterations, making corrections to structure, grammar, spelling, or markup as necessary.
+Many CIPs are crafted and overseen by developers who have write access to the Core codebase. The CIP editors monitor CIP changes, making corrections to structure, grammar, spelling, or markup as necessary.
 
 The role of the editors is not to judge the merits of CIPs. They handle the administrative and editorial aspects only.

@@ -57,3 +57,9 @@ html[data-theme='dark'] a.header-github-link {
 a.header-github-link > svg {
   display: none;
 }
+
+.blogPostExcerpt,
+.markdown > p:first-child {
+  font-size: 1.2em;
+  line-height: 1.3;
+}

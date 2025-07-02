@@ -21,7 +21,7 @@ const FeatureList: FeatureItem[] = [
     description: (
       <>
         {translate({
-          message: 'A CIP is a design document providing information to the Core community or introducing a new feature to Core. Learn more about CIP and its importance.',
+          message: 'A CIP is a design document that provides information to the Core community or introduces a new feature to Core. Learn more about CIPs and their importance.',
           description: 'The CIP description on the homepage',
         })}
       </>
@@ -37,7 +37,7 @@ const FeatureList: FeatureItem[] = [
     description: (
       <>
         {translate({
-          message: 'The Core Improvement Proposal (CIP) sets standards for the Core platform. Discover how to contribute, the different categories of CIPs, and more.',
+          message: 'Core Improvement Proposals (CIPs) set standards for the Core platform. Discover how to contribute, explore the different categories of CIPs, and more.',
           description: 'Description for Core Improvement Proposals section',
         })}
       </>
@@ -53,7 +53,7 @@ const FeatureList: FeatureItem[] = [
     description: (
       <>
         {translate({
-          message: 'Start by reviewing the template, creating a CIP online, or forking the repository. Contribute to the improvement of the Core platform.',
+          message: 'Start by reviewing the template, creating a CIP online, or forking the repository. Help improve the Core platform by contributing your ideas.',
           description: 'Description for how to contribute to CIP section',
         })}
       </>

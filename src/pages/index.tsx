@@ -36,7 +36,7 @@ export default function Home(): JSX.Element {
   return (
     <Layout
       title={`Core Improvement Proposal — ${siteConfig.title}`}
-      description="The Core Improvement Proposal (CIP) sets standards for the Core platform, encompassing core protocol specifications, client APIs, and contract standards.">
+      description="The Core Improvement Proposal (CIP) establishes standards for the Core platform, including core protocol specifications, client APIs, and contract standards.">
       <HomepageHeader />
       <main>
         <HomepageFeatures />
