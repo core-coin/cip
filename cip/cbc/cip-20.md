@@ -2,12 +2,17 @@
 cip: 20
 title: Token Standard
 description: A standard interface for tokens.
-keywords: [cip, cip-20, token, standard]
+keywords:
+  - cip
+  - cip-20
+  - token
+  - standard
 author: Mojtaba
 lang: en-US
-status: [final]
-tags: [cbc]
-date: 2022-05-28
+status: final
+tags:
+  - cbc
+date: 2022-05-28T00:00:00.000Z
 ---
 A standard interface for tokens.
 

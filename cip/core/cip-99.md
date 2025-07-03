@@ -2,12 +2,19 @@
 cip: 99
 title: Core HD-Wallet Scheme
 description: The HD-wallet derivation scheme for Core Coin.
-keywords: [cip, cip-99, hd-wallet, scheme, core, coin]
+keywords:
+  - cip
+  - cip-99
+  - hd-wallet
+  - scheme
+  - core
+  - coin
 author: Dmitry
 lang: en-US
-status: [final]
-tags: [core]
-date: 2022-06-16
+status: final
+tags:
+  - core
+date: 2022-06-16T00:00:00.000Z
 ---
 This standard outlines the HD-wallet derivation scheme for Core Coin.
 
