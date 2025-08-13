@@ -23,8 +23,8 @@
     "glob": "^11.0.3",
     "gray-matter": "^4.0.3",
     "prism-react-renderer": "^2.4.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
     "remark-abbr": "^1.4.2",
     "remark-corebc": "^0.2.2",
     "remark-corepass": "^0.2.1",
@@ -35,7 +35,7 @@
     "@docusaurus/module-type-aliases": "^3.8.1",
     "@docusaurus/tsconfig": "^3.8.1",
     "@docusaurus/types": "^3.8.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.2"
   },
   "browserslist": {
     "production": [

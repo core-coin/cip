@@ -280,16 +280,18 @@ const config: Config = {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
     },
-    algolia: {
-      appId: '6BNEFFU7K3',
-      apiKey: 'c149ac2035f0b47db92d69b9bfa4f227',
-      indexName: 'cip-coreblockchain-net',
-      contextualSearch: true,
-      searchPagePath: 'search',
-      searchParameters: {
-        facetFilters: ['language:en'],
+    ...(process.env.algoliaAppId && process.env.algoliaApiKey && process.env.algoliaIndexName ? {
+      algolia: {
+        appId: process.env.algoliaAppId,
+        apiKey: process.env.algoliaApiKey,
+        indexName: process.env.algoliaIndexName,
+        contextualSearch: true,
+        searchPagePath: 'search',
+        searchParameters: {
+          facetFilters: ['language:en'],
+        },
       },
-    },
+    } : {}),
   } satisfies Preset.ThemeConfig,
 };
 
