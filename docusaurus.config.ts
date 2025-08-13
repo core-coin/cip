@@ -164,7 +164,7 @@ const config: Config = {
       },
       { property: 'ican:xcb', content: 'cb57bbbb54cdf60fa666fd741be78f794d4608d67109' },
       { name: "theme-color", content: "#3b9a3e"},
-      { name: "apple-mobile-web-app-capable", content: "yes"},
+      { name: "mobile-web-app-capable", content: "yes"},
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent"},
     ],
     colorMode: {
