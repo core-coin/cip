@@ -287,9 +287,6 @@ const config: Config = {
         indexName: process.env.algoliaIndexName,
         contextualSearch: true,
         searchPagePath: 'search',
-        searchParameters: {
-          facetFilters: ['language:en'],
-        },
       },
     } : {}),
   } satisfies Preset.ThemeConfig,
