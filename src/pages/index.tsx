@@ -17,12 +17,22 @@ function HomepageHeader() {
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <div className={styles.buttons}>
           <Link
-            className="button button--secondary button--lg"
+            className={`button button--custom-alpha button--lg ${styles['button--white-text']}`}
             to="/cip">
               <Translate
                 id="homepage.actionbutton"
                 description="The CIP action button on the homepage">
-                Browse CIPs
+                Browse CIPs 📖
+              </Translate>
+          </Link>
+          <Link
+            className={`button button--custom-alpha button--lg ${styles['button--white-text']}`}
+            to={siteConfig.customFields?.aiLink as string}
+            target="_blank">
+              <Translate
+                id="homepage.aiButton"
+                description="The CoreAI action button on the homepage">
+                Ask CoreAI ✨
               </Translate>
           </Link>
         </div>
