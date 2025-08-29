@@ -38,4 +38,9 @@ html[data-theme='dark'] .heroBanner {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 1rem;
+}
+
+.button--white-text {
+  color: var(--ifm-color-white) !important;
 }

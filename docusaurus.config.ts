@@ -20,6 +20,7 @@ const config: Config = {
 
   customFields: {
     ican: 'cb57bbbb54cdf60fa666fd741be78f794d4608d67109',
+    aiLink: 'https://coreai.coreblockchain.net',
   },
 
   // GitHub pages deployment config.
@@ -197,6 +198,13 @@ const config: Config = {
           type: 'localeDropdown',
           position: 'right',
         },
+        {
+          href: 'https://coreai.coreblockchain.net',
+          target: '_blank',
+          label: 'Ask CoreAI ✨',
+          position: 'right' as const,
+          'aria-label': 'Chat with AI',
+        },
       ],
     },
     footer: {
@@ -208,6 +216,11 @@ const config: Config = {
             {
               label: 'CIPs',
               to: '/cip',
+            },
+            {
+              label: 'Ask CoreAI ✨',
+              href: 'https://coreai.coreblockchain.net',
+              target: '_blank',
             },
             {
               label: 'Tutorial',
@@ -280,15 +293,13 @@ const config: Config = {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
     },
-    ...(process.env.algoliaAppId && process.env.algoliaApiKey && process.env.algoliaIndexName ? {
-      algolia: {
-        appId: process.env.algoliaAppId,
-        apiKey: process.env.algoliaApiKey,
-        indexName: process.env.algoliaIndexName,
-        contextualSearch: true,
-        searchPagePath: 'search',
-      },
-    } : {}),
+    algolia: {
+      appId: '6BNEFFU7K3',
+      apiKey: 'a3ee5721606f7a72f18c75608d1fca5c',
+      indexName: 'cip-coreblockchain-net',
+      contextualSearch: true,
+      searchPagePath: 'search',
+    },
   } satisfies Preset.ThemeConfig,
 };
 
