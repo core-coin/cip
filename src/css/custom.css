@@ -238,3 +238,8 @@ a.footer__link-item > svg {
     display: none;
   }
 }
+
+/* Hide Breadcrumbs in article page */
+article > nav.theme-doc-breadcrumbs {
+  display: none;
+}
