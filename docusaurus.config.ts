@@ -151,6 +151,10 @@ const config: Config = {
     },
   ],
 
+  scripts: [
+    { src: '/js/ask-ai-toc.js', defer: true },
+  ],
+
   themeConfig: {
     // Replace with your project's social card
     image: 'img/social-card.png',
@@ -179,6 +183,7 @@ const config: Config = {
         alt: 'CIP',
         src: 'img/logo.svg',
       },
+      hideOnScroll: true,
       items: [
         {to: '/cip', label: 'CIPs', position: 'left'},
         {to: '/cip/tags', label: 'Tags', position: 'left'},
@@ -195,15 +200,21 @@ const config: Config = {
           'aria-label': 'GitHub repository',
         },
         {
-          type: 'localeDropdown',
+          href: 'https://coreai.coreblockchain.net',
+          target: '_blank',
+          label: 'CoreAI ✨',
+          position: 'right' as const,
+          'aria-label': 'Chat with AI',
+        },
+        {
+          type: 'search',
           position: 'right',
         },
         {
-          href: 'https://coreai.coreblockchain.net',
-          target: '_blank',
-          label: 'Ask CoreAI ✨',
-          position: 'right' as const,
-          'aria-label': 'Chat with AI',
+          type: 'localeDropdown',
+          position: 'right',
+          className: 'header-language-dropdown',
+          'aria-label': 'Language',
         },
       ],
     },
@@ -256,7 +267,7 @@ const config: Config = {
               href: 'https://blockindex.net',
             },
             {
-              label: 'Payto',
+              label: 'PayTo',
               href: 'https://payto.money',
             },
           ],

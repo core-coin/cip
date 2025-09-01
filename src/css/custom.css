@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
 @import url('https://cdn.jsdelivr.net/gh/rastislavcore/zephirum/zephirum.css');
 
 @font-face {
@@ -20,7 +20,7 @@
   --ifm-color-primary-lightest: #3cad6e;
   --ifm-code-font-size: 90%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
-  --ifm-font-family-base: "Red Hat Display", "Open Sans", Helvetica, Arial, sans-serif;
+  --ifm-font-family-base: Geist, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 
   /* Button background with alpha transparency */
   --ifm-button-background-color-alpha: hsl(from var(--ifm-color-primary) h s l / 0.2);
@@ -41,6 +41,10 @@
 
 .title_node_modules-\@docusaurus-theme-classic-lib-theme-BlogPostItem-Header-Title-styles-module {
   font-size: var(--ifm-h1-font-size) !important;
+}
+
+.navbar {
+  box-shadow: none !important;
 }
 
 .navbar__title {
@@ -92,4 +96,145 @@ a.footer__link-item > svg {
 .markdown > p:first-child {
   font-size: 1.2em;
   line-height: 1.3;
+}
+
+.header-language-dropdown {
+  font-size: 0;
+}
+
+.header-language-dropdown > svg {
+  font-size: initial;
+  vertical-align: middle;
+  margin-right: 0;
+}
+
+.header-language-dropdown::after {
+  font-size: initial;
+}
+
+@media (min-width: 997px) {
+  div:has(> aside.theme-doc-sidebar-container + main) {
+    box-sizing: border-box;
+    padding-inline: 0 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch;
+  }
+
+  div:has(> aside.theme-doc-sidebar-container + main)::before,
+  div:has(> aside.theme-doc-sidebar-container + main)::after {
+    content: '';
+    display: block;
+    flex: 1 1 0;
+    min-inline-size: 0;
+  }
+  div:has(> aside.theme-doc-sidebar-container + main)::before { order: 0; background: var(--ifm-navbar-background-color); }
+  div:has(> aside.theme-doc-sidebar-container + main)::after  { order: 3; }
+
+  aside.theme-doc-sidebar-container {
+    background: var(--ifm-navbar-background-color);
+    border-right: 0 !important;
+    order: 1 !important;
+    flex: 0 0 var(--doc-sidebar-width) !important;
+    min-inline-size: var(--doc-sidebar-width) !important;
+  }
+
+  main[class*="docMainContainer"] {
+    order: 2 !important;
+    flex: 0 1 auto;
+    max-inline-size: var(--ifm-container-width);
+    min-inline-size: 0;
+    margin-left: 2rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  main[class*="docMainContainer"] {
+    max-inline-size: var(--ifm-container-width-xl);
+  }
+}
+
+/* Algolia Search Styling */
+[data-theme='light'] .DocSearch {
+  --docsearch-primary-color: var(--ifm-color-primary);
+  --docsearch-text-color: var(--ifm-font-color-base);
+  --docsearch-muted-color: var(--ifm-color-secondary-darkest);
+  --docsearch-container-background: rgba(94, 100, 112, 0.7);
+  /* Modal */
+  --docsearch-modal-background: var(--ifm-color-secondary-lighter);
+  /* Search box */
+  --docsearch-searchbox-background: var(--ifm-color-secondary);
+  --docsearch-searchbox-focus-background: var(--ifm-color-white);
+  /* Hit */
+  --docsearch-hit-color: var(--ifm-font-color-base);
+  --docsearch-hit-active-color: var(--ifm-color-white);
+  --docsearch-hit-background: var(--ifm-color-white);
+  /* Footer */
+  --docsearch-footer-background: var(--ifm-color-white);
+}
+
+[data-theme='dark'] .DocSearch {
+  --docsearch-text-color: var(--ifm-font-color-base);
+  --docsearch-muted-color: var(--ifm-color-secondary-darkest);
+  --docsearch-container-background: rgba(47, 55, 69, 0.7);
+  /* Modal */
+  --docsearch-modal-background: var(--ifm-background-color);
+  /* Search box */
+  --docsearch-searchbox-background: var(--ifm-background-color);
+  --docsearch-searchbox-focus-background: var(--ifm-color-black);
+  /* Hit */
+  --docsearch-hit-color: var(--ifm-font-color-base);
+  --docsearch-hit-active-color: var(--ifm-color-white);
+  --docsearch-hit-background: var(--ifm-color-emphasis-100);
+  /* Footer */
+  --docsearch-footer-background: var(--ifm-background-surface-color);
+  --docsearch-key-gradient: linear-gradient(
+    -26.5deg,
+    var(--ifm-color-emphasis-200) 0%,
+    var(--ifm-color-emphasis-100) 100%
+  );
+}
+
+/* Custom Algolia search button styling to match your navbar */
+.navbar__search {
+  margin-right: 1rem;
+}
+
+.navbar__search .DocSearch-Button {
+  background: var(--ifm-button-background-color-alpha);
+  border: 1px solid var(--ifm-color-primary);
+  border-radius: 8px;
+  color: var(--ifm-color-primary);
+  font-family: var(--ifm-font-family-base);
+  font-weight: 500;
+  padding: 8px 16px;
+  transition: all 0.2s ease;
+}
+
+.navbar__search .DocSearch-Button:hover {
+  background: var(--ifm-button-background-color-alpha-hover);
+  border-color: var(--ifm-color-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(46, 133, 85, 0.2);
+}
+
+.navbar__search .DocSearch-Button .DocSearch-Button-Key {
+  background: var(--ifm-color-primary);
+  color: white;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Responsive search button */
+@media (max-width: 768px) {
+  .navbar__search .DocSearch-Button {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+
+  .navbar__search .DocSearch-Button .DocSearch-Button-Key {
+    display: none;
+  }
 }
