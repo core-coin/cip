@@ -45,6 +45,9 @@
 
 .navbar {
   box-shadow: none !important;
+  background-color: transparent;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
 }
 
 .navbar__title {
