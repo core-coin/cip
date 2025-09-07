@@ -1,8 +1,7 @@
 ---
 cip: 9
 title: Core Denomination Units
-description: >-
-  Informational specification describing Core's denomination units
+description: Informational specification describing Core's denomination units
 keywords:
   - cip
   - denominations
@@ -13,7 +12,7 @@ keywords:
   - precision
 author: Rastislav Vašička <rastislav@onion.email>
 lang: en-US
-status: draft
+status: last call
 tags:
   - informational
 date: 2025-08-24T00:00:00.000Z

@@ -1,8 +1,7 @@
 ---
 cip: 10
 title: PayTo URI Scheme
-description: >-
-  Informational specification adopting the RFC 8905 'payto' URI scheme for Core.
+description: Informational specification adopting the RFC 8905 'payto' URI scheme for Core.
 keywords:
   - cip
   - informational
@@ -15,7 +14,7 @@ keywords:
   - payments
 author: Rastislav Vašička <rastislav@onion.email>
 lang: en-US
-status: draft
+status: last call
 tags:
   - informational
 date: 2025-08-24T00:00:00.000Z
