@@ -14,7 +14,7 @@ keywords:
   - payments
 author: Rastislav Vašička <rastislav@onion.email>
 lang: en-US
-status: last call
+status: accepted
 tags:
   - informational
 date: 2025-08-24T00:00:00.000Z
