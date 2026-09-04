@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import type {ReactElement} from 'react';
 import Heading from '@theme/Heading';
 import { translate } from '@docusaurus/Translate';
 import styles from './styles.module.css';
@@ -7,7 +8,7 @@ type FeatureItem = {
   title: string;
   Img: string;
   link: string;
-  description: JSX.Element;
+  description: ReactElement;
 };
 
 const FeatureList: FeatureItem[] = [
@@ -79,7 +80,7 @@ function Feature({ title, Img, link, description }: FeatureItem) {
   );
 }
 
-export default function HomepageFeatures(): JSX.Element {
+export default function HomepageFeatures(): ReactElement {
   return (
     <section className={styles.features}>
       <div className="container">

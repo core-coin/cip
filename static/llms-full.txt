@@ -567,8 +567,8 @@ Returns the name of the token, e.g., `"MyToken"`.
 
 OPTIONAL: This method can improve usability, but interfaces and other contracts MUST NOT expect these values to be present.
 
-```js
-function name() public view returns (string)
+```solidity
+function name() external view returns (string memory);
 ```
 
 ##### symbol
@@ -577,8 +577,8 @@ Returns the symbol of the token, e.g., "CTN".
 
 OPTIONAL: This method can improve usability, but interfaces and other contracts MUST NOT expect these values to be present.
 
-```js
-function symbol() public view returns (string)
+```solidity
+function symbol() external view returns (string memory);
 ```
 
 ##### decimals
@@ -587,46 +587,46 @@ Returns the number of decimals the token uses. For instance, `8` means dividing 
 
 OPTIONAL: This method can improve usability, but interfaces and other contracts MUST NOT expect these values to be present.
 
-```js
-function decimals() public view returns (uint8)
+```solidity
+function decimals() external view returns (uint8);
 ```
 
 ##### totalSupply
 
 Returns the total token supply.
 
-```js
-function totalSupply() public view returns (uint256)
+```solidity
+function totalSupply() external view returns (uint256);
 ```
 
 ##### balanceOf
 
 Returns the account balance of an account with address `_owner`.
 
-```js
-function balanceOf(address _owner) public view returns (uint256 balance)
+```solidity
+function balanceOf(address _owner) external view returns (uint256 balance);
 ```
 
 ##### transfer
 
-Transfers `_value` amount of tokens to address `_to` and MUST fire the `Transfer` event. The function SHOULD `throw` if the caller's account balance does not have enough tokens to spend.
+Transfers `_value` amount of tokens to address `_to` and MUST fire the `Transfer` event. The function SHOULD `revert` if the caller's account balance does not have enough tokens to spend.
 
 *Note:* Transfers of 0 values MUST be treated as normal transfers and fire the `Transfer` event.
 
-```js
-function transfer(address _to, uint256 _value) public returns (bool success)
+```solidity
+function transfer(address _to, uint256 _value) external returns (bool success);
 ```
 
 ##### transferFrom
 
 Transfers `_value` amount of tokens from address `_from` to address `_to`, and MUST fire the `Transfer` event.
 
-The `transferFrom` method is used for a withdrawal workflow, allowing contracts to transfer tokens on your behalf. This can, for example, allow a contract to transfer tokens on your behalf and/or to charge fees in sub-currencies. The function SHOULD `throw` unless the `_from` account has deliberately authorized the sender of the message via some mechanism.
+The `transferFrom` method is used for a withdrawal workflow, allowing contracts to transfer tokens on your behalf. This can, for example, allow a contract to transfer tokens on your behalf and/or to charge fees in sub-currencies. The function SHOULD `revert` unless the `_from` account has deliberately authorized the sender of the message via some mechanism.
 
 *Note:* Transfers of 0 values MUST be treated as normal transfers and fire the `Transfer` event.
 
-```js
-function transferFrom(address _from, address _to, uint256 _value) public returns (bool success)
+```solidity
+function transferFrom(address _from, address _to, uint256 _value) external returns (bool success);
 ```
 
 ##### approve
@@ -635,16 +635,16 @@ Allows `_spender` to withdraw from your account multiple times, up to the `_valu
 
 **NOTE**: To prevent attack vectors like the one [described here](https://docs.google.com/document/d/1YLPtQxZu1UAvO9cZ1O2RPXBbT0mooh4DYKjA_jp-RLM/), clients SHOULD ensure they create user interfaces that set the allowance first to `0` before setting it to another value for the same spender. However, the contract itself shouldn't enforce this to maintain backward compatibility with contracts deployed earlier.
 
-```js
-function approve(address _spender, uint256 _value) public returns (bool success)
+```solidity
+function approve(address _spender, uint256 _value) external returns (bool success);
 ```
 
 ##### allowance
 
 Returns the amount that `_spender` is still allowed to withdraw from `_owner`.
 
-```js
-function allowance(address _owner, address _spender) public view returns (uint256 remaining)
+```solidity
+function allowance(address _owner, address _spender) external view returns (uint256 remaining);
 ```
 
 #### Events
@@ -653,18 +653,18 @@ function allowance(address _owner, address _spender) public view returns (uint25
 
 MUST trigger when tokens are transferred, including zero-value transfers.
 
-A token contract that creates new tokens SHOULD trigger a Transfer event with the `_from` address set to `0x0` when tokens are created.
+A token contract that creates new tokens SHOULD trigger a Transfer event with the `_from` address set to `address(0)` when tokens are created.
 
-```js
-event Transfer(address indexed _from, address indexed _to, uint256 _value)
+```solidity
+event Transfer(address indexed _from, address indexed _to, uint256 _value);
 ```
 
 ##### Approval
 
 MUST trigger on any successful call to `approve(address _spender, uint256 _value)`.
 
-```js
-event Approval(address indexed _owner, address indexed _spender, uint256 _value)
+```solidity
+event Approval(address indexed _owner, address indexed _spender, uint256 _value);
 ```
 
 ## Implementation
@@ -683,7 +683,7 @@ Source: https://cip.coreblockchain.net/cip/cbc/cip-100/
 
 Repository path: cip/cbc/cip-100.md
 
-We are introducing a standard for asset addresses — ICAN — with HRP and checksum, similar to what we are all using for current financial transactions. ICAN stands for International Crypto Account Number.
+We are introducing a standard for regular Core account and contract addresses — ICAN — with HRP and checksum, similar to what we are all using for current financial transactions. ICAN stands for International Crypto Account Number.
 Only hexadecimal characters are used to minimize the size of the address in blockchain storage.
 
 <!--truncate-->
@@ -698,7 +698,7 @@ Finding reliable and financially friendly blockchain addresses for the community
 
 ## Specification
 
-A crypto address consists of:
+A regular ICAN address consists of:
 
 1. Crypto Identifier - CID (HRP)
 2. Checksum
@@ -708,11 +708,12 @@ A crypto address consists of:
 
 The Crypto Identifier (human-readable part) uniquely identifies the network.
 This part must contain 2 hexadecimal characters.
+In the 22-byte binary address, the two hexadecimal characters encode a one-byte network prefix.
 Currently unassigned and deleted [ISO 3166-1 alpha-2 codes](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Current_codes) are available.
 
 ### Checksum
 
-2 digits are calculated using modulo 97 from BCAN.
+The checksum consists of 2 decimal digits calculated from both CID and BCAN using the ISO 7064 MOD-97-10 algorithm. In the 22-byte binary address, these digits are stored as one packed BCD byte. For example, checksum `54` is stored as `0x54`, not as the integer value 54 (`0x36`).
 
 Why did we choose modulo 97 (IBAN format)?
 
@@ -720,27 +721,43 @@ Why did we choose modulo 97 (IBAN format)?
 2. Easy to process/calculate.
 3. Well known by financial institutions.
 
-Calculation steps:
+Generation steps:
 
-1. Replace letters with numbers
-2. Calculate the remainder of the account number when divided by 97
-3. Subtract the result from 98
-4. If one number is returned, prefix it with "0"
+1. Remove spaces and convert CID and BCAN to uppercase.
+2. Construct `BCAN || CID || "00"`.
+3. Replace hexadecimal letters with their decimal values: `A = 10`, `B = 11`, ..., `F = 15`.
+4. Interpret the result as a decimal integer and calculate its remainder modulo 97.
+5. Subtract the remainder from 98.
+6. If one digit is returned, prefix it with `0`.
+
+Validation steps:
+
+1. Remove spaces and convert the complete ICAN to uppercase.
+2. Move the first four characters (`CID || checksum`) to the end.
+3. Replace hexadecimal letters with their decimal values.
+4. Interpret the result as a decimal integer. The ICAN is valid if its remainder modulo 97 equals 1.
 
 ### BCAN
 
-BCAN (Basic Crypto Account Number) uniquely identifies the address and/or identity owner.
-40 characters (20 bytes) of blockchain address.
+BCAN (Basic Crypto Account Number) is the 20-byte raw account or contract identifier, represented by 40 hexadecimal characters.
+
+For an externally owned account, BCAN is derived by applying SHA3-256 to the 57-byte public key and taking the last 20 bytes of the hash:
+
+```text
+BCAN = SHA3-256(publicKey)[12:]
+```
+
+Contract BCAN values are produced by the corresponding contract-address derivation scheme rather than from a public key.
 
 ### Network classification
 
 #### ISO 3166-1 alpha-2 codes
 
-| CID | Network    | Network id |
-| --- | ---------- | ---------- |
-| cb  | mainnet    | 1          |
-| ab  | testnet    | 3,4        |
-| ce  | enterprise | >10        |
+| CID | Network            | Network id |
+| --- | ------------------ | ---------- |
+| cb  | mainnet            | 1          |
+| ab  | testnet (Devín)    | 3          |
+| ce  | private/enterprise | >3         |
 
 #### Tickers
 
@@ -773,6 +790,22 @@ Example:
 hh!kk!hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh!
 ```
 
+#### Binary representation
+
+A regular ICAN address occupies 22 bytes:
+
+| Byte range | Contents                                      |
+| ---------- | --------------------------------------------- |
+| `0`        | One-byte CID/network prefix                   |
+| `1`        | Two decimal checksum digits encoded as BCD    |
+| `2..21`    | 20-byte BCAN                                  |
+
+#### System address exceptions
+
+Core also uses raw 22-byte system values, including the real zero address `address(0)` and precompiled-contract addresses `address(1)` through `address(9)`. These values do not contain a valid CID and checksum and are not regular ICAN addresses.
+
+The real zero address `address(0)` is distinct from a checksummed ICAN whose BCAN is zero. The corresponding checksummed zero addresses are `CB540000000000000000000000000000000000000000` for mainnet, `AB720000000000000000000000000000000000000000` for Devín, and `CE450000000000000000000000000000000000000000` for private networks.
+
 #### Human and machine representation
 
 Human representation has all letters uppercase and each group of 4 characters is divided into spaces.
@@ -795,7 +828,7 @@ Note: With QR codes, capital letters in Alphanumeric mode are a must.
 
 ## Rationale
 
-We use hexadecimal characters to minimize the size of the addresses in blockchain. The first part — CID — reflects the type of the network to avoid misunderstanding of the type of address. We choose two-digit checksum because it is already in use and it is easier to interpret while delivering the address in several cases. The third part showcases the last 40 characters (20 bytes) of the public key.
+We use hexadecimal characters to minimize the size of the addresses in blockchain. The first part — CID — reflects the type of the network to avoid misunderstanding of the type of address. We choose two-digit checksum because it is already in use and it is easier to interpret while delivering the address in several cases. The third part contains the 20-byte raw account or contract identifier. For an externally owned account, it is derived from the last 20 bytes of the SHA3-256 hash of the public key.
 
 ## Implementation
 
@@ -834,63 +867,94 @@ Standardized Ownership Management for Smart Contracts
 
 ## Abstract
 
-This CIP proposes a standardized way to handle ownership of smart contracts. The proposed standard abstracts ownership management by providing functions to transfer and renounce ownership securely.
+This proposal defines a standard interface for reading and managing ownership of smart contracts on Core Blockchain. It provides functions to transfer and renounce ownership and a standard event for observing ownership changes.
 
 ## Motivation
 
-Ownership management is critical to smart contract security and governance. The proposed standard aims to provide a common, reusable, and secure pattern for managing ownership in smart contracts.
+Many smart contracts restrict administrative operations to a single owner. A standard interface allows wallets, registries, user interfaces, and other contracts to read the current owner and interact with ownership management without depending on a particular internal implementation.
 
 ## Specification
 
-### The CIP-102 Standard
+### CBC-102 Interface
 
-**State Variables:**
+The following specification uses syntax from Ylem `0.8.4` (or above).
 
-- `_owner`: Holds the address of the owner.
+```solidity
+interface CBC102 {
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
-**Events:**
+    function owner() external view returns (address);
+    function renounceOwnership() external;
+    function transferOwnership(address newOwner) external;
+}
+```
 
-- `OwnershipTransferred`: Emitted when ownership is transferred.
+Implementations MAY declare these functions as `public` or `external`. The `owner()` function MAY be declared as `pure` or `view`.
 
-**Constructor:**
+### Ownership
 
-- Sets the contract deployer as the initial owner.
+`owner()` MUST return the address of the current owner. If ownership has been renounced, it MUST return the real zero address, `address(0)`.
 
-**Functions:**
+This standard does not prescribe how ownership is stored or calculated. State variables such as `_owner`, constructors, initializers, and modifiers such as `onlyOwner` are implementation details and are not part of the CBC-102 interface.
 
-- `owner`: Returns the current owner's address.
-- `renounceOwnership`: Allows the current owner to relinquish ownership.
-- `transferOwnership(address newOwner)`: Enables transferring ownership to a new address.
+### Transferring Ownership
 
-**Modifiers:**
+`transferOwnership(address newOwner)` MUST:
 
-- `onlyOwner`: Restricts function access to the current owner.
+- revert when called by an account other than the current owner;
+- revert when `newOwner` is either `address(0)` or the [CBC-100](./cip-100.md) checksummed zero address represented by `Checksum.zeroAddress()` in Core OpenZeppelin;
+- set `newOwner` as the current owner on success; and
+- emit `OwnershipTransferred(previousOwner, newOwner)` on success.
 
-### Technical Details
+The standard does not prescribe a revert reason or error type. It also does not restrict `newOwner` to an externally owned account; another smart contract MAY own a CBC-102 contract.
 
-- Blockchain Compatibility: Core Blockchain (Ylem version >0.8.0)
-- Contract Functions:
-  - `owner()`: Returns the current owner's address.
-  - `renounceOwnership()`: Allows the current owner to renounce ownership.
-  - `transferOwnership(address newOwner)`: Transfers ownership to a new address.
-  - `onlyOwner`: A modifier restricting function access to the contract's owner.
-- Event: `OwnershipTransferred(address indexed previousOwner, address indexed newOwner)`: Emitted when ownership is transferred.
+### Renouncing Ownership
+
+`renounceOwnership()` MUST:
+
+- revert when called by an account other than the current owner;
+- set the current owner to the real zero address, `address(0)`; and
+- emit `OwnershipTransferred(previousOwner, address(0))` on success.
+
+After renunciation, no caller can satisfy an ownership check based on `owner()`. CBC-102 itself exposes no function for restoring ownership, although an implementation MAY provide additional recovery or governance mechanisms outside this standard.
+
+### Initial Ownership
+
+CBC-102 does not require a particular initialization mechanism or require the deployer to be the initial owner. When an initial non-zero owner is established, the implementation SHOULD emit `OwnershipTransferred(address(0), initialOwner)`.
+
+### Interface Identification
+
+The CBC-102 interface identifier is `0x4ae1c531`, calculated as the XOR of the following Core function selectors:
+
+- `owner()` — `0xbe0e67a3`
+- `renounceOwnership()` — `0x5e0827e9`
+- `transferOwnership(address)` — `0xaae7857b`
+
+The `OwnershipTransferred` event is not included in the interface identifier.
+
+A CBC-102 implementation SHOULD implement [CBC-165](./cip-165.md) and return `true` for both `0x80ada41b` and `0x4ae1c531`. CBC-165 discovery is not a requirement for CBC-102 function and event conformance; existing contracts that implement the CBC-102 behavior without `supportsInterface` remain compatible with this standard.
 
 ## Rationale
 
-The proposed standard simplifies ownership management in smart contracts, reducing the risk of unauthorized access and enabling clear governance structures. Its simplicity and clarity make it a suitable standard for various applications on Core Blockchain.
+The interface follows the ownership model used by Core OpenZeppelin while keeping internal storage and access-control mechanisms outside the standard. A dedicated `renounceOwnership()` function distinguishes intentional renunciation from ordinary ownership transfer and allows `transferOwnership()` to reject both Core representations of the zero address.
+
+Keeping CBC-165 discovery recommended rather than mandatory preserves compatibility with existing Core ownership implementations while allowing new contracts to expose machine-readable interface support.
 
 ## Backward Compatibility
 
-The CIP-102 standard is compatible with all existing Core Improvement Proposals (CIPs) and does not interfere with existing blockchain architectures.
+The function and event signatures are compatible with the current Core OpenZeppelin `Ownable` implementation. Existing contracts with different ownership APIs are not automatically CBC-102 compliant and may require an adapter. This proposal introduces no Core Blockchain protocol changes.
 
 ## Security Considerations
 
-Security is a primary concern in the design of the proposed standard. It includes checks to prevent unauthorized access and changes to contract ownership. Further security audits and reviews are recommended.
+- Compromise or loss of the owner's private key can compromise or permanently disable owner-controlled functionality.
+- Ownership transfer is a one-step operation. Transferring to an incorrect address can permanently lose administrative control; implementations MAY provide a two-step transfer extension.
+- Renouncing ownership can permanently disable all functionality restricted to the owner. Applications SHOULD clearly warn users before submitting a renunciation transaction.
+- If the owner is another contract, the security and availability of that contract become part of the ownership trust model.
+- A positive CBC-165 response declares interface support but does not prove that an implementation is correct or trustworthy.
 
 ## Conclusion
 
-The CIP-102 Standard provides a simple and effective solution for managing ownership in smart contracts on Core Blockchain. It offers a clear and reusable pattern for implementing ownership-related functionalities essential for contract governance and security. By standardizing the approach to ownership management, the CIP-102 standard aims to reduce the risk of errors and vulnerabilities associated with ad hoc implementations. This standard benefits contracts requiring a single owner or administrator, ensuring that critical functions are protected and governance is transparent.
+The CBC-102 standard provides a common interface for reading, transferring, and renouncing smart contract ownership on Core Blockchain while allowing different internal ownership implementations.
 
 ## Copyright
 
@@ -910,46 +974,77 @@ WrapperToken - A CBC20 Token Standard Extension
 
 ## Abstract
 
-This CIP introduces the "WrapperToken" contract, an extension of the BaseToken contract designed to wrap other CBC20 tokens. This contract allows users to "buy" (wrap) and "sell" (unwrap) a specific CBC20 token, effectively creating a wrapped version of the original token. This functionality helps in creating tokenized versions of existing assets, enhancing utility in various decentralized finance (DeFi) applications.
+This proposal defines a CBC20 extension for wrapping a designated CBC20 token. Users can deposit the underlying token to mint wrapper tokens and burn wrapper tokens to withdraw the underlying token.
 
 ## Motivation
 
-The motivation behind the WrapperToken contract is to provide a standardized way to create wrapped tokens. Wrapped tokens represent other assets on different blockchains or create modified versions of existing tokens with additional functionalities, such as staking, governance, or enhanced security features.
+The extension provides a standard way for applications to discover the underlying token and perform wrapping and unwrapping without depending on a particular storage layout or initialization mechanism.
 
 ## Specification
 
-### The WrapperToken Contract
+### CBC-103 Interface
 
-**Key Features:**
+The following specification uses syntax from Ylem `0.8.4` (or above).
 
-- Token Wrapping: A mechanism to wrap an existing CBC20 token, minting an equivalent amount of the wrapped token.
-- Token Unwrapping: A mechanism to unwrap the wrapped token, burn the wrapped token, and return the original token to the user.
-- Wrapped Token Reference: Holds a reference to the CBC20 token being wrapped.
+```solidity
+interface CBC103 /* is CBC20 */ {
+    function wrappedToken() external view returns (address);
+    function buy(uint256 amount) external payable;
+    function sell(uint256 amount) external;
+}
+```
 
-### Technical Details
+### Underlying Token
 
-- Blockchain Compatibility: Core Blockchain (Ylem version >0.8.0)
-- Core Functions:
-  - `buy(uint256 amount)`: Wraps the specified amount of the original token and mints an equivalent amount of the wrapped token.
-  - `sell(uint256 amount)`: Burns the specified amount of the wrapped token and returns an equivalent amount of the original token.
-- Token Reference:
-  - `_WRAPPED_TOKEN`: An immutable reference to the CBC20 token being wrapped.
+`wrappedToken()` MUST return the designated underlying CBC20 token. The returned address MUST NOT be `address(0)` or the checksummed zero address, and it MUST NOT change during the lifetime of the wrapper token.
+
+This standard does not prescribe how the underlying token address is stored or initialized.
+
+### Wrapping
+
+`buy(uint256 amount)` MUST atomically:
+
+1. transfer exactly `amount` underlying tokens from the caller to the wrapper token contract; and
+2. mint exactly `amount` wrapper tokens to the caller.
+
+The operation MUST revert without minting wrapper tokens if the underlying transfer reverts, returns `false`, or transfers less than `amount`.
+
+### Unwrapping
+
+`sell(uint256 amount)` MUST atomically:
+
+1. burn exactly `amount` wrapper tokens from the caller; and
+2. transfer exactly `amount` underlying tokens to the caller.
+
+The operation MUST revert without burning wrapper tokens if the underlying transfer reverts, returns `false`, or transfers less than `amount`.
+
+Successful wrapping and unwrapping MUST follow the CBC20 minting and burning event requirements.
+
+### Backing Invariant
+
+For an exact-transfer underlying token, the wrapper contract's underlying-token balance MUST be greater than or equal to the total supply of wrapper tokens. Direct transfers of underlying tokens to the wrapper contract can create excess backing but MUST NOT create additional wrapper tokens.
+
+CBC-103 does not define wrapping of native XCB. Callers MUST NOT attach native XCB to `buy()` or `sell()`.
 
 ## Rationale
 
-The WrapperToken contract facilitates the creation of wrapped tokens, which is essential in cross-chain applications and extends existing tokens' functionality. This flexibility allows for greater interoperability and utility within the Core Blockchain ecosystem.
+The one-to-one conversion model keeps accounting simple and makes the backing of the wrapper token independently verifiable. Keeping initialization and storage outside the standard allows constructor-based, initializer-based, and factory-based implementations.
 
 ## Backward Compatibility
 
-The contract is compatible with the CBC20 standard, ensuring wrapped tokens interact seamlessly with existing CBC20-compliant platforms and wallets.
+CBC-103 extends CBC20 without changing its existing functions. A CBC-103 implementation remains subject to all CBC20 requirements.
 
 ## Security Considerations
 
-Security considerations include ensuring the integrity of the wrapping and unwrapping processes and safeguarding against potential vulnerabilities in the token transfer mechanism. Regular security audits are recommended.
+- Implementations MUST handle both reverted transfers and transfers that return `false`.
+- Fee-on-transfer, rebasing, or otherwise non-exact underlying tokens are incompatible with the one-to-one model unless the implementation explicitly accounts for actual balance changes.
+- Implementations MUST preserve the backing invariant across external token calls and protect against reentrancy where the underlying token can execute callbacks or other arbitrary code.
+- Users should verify `wrappedToken()` before acquiring wrapper tokens. A wrapper is only as secure and liquid as its underlying token.
+- Native XCB sent to an implementation that does not explicitly reject or return it may become inaccessible.
 
 ## Conclusion
 
-The WrapperToken contract provides a standardized and secure way to create wrapped versions of CBC20 tokens, enhancing utility in the Core Blockchain ecosystem, particularly in DeFi applications.
+CBC-103 provides a standard interface and one-to-one accounting model for CBC20 wrapper tokens.
 
 ## Copyright
 
@@ -1109,7 +1204,7 @@ The primary motivation behind the ChequableToken contract is to provide a more f
 
 - Blockchain Compatibility: Core Blockchain (Ylem version >0.8.0)
 - Core Functions:
-  - `cashCheque(Cheque calldata cheque)`: A spender can cash a cheque, transferring the specified token amount.
+  - `cashCheque(Cheque calldata cheque)`: A spender can cash a cheque, approving the specified token amount.
   - `_useNonce(address account, uint256 nonce)`: Private function to mark a nonce as used.
   - `_computeChequeHash(...)`: Computes the hash of a cheque for signature verification.
 - Events:
@@ -1219,16 +1314,16 @@ The primary motivation behind this CIP is to solve the challenge of incentivizin
 **Key Features:**
 
 - Bounty Struct: A data structure to hold bounty details, including the owner, target, data, reward, nonce, deadline, energy limit, and signature.
-- Bounty Execution Mechanism: Functionality to allow users to 'cash' bounties, executing the specified transaction and claiming the reward.
-- Nonce Management: Each bounty has a unique nonce to ensure one-time execution.
+- Bounty Execution Mechanism: Functionality to allow users to 'cash' bounties, attempt the specified transaction, and claim the reward.
+- Nonce Management: Each token holder has a sequential nonce that is consumed when a bounty is accepted for processing.
 - Signature Verification: Ensures that the token holder authorizes the bounty.
 
 ### Technical Details
 
 - Blockchain Compatibility: Core Blockchain (Ylem version >0.8.0)
 - Core Functions:
-  - `cashBounty(Bounty[] calldata bounties)`: Executes specified bounties and transfers rewards.
-- Security: Includes checks to ensure that the caller is the authorized contract.
+  - `cashBounty(Bounty[] calldata bounties)`: Processes valid bounties, transfers rewards, and attempts their target calls.
+- Security: Any account can call `cashBounty`; authorization is established by the token holder's signature.
 
 ## Rationale
 
@@ -1264,7 +1359,7 @@ BaseToken - Enhanced CBC20 Token Implementation
 
 ## Abstract
 
-This CIP introduces the "BaseToken" contract, an abstract smart contract that extends the standard CBC20 token functionality. It incorporates additional features like batch transfers and dynamic allowance adjustments while maintaining compliance with the CBC20 standard.
+This CIP introduces the "BaseToken" contract, an abstract smart contract that extends the standard CBC20 token functionality. It incorporates additional features like batch transfers and dynamic allowance adjustments while retaining the standard CBC20 transfer and allowance functions.
 
 ## Motivation
 
@@ -1298,7 +1393,7 @@ Including batch transfers and dynamic allowance management, the "BaseToken" cont
 
 ## Backward Compatibility
 
-This contract adheres to the CBC20 standard, ensuring backward compatibility with existing CBC20 tokens and Core Blockchain applications.
+This contract implements the standard CBC20 transfer and allowance functions. Its minting and burning operations emit custom `Mint` and `Burn` events instead of CBC20 `Transfer` events.
 
 ## Security Considerations
 
@@ -1868,33 +1963,32 @@ Herein, we standardize the following:
 
 1. How interfaces are identified
 2. How a contract will publish the interfaces it implements
-3. How to detect if a contract implements CIP-165
+3. How to detect if a contract implements CBC-165
 4. How to detect if a contract implements any given interface
 
 ## Motivation
 
-For some "standard interfaces" like the Core20 token interface, it is sometimes useful to query whether a contract supports the interface and if yes, which version of the interface, in order to adapt the way in which the contract is to be interacted with. This proposal standardizes the concept of interfaces and standardizes the identification (naming) of interfaces.
+For some "standard interfaces" like the CBC-20 token interface, it is sometimes useful to query whether a contract supports the interface and if yes, which version of the interface, in order to adapt the way in which the contract is to be interacted with. This proposal standardizes the concept of interfaces and standardizes the identification (naming) of interfaces.
 
 ## Specification
 
 ### How Interfaces are Identified
 
-For this standard, an *interface* is a set of [function selectors as defined by the Core Blockchain ABI](https://solidity.readthedocs.io/en/develop/abi-spec.html#function-selector). This is a subset of [Solidity's concept of interfaces](https://solidity.readthedocs.io/en/develop/abi-spec.html) and the `interface` keyword definition which also defines return types, mutability and events.
+For this standard, an *interface* is a set of function selectors as defined by the Core Blockchain ABI. This is a subset of Ylem's concept of interfaces and the `interface` keyword definition, which also defines return types, mutability, and events.
+
+The following code examples use syntax from Ylem `0.8.4` (or above).
 
 We define the interface identifier as the XOR of all function selectors in the interface. This code example shows how to calculate an interface identifier:
 
 ```solidity
-pragma solidity ^0.8.0;
-
-interface Solidity101 {
+interface ExampleInterface {
     function hello() external pure;
     function world(int) external pure;
 }
 
 contract Selector {
     function calculateSelector() public pure returns (bytes4) {
-        Solidity101 i;
-        return i.hello.selector ^ i.world.selector;
+        return type(ExampleInterface).interfaceId;
     }
 }
 ```
@@ -1903,15 +1997,13 @@ Note: interfaces do not permit optional functions, therefore, the interface iden
 
 ### How a Contract will Publish the Interfaces it Implements
 
-A contract that is compliant with CIP-165 shall implement the following interface (referred as `CIP165.sol`):
+A contract that is compliant with CBC-165 shall implement the following interface (referred to as `CBC165.sol`):
 
 ```solidity
-pragma solidity ^0.8.0;
-
-interface CIP165 {
+interface CBC165 {
     /// @notice Query if a contract implements an interface
-    /// @param interfaceID The interface identifier, as specified in CIP-165
-    /// @dev Interface identification is specified in CIP-165. This function
+    /// @param interfaceID The interface identifier, as specified in CBC-165
+    /// @dev Interface identification is specified in CBC-165. This function
     ///  uses less than 30,000 energy.
     /// @return `true` if the contract implements `interfaceID` and
     ///  `interfaceID` is not 0xffffffff, `false` otherwise
@@ -1919,11 +2011,11 @@ interface CIP165 {
 }
 ```
 
-The interface identifier for this interface is `0x01ffc9a7`. You can calculate this by running `bytes4(sha256('supportsInterface(bytes4)'));` or using the `Selector` contract above.
+The interface identifier for this interface is `0x80ada41b`. Ylem calculates it from the canonical function signature `supportsInterface(bytes4)` using Core's SHA3-256-based function selector algorithm. It can also be obtained as `type(CBC165).interfaceId` or `CBC165.supportsInterface.selector`.
 
 Therefore the implementing contract will have a `supportsInterface` function that returns:
 
-- `true` when `interfaceID` is `0x01ffc9a7` (CIP-165 interface)
+- `true` when `interfaceID` is `0x80ada41b` (CBC-165 interface)
 - `false` when `interfaceID` is `0xffffffff`
 - `true` for any other `interfaceID` this contract implements
 - `false` for any other `interfaceID`
@@ -1932,44 +2024,50 @@ This function must return a bool and use at most 30,000 energy.
 
 Implementation note, there are several logical ways to implement this function. Please see the example implementations and the discussion on energy usage.
 
-### How to Detect if a Contract Implements CIP-165
+### How to Detect if a Contract Implements CBC-165
 
-1. The source contract makes a `STATICCALL` to the destination address with input data: `0x01ffc9a701ffc9a700000000000000000000000000000000000000000000000000000000` and energy 30,000. This corresponds to `contract.supportsInterface(0x01ffc9a7)`.
-2. If the call fails or return false, the destination contract does not implement CIP-165.
-3. If the call returns true, a second call is made with input data `0x01ffc9a7ffffffff00000000000000000000000000000000000000000000000000000000`.
-4. If the second call fails or returns true, the destination contract does not implement CIP-165.
-5. Otherwise it implements CIP-165.
+1. The source contract makes a `STATICCALL` to the destination address with input data: `0x80ada41b80ada41b00000000000000000000000000000000000000000000000000000000` and energy 30,000. This corresponds to `contract.supportsInterface(0x80ada41b)`.
+2. If the call fails or returns false, the destination contract does not implement CBC-165.
+3. If the call returns true, a second call is made with input data `0x80ada41bffffffff00000000000000000000000000000000000000000000000000000000`.
+4. If the second call fails or returns true, the destination contract does not implement CBC-165.
+5. Otherwise it implements CBC-165.
 
 ### How to Detect if a Contract Implements any Given Interface
 
-1. If you are not sure if the contract implements CIP-165, use the above procedure to confirm.
-2. If it does not implement CIP-165, then you will have to see what methods it uses the old-fashioned way.
-3. If it implements CIP-165 then just call `supportsInterface(interfaceID)` to determine if it implements an interface you can use.
+1. If you are not sure if the contract implements CBC-165, use the above procedure to confirm.
+2. If it does not implement CBC-165, then you will have to see what methods it uses the old-fashioned way.
+3. If it implements CBC-165 then call `supportsInterface(interfaceID)` to determine if it implements an interface you can use.
 
 ## Rationale
 
-We tried to keep this specification as simple as possible. This implementation is also compatible with the current Solidity version and Core Blockchain architecture.
+We tried to keep this specification as simple as possible. This implementation is also compatible with current Ylem versions and the Core Blockchain architecture.
 
 ## Backward Compatibility
 
-The mechanism described above (with `0xffffffff`) should work with most of the contracts previous to this standard to determine that they do not implement CIP-165.
+The mechanism described above (with `0xffffffff`) should work with most contracts created before this standard to determine that they do not implement CBC-165.
 
 ## Test Cases
 
-Following is a contract that detects which interfaces other contracts implement:
+A conforming implementation should verify at least the following cases:
+
+- `supportsInterface(0x80ada41b)` returns `true`.
+- `supportsInterface(0xffffffff)` returns `false`.
+- An unknown interface identifier returns `false`.
+- A declared supported interface identifier returns `true`.
+- A reverted call, an empty response, or malformed return data is treated as lack of support.
+
+The following contract detects which interfaces other contracts implement:
 
 ```solidity
-pragma solidity ^0.8.0;
-
-contract CIP165Query {
+contract CBC165Query {
     bytes4 constant InvalidID = 0xffffffff;
-    bytes4 constant CIP165ID = 0x01ffc9a7;
+    bytes4 constant CBC165ID = 0x80ada41b;
 
     function doesContractImplementInterface(address _contract, bytes4 _interfaceId) external view returns (bool) {
         uint256 success;
         uint256 result;
 
-        (success, result) = noThrowCall(_contract, CIP165ID);
+        (success, result) = noThrowCall(_contract, CBC165ID);
         if ((success==0)||(result==0)) {
             return false;
         }
@@ -1987,11 +2085,11 @@ contract CIP165Query {
     }
 
     function noThrowCall(address _contract, bytes4 _interfaceId) internal view returns (uint256 success, uint256 result) {
-        bytes4 cip165ID = CIP165ID;
+        bytes4 cbc165ID = CBC165ID;
 
         assembly {
                 let x := mload(0x40)               // Find empty storage location using "free memory pointer"
-                mstore(x, cip165ID)                // Place signature at beginning of empty storage
+                mstore(x, cbc165ID)                // Place signature at beginning of empty storage
                 mstore(add(x, 0x04), _interfaceId) // Place first argument directly next to signature
 
                 success := staticcall(
@@ -2002,7 +2100,18 @@ contract CIP165Query {
                                     x,             // Store output over input (saves space)
                                     0x20)          // Outputs are 32 bytes long
 
-                result := mload(x)                 // Load the result
+                if or(iszero(success), lt(returndatasize(), 0x20)) {
+                    success := 0
+                    result := 0
+                }
+
+                if success {
+                    result := mload(x)             // Load the result
+                    if gt(result, 1) {
+                        success := 0
+                        result := 0
+                    }
+                }
         }
     }
 }
@@ -2010,77 +2119,82 @@ contract CIP165Query {
 
 ## Implementation
 
-This approach uses a `view` function implementation of `supportsInterface`. The execution cost is 586 energy for any input. But contract initialization requires storing each interface (`SSTORE` is 20,000 energy). The `CIP165MappingImplementation` contract is generic and reusable.
+This approach uses a mapping-backed `view` implementation of `supportsInterface`. It provides constant-time lookups at the cost of storing each supported interface during contract initialization. The `CBC165MappingImplementation` contract is generic and reusable.
 
 ```solidity
-pragma solidity ^0.8.0;
+import "./CBC165.sol";
 
-import "./CIP165.sol";
-
-contract CIP165MappingImplementation is CIP165 {
+contract CBC165MappingImplementation is CBC165 {
     /// @dev You must not set element 0xffffffff to true
     mapping(bytes4 => bool) internal supportedInterfaces;
 
     constructor() {
-        supportedInterfaces[this.supportsInterface.selector] = true;
+        supportedInterfaces[type(CBC165).interfaceId] = true;
     }
 
     function supportsInterface(bytes4 interfaceID) external view override returns (bool) {
-        return supportedInterfaces[interfaceID];
+        return interfaceID != 0xffffffff && supportedInterfaces[interfaceID];
     }
 }
 
 interface Simpson {
-    function is2D() external returns (bool);
-    function skinColor() external returns (string);
+    function is2D() external view returns (bool);
+    function skinColor() external view returns (string memory);
 }
 
-contract Lisa is CIP165MappingImplementation, Simpson {
+contract Lisa is CBC165MappingImplementation, Simpson {
     constructor() {
-        supportedInterfaces[this.is2D.selector ^ this.skinColor.selector] = true;
+        supportedInterfaces[type(Simpson).interfaceId] = true;
     }
 
-    function is2D() external returns (bool){}
-    function skinColor() external returns (string){}
+    function is2D() external pure override returns (bool) {
+        return true;
+    }
+
+    function skinColor() external pure override returns (string memory) {
+        return "yellow";
+    }
 }
 ```
 
-Following is a `pure` function implementation of `supportsInterface`. The worst-case execution cost is 236 energy, but increases linearly with a higher number of supported interfaces.
+The following is a storage-free `pure` implementation of `supportsInterface`. Its execution cost increases linearly with the number of supported interfaces.
 
 ```solidity
-pragma solidity ^0.8.0;
-
-import "./CIP165.sol";
+import "./CBC165.sol";
 
 interface Simpson {
-    function is2D() external returns (bool);
-    function skinColor() external returns (string);
+    function is2D() external view returns (bool);
+    function skinColor() external view returns (string memory);
 }
 
-contract Homer is CIP165, Simpson {
-    function supportsInterface(bytes4 interfaceID) external view override returns (bool) {
-        return
-          interfaceID == this.supportsInterface.selector || // CIP-165
-          interfaceID == this.is2D.selector
-                         ^ this.skinColor.selector; // Simpson
+contract Homer is CBC165, Simpson {
+    function supportsInterface(bytes4 interfaceID) external pure override returns (bool) {
+        return interfaceID != 0xffffffff
+            && (interfaceID == type(CBC165).interfaceId || interfaceID == type(Simpson).interfaceId);
     }
 
-    function is2D() external returns (bool){}
-    function skinColor() external returns (string){}
+    function is2D() external pure override returns (bool) {
+        return true;
+    }
+
+    function skinColor() external pure override returns (string memory) {
+        return "yellow";
+    }
 }
 ```
 
-With three or more supported interfaces (including CIP-165 itself as a required supported interface), the mapping approach (in every case) costs less energy than the pure approach (at worst case).
+The mapping approach trades initialization and storage costs for constant-time lookups. The storage-free approach avoids those costs, but each additional supported interface adds another comparison. Implementers should choose based on their deployment and call patterns while keeping `supportsInterface` below the required 30,000 energy limit.
 
 ## Security Considerations
 
-- Ensure proper validation of interface IDs to prevent malicious contracts from claiming to implement interfaces they don't support
-- Consider energy costs when implementing interface detection in frequently called functions
-- Validate that the `0xffffffff` interface ID is never set to true in mapping implementations
+- A contract can falsely claim support for any interface. Callers MUST NOT treat a positive response as proof that the implementation is correct or trustworthy.
+- Callers SHOULD handle reverted calls, malformed return data, and contracts that consume the available energy.
+- Implementers MUST ensure that `supportsInterface(0xffffffff)` always returns `false`.
+- Implementers should consider energy costs when interface detection is used in frequently called functions.
 
 ## Conclusion
 
-The CIP-165 standard provides a robust and efficient method for interface detection on Core Blockchain, enabling smart contracts to dynamically discover and interact with each other based on their implemented interfaces.
+The CBC-165 standard provides a standard method for interface detection on Core Blockchain, enabling smart contracts to dynamically discover and interact with each other based on their declared interfaces.
 
 ## Copyright
 
@@ -2155,53 +2269,150 @@ Core Signature Verification Standard
 
 ## Abstract
 
-CIP-712, the Core Signature Verification Standard, defines a standard for securely encoding and verifying structured data signatures in Core Blockchain applications. Core Signature Verification Standard enhances security and usability by allowing users to sign structured data, making it resistant to replay attacks and improving user experience.
+CIP-712 defines a standard for hashing and signing typed structured data in Core Blockchain applications. It adapts the data model and `\x19\x01` framing of EIP-712 to Core Blockchain while using Core network identifiers, addresses, hashing, and signatures.
+
+The standard provides domain separation between applications, contracts, and Core networks. Replay protection within a single domain is application-specific and is not provided by CIP-712 itself.
 
 ## Motivation
 
-The motivation behind CIP-712 is to provide a standardized method for encoding and verifying structured data signatures in Core Blockchain systems. This standardization simplifies the process of signing and verifying data, making it more secure and user-friendly.
+Signing an opaque byte string does not communicate the meaning of a message to the signer. Typed structured data gives wallets and applications the information required to present the message as named fields and gives independent implementations a deterministic way to calculate the same digest.
 
-This CIP aliases EIP712 to CIP712.
+CIP-712 follows EIP-712 where its rules are compatible with Core Blockchain. The Core-specific rules in this document take precedence. In particular, Core uses `networkId`, Core addresses, SHA3-256, and Core EDDSA signatures.
 
 ## Specification
 
-Core Signature Verification Standard defines the following key components and processes:
+The key words **MUST**, **MUST NOT**, **SHOULD**, and **MAY** in this document are to be interpreted as requirements on conforming implementations.
+
+### Hash Function
+
+In this specification, `hash` means the result of Ylem's `keccak256` function, which uses SHA3-256 on Core Blockchain. Implementations MUST NOT substitute Ethereum's legacy Keccak-256 when calculating CIP-712 hashes.
 
 ### Typed Data
 
-Core Signature Verification Standard introduces a structured data schema called "Typed Data," which includes a list of data types and their field names. This schema provides a clear definition of the data being signed.
+Typed data consists of a primary struct type, the definitions of all referenced struct types, and the values of the primary struct's fields. Type names, field types, field names, and field order are part of the signed data.
 
-### Encoding
+The canonical type encoding follows EIP-712. For example:
 
-The data specified in the Typed Data schema is encoded into a binary format before signing. This encoding ensures consistency in how data is presented to users for signature.
+```text
+Mail(address to,string contents)
+```
 
-### Hashing
+The type hash and struct hash are calculated as follows:
 
-Core Signature Verification Standard defines a specific hashing mechanism for hashing the binary data. This ensures that the data hash remains consistent across different implementations.
+```text
+typeHash = hash(encodeType(typeOf(data)))
+structHash = hash(typeHash || encodeData(data))
+```
+
+Values MUST be encoded according to the Ylem ABI. Core `address` values are 22-byte addresses and MUST be encoded as Ylem address values. Dynamic `bytes` and `string` values are represented by the hash of their contents. Nested structs are represented by their struct hash, and arrays are represented by the hash of their encoded elements.
+
+### Domain Separator
+
+CIP-712 uses the following domain type:
+
+```text
+EIP712Domain(string name,string version,uint256 networkId,address verifyingContract)
+```
+
+The literal name `EIP712Domain` is retained for compatibility with the Core OpenZeppelin implementation and MUST be used when calculating the domain type hash. Renaming the encoded type to `CIP712Domain` produces a different domain separator.
+
+The domain type hash and domain separator are calculated as follows:
+
+```text
+domainTypeHash = hash("EIP712Domain(string name,string version,uint256 networkId,address verifyingContract)")
+
+domainSeparator = hash(abi.encode(
+    domainTypeHash,
+    hash(bytes(name)),
+    hash(bytes(version)),
+    networkId,
+    verifyingContract
+))
+```
+
+The fields have the following meanings:
+
+- `name`: the human-readable name of the application or protocol.
+- `version`: the current major version of the signing domain.
+- `networkId`: the current Core network identifier. In Ylem contracts this value is obtained from `block.chainid`.
+- `verifyingContract`: the Core address of the contract that will verify the signature.
+
+Changing any domain field invalidates signatures created for the previous domain.
+
+### Signed Digest
+
+The digest presented to the Core signing algorithm MUST be:
+
+```text
+digest = hash("\x19\x01" || domainSeparator || structHash)
+```
+
+Both `domainSeparator` and `structHash` are exactly 32 bytes. The prefix, domain separator, and struct hash are concatenated without additional ABI padding.
 
 ### Signatures
 
-Users sign the hashed data, creating a unique signature that represents their approval of the structured data.
+The signer signs `digest` using the Core signing algorithm. A Core signature is a 171-byte blob consisting of a 114-byte signature and a 57-byte public key. CIP-712 signatures MUST be handled as a single `bytes` value and not as an Ethereum-style `(v, r, s)` tuple.
 
 ### Verification
 
-Smart contracts or applications can then verify the signature against the original Typed Data and public keys to ensure the authenticity of the data.
+A verifier MUST reconstruct the domain separator and struct hash from the expected domain and message, calculate `digest`, recover the signer from the Core signature, and compare the recovered address with the expected signer.
+
+In Ylem, verification can be performed with `ecrecover(bytes32 digest, bytes signature)` or through a wrapper such as Core OpenZeppelin's `EDDSA.recover`. Implementations MUST reject signatures whose length is not 171 bytes and MUST treat signature recovery failure as invalid.
+
+### Contract Implementation
+
+The Core OpenZeppelin `EIP712` contract implements the domain separator and final digest:
+
+```solidity
+bytes32 private constant _TYPE_HASH =
+    keccak256("EIP712Domain(string name,string version,uint256 networkId,address verifyingContract)");
+
+function _buildDomainSeparator(bytes32 hashedName, bytes32 hashedVersion)
+    private
+    view
+    returns (bytes32)
+{
+    return keccak256(
+        abi.encode(_TYPE_HASH, hashedName, hashedVersion, block.chainid, address(this))
+    );
+}
+
+function _hashTypedDataV4(bytes32 structHash) internal view returns (bytes32) {
+    return EDDSA.toTypedDataHash(_domainSeparatorV4(), structHash);
+}
+```
+
+The contract does not implement application-specific struct encoding. Applications MUST define their own type hashes and construct their own struct hashes according to this specification.
+
+Implementations MAY expose their domain through `eip712Domain()`. The Core OpenZeppelin implementation reports `name`, `version`, `networkId`, and `verifyingContract`.
+
+### JSON-RPC
+
+Core clients that provide typed-data signing SHOULD expose it through `xcb_signTypedData_v4`. Typed-data payloads MUST use `networkId`, not Ethereum's `chainId`, and all addresses MUST be valid Core addresses for the selected network.
 
 ## Usage
 
-Core Signature Verification Standard can be utilized in various Core Blockchain applications, including decentralized finance (DeFi), governance systems, and more. Users can sign structured data, and smart contracts can validate these signatures to enable secure interactions.
+CIP-712 can be used for permits, orders, governance votes, meta-transactions, and other actions authorized by an off-chain signature. Applications SHOULD include all values that affect the authorized action in the signed struct.
 
 ## Backward Compatibility
 
-Core Signature Verification Standard is designed to be backward-compatible with existing Core Blockchain standards, ensuring seamless integration into the Core Blockchain ecosystem.
+CIP-712 retains the EIP-712 typed-data model and final `\x19\x01` framing, but it is not byte-for-byte compatible with Ethereum EIP-712. Core-specific hashing, address encoding, network identifiers, and signatures produce different results.
+
+Existing Core applications that use the domain and digest construction specified above remain compatible. Applications MUST NOT assume that an Ethereum EIP-712 signature can be verified as a CIP-712 signature.
 
 ## Security Considerations
 
-Security audits and reviews are crucial for any implementation of Core Signature Verification Standard to identify potential vulnerabilities and ensure the robustness of the signature verification process.
+CIP-712 does not provide replay protection within one signing domain. Applications authorizing a one-time action SHOULD include and validate a nonce, deadline, consumed-message record, or another application-specific replay-prevention mechanism.
+
+Including `networkId` and `verifyingContract` in the domain prevents a correctly constructed signature from being reused on a different Core network or by a different contract. Applications MUST verify the complete domain and MUST ensure that wallets display the same domain and message that the verifier will hash.
+
+Implementations MUST use the exact type definitions and field order agreed upon by the signer and verifier. A changed type name, domain type name, field order, hash function, or address encoding produces a different digest.
+
+Submission of a valid signature by an unintended third party may be possible. Applications MUST ensure that early submission either has the exact effect authorized by the signer or is otherwise safely rejected.
 
 ## Conclusion
 
-CIP-712 provides a standardized approach to structured data signature verification in Core Blockchain applications. Its adoption can enhance security and usability in a wide range of decentralized systems.
+CIP-712 provides a deterministic Core-specific procedure for hashing, signing, and verifying typed structured data while retaining the established EIP-712 framing and domain-separation model.
 
 ## Copyright
 
@@ -2523,7 +2734,7 @@ The `_id` argument contained in each function's argument set indicates a specifi
 
 ## Motivation
 
-Tokens standards like CBC-20 and CBC-721 require a separate contract to be deployed for each token type or collection. This places a lot of redundant bytecode on the Ethereum blockchain and limits certain functionality by the nature of separating each token contract into its own permissioned address. With the rise of blockchain games and platforms like Enjin Coin, game developers may be creating thousands of token types, and a new type of token standard is needed to support them. However, CBC-1155 is not specific to games and many other applications can benefit from this flexibility.
+Tokens standards like CBC-20 and CBC-721 require a separate contract to be deployed for each token type or collection. This places a lot of redundant bytecode on Core Blockchain and limits certain functionality by the nature of separating each token contract into its own permissioned address. With the rise of blockchain games and platforms like Enjin Coin, game developers may be creating thousands of token types, and a new type of token standard is needed to support them. However, CBC-1155 is not specific to games and many other applications can benefit from this flexibility.
 
 New functionality is possible with this design such as transferring multiple token types at once, saving on transaction costs. Trading (escrow / atomic swaps) of multiple tokens can be built on top of this standard and it removes the need to "approve" individual token contracts separately. It is also easy to describe and mix multiple fungible or non-fungible token types in a single contract.
 
@@ -2531,16 +2742,18 @@ New functionality is possible with this design such as transferring multiple tok
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119.
 
+For non-zero address validation, "zero address" means both `address(0)` and `Checksum.zeroAddress()`. Implementations MUST reject both representations wherever a non-zero account is required. Minting and burning events MUST use the real zero address, `address(0)`, and MUST NOT use `Checksum.zeroAddress()` as the mint or burn marker.
+
 **Smart contracts implementing the CBC-1155 standard MUST implement all of the functions in the `CBC1155` interface.**
 
-**Smart contracts implementing the CBC-1155 standard MUST implement the CBC-165 `supportsInterface` function and MUST return the constant value `true` if `0xd9b67a26` is passed through the `interfaceID` argument.**
+**Smart contracts implementing the CBC-1155 standard MUST implement the CBC-165 `supportsInterface` function and MUST return the constant value `true` if `0x321439a9` is passed through the `interfaceID` argument.**
 
 ```solidity
-pragma solidity ^0.5.9;
+pragma solidity ^1.1.2;
 
 /**
     @title CBC-1155 Multi Token Standard
-    Note: The CBC-165 identifier for this interface is 0xd9b67a26.
+    Note: The CBC-165 identifier for this interface is 0x321439a9.
  */
 interface CBC1155 /* is CBC165 */ {
     /**
@@ -2550,8 +2763,8 @@ interface CBC1155 /* is CBC165 */ {
         The `_to` argument MUST be the address of the recipient whose balance is increased.
         The `_id` argument MUST be the token type being transferred.
         The `_value` argument MUST be the number of tokens the holder balance is decreased by and match what the recipient balance is increased by.
-        When minting/creating tokens, the `_from` argument MUST be set to `0x0` (i.e. zero address).
-        When burning/destroying tokens, the `_to` argument MUST be set to `0x0` (i.e. zero address).
+        When minting/creating tokens, the `_from` argument MUST be set to `address(0)`.
+        When burning/destroying tokens, the `_to` argument MUST be set to `address(0)`.
     */
     event TransferSingle(address indexed _operator, address indexed _from, address indexed _to, uint256 _id, uint256 _value);
 
@@ -2562,8 +2775,8 @@ interface CBC1155 /* is CBC165 */ {
         The `_to` argument MUST be the address of the recipient whose balance is increased.
         The `_ids` argument MUST be the list of tokens being transferred.
         The `_values` argument MUST be the list of number of tokens (matching the list and order of tokens specified in _ids) the holder balance is decreased by and match what the recipient balance is increased by.
-        When minting/creating tokens, the `_from` argument MUST be set to `0x0` (i.e. zero address).
-        When burning/destroying tokens, the `_to` argument MUST be set to `0x0` (i.e. zero address).
+        When minting/creating tokens, the `_from` argument MUST be set to `address(0)`.
+        When burning/destroying tokens, the `_to` argument MUST be set to `address(0)`.
     */
     event TransferBatch(address indexed _operator, address indexed _from, address indexed _to, uint256[] _ids, uint256[] _values);
 
@@ -2582,7 +2795,7 @@ interface CBC1155 /* is CBC165 */ {
     /**
         @notice Transfers `_value` amount of an `_id` from the `_from` address to the `_to` address specified (with safety call).
         @dev Caller must be approved to manage the tokens being transferred out of the `_from` account (see "Approval" section of the standard).
-        MUST revert if `_to` is the zero address.
+        MUST revert if `_from` or `_to` is a zero address.
         MUST revert if balance of holder for token `_id` is lower than the `_value` sent.
         MUST revert on any other error.
         MUST emit the `TransferSingle` event to reflect the balance change (see "Safe Transfer Rules" section of the standard).
@@ -2598,7 +2811,7 @@ interface CBC1155 /* is CBC165 */ {
     /**
         @notice Transfers `_values` amount(s) of `_ids` from the `_from` address to the `_to` address specified (with safety call).
         @dev Caller must be approved to manage the tokens being transferred out of the `_from` account (see "Approval" section of the standard).
-        MUST revert if `_to` is the zero address.
+        MUST revert if `_from` or `_to` is a zero address.
         MUST revert if length of `_ids` is not the same as length of `_values`.
         MUST revert if any of the balance(s) of the holder(s) for token(s) in `_ids` is lower than the respective amount(s) in `_values` sent to the recipient.
         MUST revert on any other error.
@@ -2615,6 +2828,7 @@ interface CBC1155 /* is CBC165 */ {
 
     /**
         @notice Get the balance of an account's tokens.
+        @dev MUST revert if `_owner` is a zero address.
         @param _owner  The address of the token holder
         @param _id     ID of the token
         @return        The _owner's balance of the token type requested
@@ -2623,6 +2837,7 @@ interface CBC1155 /* is CBC165 */ {
 
     /**
         @notice Get the balance of multiple account/token pairs
+        @dev MUST revert if the lengths of `_owners` and `_ids` differ or if any entry in `_owners` is a zero address.
         @param _owners The addresses of the token holders
         @param _ids    ID of the tokens
         @return        The _owner's balance of the token types requested (i.e. balance for each (owner, id) pair)
@@ -2631,7 +2846,7 @@ interface CBC1155 /* is CBC165 */ {
 
     /**
         @notice Enable or disable approval for a third party ("operator") to manage all of the caller's tokens.
-        @dev MUST emit the ApprovalForAll event on success.
+        @dev MUST revert if `_operator` is a zero address. MUST emit the ApprovalForAll event on success.
         @param _operator  Address to add to the set of authorized operators
         @param _approved  True if the operator is approved, false to revoke approval
     */
@@ -2654,39 +2869,39 @@ interface CBC1155 /* is CBC165 */ {
 **Smart contracts MUST implement the CBC-165 `supportsInterface` function and signify support for the `CBC1155TokenReceiver` interface to accept transfers. See "CBC1155TokenReceiver CBC-165 rules" for further detail.**
 
 ```solidity
-pragma solidity ^0.5.9;
+pragma solidity ^1.1.2;
 
 /**
-    Note: The CBC-165 identifier for this interface is 0x4e2312e0.
+    Note: The CBC-165 identifier for this interface is 0xc08443c9.
 */
 interface CBC1155TokenReceiver {
     /**
         @notice Handle the receipt of a single CBC1155 token type.
         @dev An CBC1155-compliant smart contract MUST call this function on the token recipient contract, at the end of a `safeTransferFrom` after the balance has been updated.
-        This function MUST return `bytes4(sha256("onCBC1155Received(address,address,uint256,uint256,bytes)"))` (i.e. 0xf23a6e61) if it accepts the transfer.
+        This function MUST return `bytes4(keccak256("onCBC1155Received(address,address,uint256,uint256,bytes)"))` (i.e. 0x4f01cb00) if it accepts the transfer.
         This function MUST revert if it rejects the transfer.
-        Return of any other value than the prescribed sha256 generated value MUST result in the transaction being reverted by the caller.
+        Return of any other value than the prescribed Core SHA3-256-generated value MUST result in the transaction being reverted by the caller.
         @param _operator  The address which initiated the transfer (i.e. msg.sender)
         @param _from      The address which previously owned the token
         @param _id        The ID of the token being transferred
         @param _value     The amount of tokens being transferred
         @param _data      Additional data with no specified format
-        @return           `bytes4(sha256("onCBC1155Received(address,address,uint256,uint256,bytes)"))`
+        @return           `bytes4(keccak256("onCBC1155Received(address,address,uint256,uint256,bytes)"))`
     */
     function onCBC1155Received(address _operator, address _from, uint256 _id, uint256 _value, bytes calldata _data) external returns(bytes4);
 
     /**
         @notice Handle the receipt of multiple CBC1155 token types.
         @dev An CBC1155-compliant smart contract MUST call this function on the token recipient contract, at the end of a `safeBatchTransferFrom` after the balances have been updated.
-        This function MUST return `bytes4(sha256("onCBC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0xbc197c81) if it accepts the transfer(s).
+        This function MUST return `bytes4(keccak256("onCBC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` (i.e. 0x8f8588c9) if it accepts the transfer(s).
         This function MUST revert if it rejects the transfer(s).
-        Return of any other value than the prescribed sha256 generated value MUST result in the transaction being reverted by the caller.
+        Return of any other value than the prescribed Core SHA3-256-generated value MUST result in the transaction being reverted by the caller.
         @param _operator  The address which initiated the batch transfer (i.e. msg.sender)
         @param _from      The address which previously owned the token
         @param _ids       An array containing ids of each token being transferred (order and length must match _values array)
         @param _values    An array containing amounts of each token being transferred (order and length must match _ids array)
         @param _data      Additional data with no specified format
-        @return           `bytes4(sha256("onCBC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`
+        @return           `bytes4(keccak256("onCBC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`
     */
     function onCBC1155BatchReceived(address _operator, address _from, uint256[] calldata _ids, uint256[] calldata _values, bytes calldata _data) external returns(bytes4);
 }
@@ -2743,7 +2958,7 @@ To be more explicit about how the standard `safeTransferFrom` and `safeBatchTran
 **_Scenario#8 :_** You are the creator of a contract that implements the `CBC1155TokenReceiver` interface and you forward the token(s) onto another address in one or both of `onCBC1155Received` and `onCBC1155BatchReceived`.
 
 * Forwarding should be considered acceptance and then initiating a new `safeTransferFrom` or `safeBatchTransferFrom` in a new context.
-  * The prescribed sha256 acceptance value magic for the receiver hook being called MUST be returned after forwarding is successful.
+  * The prescribed Core SHA3-256 acceptance value magic for the receiver hook being called MUST be returned after forwarding is successful.
 * The `_data` argument MAY be re-purposed for the new context.
 * If forwarding fails the transaction MAY be reverted.
   * If the contract logic wishes to keep the ownership of the token(s) itself in this case it MAY do so.
@@ -2761,7 +2976,7 @@ To be more explicit about how the standard `safeTransferFrom` and `safeBatchTran
 **_safeTransferFrom rules:_**
 
 * Caller must be approved to manage the tokens being transferred out of the `_from` account (see "Approval" section).
-* MUST revert if `_to` is the zero address.
+* MUST revert if `_from` or `_to` is a zero address.
 * MUST revert if balance of holder for token `_id` is lower than the `_value` sent to the recipient.
 * MUST revert on any other error.
 * MUST emit the `TransferSingle` event to reflect the balance change (see "TransferSingle and TransferBatch event rules" section).
@@ -2771,7 +2986,7 @@ To be more explicit about how the standard `safeTransferFrom` and `safeBatchTran
 **_safeBatchTransferFrom rules:_**
 
 * Caller must be approved to manage all the tokens being transferred out of the `_from` account (see "Approval" section).
-* MUST revert if `_to` is the zero address.
+* MUST revert if `_from` or `_to` is a zero address.
 * MUST revert if length of `_ids` is not the same as length of `_values`.
 * MUST revert if any of the balance(s) of the holder(s) for token(s) in `_ids` is lower than the respective amount(s) in `_values` sent to the recipient.
 * MUST revert on any other error.
@@ -2789,8 +3004,8 @@ To be more explicit about how the standard `safeTransferFrom` and `safeBatchTran
     * The `_to` argument MUST be the address of the recipient whose balance is increased.
     * The `_id` argument MUST be the token type being transferred.
     * The `_value` argument MUST be the number of tokens the holder balance is decreased by and match what the recipient balance is increased by.
-    * When minting/creating tokens, the `_from` argument MUST be set to `0x0` (i.e. zero address). See "Minting/creating and burning/destroying rules".
-    * When burning/destroying tokens, the `_to` argument MUST be set to `0x0` (i.e. zero address). See "Minting/creating and burning/destroying rules".
+    * When minting/creating tokens, the `_from` argument MUST be set to `address(0)`. See "Minting/creating and burning/destroying rules".
+    * When burning/destroying tokens, the `_to` argument MUST be set to `address(0)`. See "Minting/creating and burning/destroying rules".
 * `TransferBatch` SHOULD be used to indicate multiple balance transfers have occurred between a `_from` and `_to` pair.
   * It MAY be emitted with a single element in the list to indicate a singular balance change in the transaction, but note that `TransferSingle` is designed for this to reduce energy consumption.
   * The `_operator` argument MUST be the address of an account/contract that is approved to make the transfer (SHOULD be msg.sender).
@@ -2799,10 +3014,10 @@ To be more explicit about how the standard `safeTransferFrom` and `safeBatchTran
     * The `_ids` array argument MUST contain the ids of the tokens being transferred.
     * The `_values` array argument MUST contain the number of token to be transferred for each corresponding entry in `_ids`.
     * `_ids` and `_values` MUST have the same length.
-    * When minting/creating tokens, the `_from` argument MUST be set to `0x0` (i.e. zero address). See "Minting/creating and burning/destroying rules".
-    * When burning/destroying tokens, the `_to` argument MUST be set to `0x0` (i.e. zero address). See "Minting/creating and burning/destroying rules".
-* The total value transferred from address `0x0` minus the total value transferred to `0x0` observed via the `TransferSingle` and `TransferBatch` events MAY be used by clients and exchanges to determine the "circulating supply" for a given token ID.
-* To broadcast the existence of a token ID with no initial balance, the contract SHOULD emit the `TransferSingle` event from `0x0` to `0x0`, with the token creator as `_operator`, and a `_value` of 0.
+    * When minting/creating tokens, the `_from` argument MUST be set to `address(0)`. See "Minting/creating and burning/destroying rules".
+    * When burning/destroying tokens, the `_to` argument MUST be set to `address(0)`. See "Minting/creating and burning/destroying rules".
+* The total value transferred from `address(0)` minus the total value transferred to `address(0)` observed via the `TransferSingle` and `TransferBatch` events MAY be used by clients and exchanges to determine the "circulating supply" for a given token ID.
+* To broadcast the existence of a token ID with no initial balance, the contract SHOULD emit the `TransferSingle` event from `address(0)` to `address(0)`, with the token creator as `_operator`, and a `_value` of 0.
 * All `TransferSingle` and `TransferBatch` events MUST be emitted to reflect all the balance changes that have occurred before any call(s) to `onCBC1155Received` or `onCBC1155BatchReceived`.
   * To make sure event order is correct in the case of valid re-entry (e.g. if a receiver contract forwards tokens on receipt) state balance and events balance MUST match before calling an external contract.
 
@@ -2810,16 +3025,16 @@ To be more explicit about how the standard `safeTransferFrom` and `safeBatchTran
 
 * The `_operator` argument MUST be the address of an account/contract that is approved to make the transfer (SHOULD be msg.sender).
 * The `_from` argument MUST be the address of the holder whose balance is decreased.
-  * `_from` MUST be 0x0 for a mint.
+  * `_from` MUST be `address(0)` for a mint.
 * The `_id` argument MUST be the token type being transferred.
 * The `_value` argument MUST be the number of tokens the holder balance is decreased by and match what the recipient balance is increased by.
 * The `_data` argument MUST contain the information provided by the sender for the transfer with its contents unaltered.
   * i.e. it MUST pass on the unaltered `_data` argument sent via the `safeTransferFrom` or `safeBatchTransferFrom` call for this transfer.
-* The recipient contract MAY accept an increase of its balance by returning the acceptance magic value `bytes4(sha256("onCBC1155Received(address,address,uint256,uint256,bytes)"))`
-  * If the return value is `bytes4(sha256("onCBC1155Received(address,address,uint256,uint256,bytes)"))` the transfer MUST be completed or MUST revert if any other conditions are not met for success.
+* The recipient contract MAY accept an increase of its balance by returning the acceptance magic value `bytes4(keccak256("onCBC1155Received(address,address,uint256,uint256,bytes)"))`
+  * If the return value is `bytes4(keccak256("onCBC1155Received(address,address,uint256,uint256,bytes)"))` the transfer MUST be completed or MUST revert if any other conditions are not met for success.
 * The recipient contract MAY reject an increase of its balance by calling revert.
   * If the recipient contract throws/reverts the transaction MUST be reverted.
-* If the return value is anything other than `bytes4(sha256("onCBC1155Received(address,address,uint256,uint256,bytes)"))` the transaction MUST be reverted.
+* If the return value is anything other than `bytes4(keccak256("onCBC1155Received(address,address,uint256,uint256,bytes)"))` the transaction MUST be reverted.
 * `onCBC1155Received` (and/or `onCBC1155BatchReceived`) MAY be called multiple times in a single transaction and the following requirements must be met:
   * All callbacks represent mutually exclusive balance changes.
   * The set of all calls to `onCBC1155Received` and `onCBC1155BatchReceived` describes all balance changes that occurred during the transaction in the order submitted.
@@ -2829,16 +3044,16 @@ To be more explicit about how the standard `safeTransferFrom` and `safeBatchTran
 
 * The `_operator` argument MUST be the address of an account/contract that is approved to make the transfer (SHOULD be msg.sender).
 * The `_from` argument MUST be the address of the holder whose balance is decreased.
-  * `_from` MUST be 0x0 for a mint.
+  * `_from` MUST be `address(0)` for a mint.
 * The `_ids` argument MUST be the list of tokens being transferred.
 * The `_values` argument MUST be the list of number of tokens (matching the list and order of tokens specified in `_ids`) the holder balance is decreased by and match what the recipient balance is increased by.
 * The `_data` argument MUST contain the information provided by the sender for the transfer with its contents unaltered.
   * i.e. it MUST pass on the unaltered `_data` argument sent via the `safeBatchTransferFrom` call for this transfer.
-* The recipient contract MAY accept an increase of its balance by returning the acceptance magic value `bytes4(sha256("onCBC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`
-  * If the return value is `bytes4(sha256("onCBC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` the transfer MUST be completed or MUST revert if any other conditions are not met for success.
+* The recipient contract MAY accept an increase of its balance by returning the acceptance magic value `bytes4(keccak256("onCBC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`
+  * If the return value is `bytes4(keccak256("onCBC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` the transfer MUST be completed or MUST revert if any other conditions are not met for success.
 * The recipient contract MAY reject an increase of its balance by calling revert.
   * If the recipient contract throws/reverts the transaction MUST be reverted.
-* If the return value is anything other than `bytes4(sha256("onCBC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` the transaction MUST be reverted.
+* If the return value is anything other than `bytes4(keccak256("onCBC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` the transaction MUST be reverted.
 * `onCBC1155BatchReceived` (and/or `onCBC1155Received`) MAY be called multiple times in a single transaction and the following requirements must be met:
   * All callbacks represent mutually exclusive balance changes.
   * The set of all calls to `onCBC1155Received` and `onCBC1155BatchReceived` describes all balance changes that occurred during the transaction in the order submitted.
@@ -2850,14 +3065,14 @@ To be more explicit about how the standard `safeTransferFrom` and `safeBatchTran
 
     ```solidity
     function supportsInterface(bytes4 interfaceID) external view returns (bool) {
-        return  interfaceID == 0x01ffc9a7 ||    // CBC-165 support (i.e. `bytes4(sha256('supportsInterface(bytes4)'))`).
-                interfaceID == 0x4e2312e0;      // CBC-1155 `CBC1155TokenReceiver` support (i.e. `bytes4(sha256("onCBC1155Received(address,address,uint256,uint256,bytes)")) ^ bytes4(sha256("onCBC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`).
+        return  interfaceID == 0x80ada41b ||    // CBC-165 support (i.e. `bytes4(keccak256('supportsInterface(bytes4)'))`).
+                interfaceID == 0xc08443c9;      // CBC-1155 `CBC1155TokenReceiver` support (i.e. `bytes4(keccak256("onCBC1155Received(address,address,uint256,uint256,bytes)")) ^ bytes4(keccak256("onCBC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`).
     }
     ```
 
 * The implementation MAY differ from the above but:
-  * It MUST return the constant value `true` if `0x01ffc9a7` is passed through the `interfaceID` argument. This signifies CBC-165 support.
-  * It MUST return the constant value `true` if `0x4e2312e0` is passed through the `interfaceID` argument. This signifies CBC-1155 `CBC1155TokenReceiver` support.
+  * It MUST return the constant value `true` if `0x80ada41b` is passed through the `interfaceID` argument. This signifies CBC-165 support.
+  * It MUST return the constant value `true` if `0xc08443c9` is passed through the `interfaceID` argument. This signifies CBC-1155 `CBC1155TokenReceiver` support.
   * It MUST NOT consume more than 10,000 energy.
     * This keeps it below the CBC-165 requirement of 30,000 energy, reduces the energy reserve needs and minimises possible side-effects of energy exhaustion during the call.
 
@@ -2869,11 +3084,11 @@ To be more explicit about how the standard `safeTransferFrom` and `safeBatchTran
     2. `myTransferFrom` updates the balances for `_from` and `_to` addresses for all `_ids` and `_values`.
     3. `myTransferFrom` emits `TransferBatch` with the details of what was transferred from address `_from` to address `_to`.
     4. `myTransferFrom` checks if `_to` is a contract address and determines that it is so (if not, then the transfer can be considered successful).
-    5. `myTransferFrom` calls `onCBC1155BatchReceived` on `_to` and it reverts or returns an unknown value (if it had returned `bytes4(sha256("onCBC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` the transfer can be considered successful).
+    5. `myTransferFrom` calls `onCBC1155BatchReceived` on `_to` and it reverts or returns an unknown value (if it had returned `bytes4(keccak256("onCBC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` the transfer can be considered successful).
     6. At this point `myTransferFrom` SHOULD revert the transaction immediately as receipt of the token(s) was not explicitly accepted by the `onCBC1155BatchReceived` function.
-    7. If however `myTransferFrom` wishes to continue it MUST call `supportsInterface(0x4e2312e0)` on `_to` and if it returns the constant value `true` the transaction MUST be reverted, as it is now known to be a valid receiver and the previous acceptance step failed.
-        * NOTE: You could have called `supportsInterface(0x4e2312e0)` at a previous step if you wanted to gather and act upon that information earlier, such as in a hybrid standards scenario.
-    8. If the above call to `supportsInterface(0x4e2312e0)` on `_to` reverts or returns a value other than the constant value `true` the `myTransferFrom` function MAY consider this transfer successful.
+    7. If however `myTransferFrom` wishes to continue it MUST call `supportsInterface(0xc08443c9)` on `_to` and if it returns the constant value `true` the transaction MUST be reverted, as it is now known to be a valid receiver and the previous acceptance step failed.
+        * NOTE: You could have called `supportsInterface(0xc08443c9)` at a previous step if you wanted to gather and act upon that information earlier, such as in a hybrid standards scenario.
+    8. If the above call to `supportsInterface(0xc08443c9)` on `_to` reverts or returns a value other than the constant value `true` the `myTransferFrom` function MAY consider this transfer successful.
         * NOTE: this MAY result in unrecoverable tokens if sent to an address that does not expect to receive CBC-1155 tokens.
 * The above example is not exhaustive but illustrates the major points (and shows that most are shared with `safeTransferFrom` and `safeBatchTransferFrom`):
   * Balances that are updated MUST have equivalent transfer events emitted.
@@ -2885,24 +3100,26 @@ To be more explicit about how the standard `safeTransferFrom` and `safeBatchTran
 **_Minting/creating and burning/destroying rules:_**
 
 * A mint/create operation is essentially a specialized transfer and MUST follow these rules:
-  * To broadcast the existence of a token ID with no initial balance, the contract SHOULD emit the `TransferSingle` event from `0x0` to `0x0`, with the token creator as `_operator`, and a `_value` of 0.
-  * The "TransferSingle and TransferBatch event rules" MUST be followed as appropriate for the mint(s) (i.e. singles or batches) however the `_from` argument MUST be set to `0x0` (i.e. zero address) to flag the transfer as a mint to contract observers.
+  * The recipient MUST be neither `address(0)` nor `Checksum.zeroAddress()`.
+  * To broadcast the existence of a token ID with no initial balance, the contract SHOULD emit the `TransferSingle` event from `address(0)` to `address(0)`, with the token creator as `_operator`, and a `_value` of 0.
+  * The "TransferSingle and TransferBatch event rules" MUST be followed as appropriate for the mint(s) (i.e. singles or batches) however the `_from` argument MUST be set to `address(0)` to flag the transfer as a mint to contract observers.
     * NOTE: This includes tokens that are given an initial balance in the contract. The balance of the contract MUST also be able to be determined by events alone meaning initial contract balances (for eg. in construction) MUST emit events to reflect those balances too.
 * A burn/destroy operation is essentially a specialized transfer and MUST follow these rules:
-  * The "TransferSingle and TransferBatch event rules" MUST be followed as appropriate for the burn(s) (i.e. singles or batches) however the `_to` argument MUST be set to `0x0` (i.e. zero address) to flag the transfer as a burn to contract observers.
-  * When burning/destroying you do not have to actually transfer to `0x0` (that is impl specific), only the `_to` argument in the event MUST be set to `0x0` as above.
-* The total value transferred from address `0x0` minus the total value transferred to `0x0` observed via the `TransferSingle` and `TransferBatch` events MAY be used by clients and exchanges to determine the "circulating supply" for a given token ID.
+  * The holder MUST be neither `address(0)` nor `Checksum.zeroAddress()`.
+  * The "TransferSingle and TransferBatch event rules" MUST be followed as appropriate for the burn(s) (i.e. singles or batches) however the `_to` argument MUST be set to `address(0)` to flag the transfer as a burn to contract observers.
+  * When burning/destroying you do not have to actually transfer to `address(0)` (that is implementation-specific), only the `_to` argument in the event MUST be set to `address(0)` as above.
+* The total value transferred from `address(0)` minus the total value transferred to `address(0)` observed via the `TransferSingle` and `TransferBatch` events MAY be used by clients and exchanges to determine the "circulating supply" for a given token ID.
 * As mentioned above mint/create and burn/destroy operations are specialized transfers and so will likely be accomplished with custom transfer functions rather than `safeTransferFrom` or `safeBatchTransferFrom`. If so the "Implementation specific transfer API rules" section would be appropriate.
   * Even in a non-safe API and/or hybrid standards case the above event rules MUST still be adhered to when minting/creating or burning/destroying.
 * A contract MAY skip calling the `CBC1155TokenReceiver` hook function(s) if the mint operation is transferring the token(s) to itself. In all other cases the `CBC1155TokenReceiver` rules MUST be followed as appropriate for the implementation (i.e. safe, custom and/or hybrid).
 
-##### A solidity example of the sha256 generated constants for the various magic values (these MAY be used by implementation)
+##### A Ylem example of the Core SHA3-256-generated constants for the various magic values (these MAY be used by implementation)
 
 ```solidity
-bytes4 constant public CBC1155_CBC165 = 0xd9b67a26; // CBC-165 identifier for the main token standard.
-bytes4 constant public CBC1155_CBC165_TOKENRECEIVER = 0x4e2312e0; // CBC-165 identifier for the `CBC1155TokenReceiver` support (i.e. `bytes4(sha256("onCBC1155Received(address,address,uint256,uint256,bytes)")) ^ bytes4(sha256("onCBC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`).
-bytes4 constant public CBC1155_ACCEPTED = 0xf23a6e61; // Return value from `onCBC1155Received` call if a contract accepts receipt (i.e `bytes4(sha256("onCBC1155Received(address,address,uint256,uint256,bytes)"))`).
-bytes4 constant public CBC1155_BATCH_ACCEPTED = 0xbc197c81; // Return value from `onCBC1155BatchReceived` call if a contract accepts receipt (i.e `bytes4(sha256("onCBC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`).
+bytes4 constant public CBC1155_CBC165 = 0x321439a9; // CBC-165 identifier for the main token standard.
+bytes4 constant public CBC1155_CBC165_TOKENRECEIVER = 0xc08443c9; // CBC-165 identifier for the `CBC1155TokenReceiver` support (i.e. `bytes4(keccak256("onCBC1155Received(address,address,uint256,uint256,bytes)")) ^ bytes4(keccak256("onCBC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`).
+bytes4 constant public CBC1155_ACCEPTED = 0x4f01cb00; // Return value from `onCBC1155Received` call if a contract accepts receipt (i.e `bytes4(keccak256("onCBC1155Received(address,address,uint256,uint256,bytes)"))`).
+bytes4 constant public CBC1155_BATCH_ACCEPTED = 0x8f8588c9; // Return value from `onCBC1155BatchReceived` call if a contract accepts receipt (i.e `bytes4(keccak256("onCBC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`).
 ```
 
 ### Metadata
@@ -2920,7 +3137,7 @@ The optional `CBC1155Metadata_URI` extension can be identified with the CBC-165 
 
 If the optional `CBC1155Metadata_URI` extension is included:
 
-* The CBC-165 `supportsInterface` function MUST return the constant value `true` if `0x0e89341c` is passed through the `interfaceID` argument.
+* The CBC-165 `supportsInterface` function MUST return the constant value `true` if `0x7ed7f64f` is passed through the `interfaceID` argument.
 * _Changes_ to the URI MUST emit the `URI` event if the change can be expressed with an event (i.e. it isn't dynamic/programmatic).
   * An implementation MAY emit the `URI` event during a mint operation but it is NOT mandatory. An observer MAY fetch the metadata uri at mint time from the `uri` function if it was not emitted.
 * The `uri` function SHOULD be used to retrieve values if no event was emitted.
@@ -2928,10 +3145,10 @@ If the optional `CBC1155Metadata_URI` extension is included:
 * The `uri` function MUST NOT be used to check for the existence of a token as it is possible for an implementation to return a valid string even if the token does not exist.
 
 ```solidity
-pragma solidity ^0.5.9;
+pragma solidity ^1.1.2;
 
 /**
-    Note: The CBC-165 identifier for this interface is 0x0e89341c.
+    Note: The CBC-165 identifier for this interface is 0x7ed7f64f.
 */
 interface CBC1155Metadata_URI {
     /**
@@ -3125,7 +3342,7 @@ The standard only supports safe-style transfers, making it possible for receiver
 
 ### Guaranteed log trace
 
-As the Ethereum ecosystem continues to grow, many dapps are relying on traditional databases and explorer API services to retrieve and categorize data. The CBC-1155 standard guarantees that event logs emitted by the smart contract will provide enough data to create an accurate record of all current token balances. A database or explorer may listen to events and be able to provide indexed and categorized searches of every CBC-1155 token in the contract.
+As the Core ecosystem continues to grow, many dapps are relying on traditional databases and explorer API services to retrieve and categorize data. The CBC-1155 standard guarantees that event logs emitted by the smart contract will provide enough data to create an accurate record of all current token balances. A database or explorer may listen to events and be able to provide indexed and categorized searches of every CBC-1155 token in the contract.
 
 ### Approver
 
@@ -3141,7 +3358,7 @@ To cater for this scenario, there is some leeway with the revert logic should a 
 Hence in a hybrid CBC-1155 contract implementation an extra call MUST be made on the recipient contract and checked before any hook calls to `onCBC1155Received` or `onCBC1155BatchReceived` are made.
 Order of operation MUST therefore be:
 
-1. The implementation MUST call the function `supportsInterface(0x4e2312e0)` on the recipient contract, providing at least 10,000 energy.
+1. The implementation MUST call the function `supportsInterface(0xc08443c9)` on the recipient contract, providing at least 10,000 energy.
 2. If the function call succeeds and the return value is the constant value `true` the implementation proceeds as a regular CBC-1155 implementation, with the call(s) to the `onCBC1155Received` or `onCBC1155BatchReceived` hooks and rules associated.
 3. If the function call fails or the return value is NOT the constant value `true` the implementation can assume the recipient contract is not an `CBC1155TokenReceiver` and follow its other standard's rules for transfers.
 Note that a pure implementation of a single standard is recommended rather than a hybrid solution, but an example of a hybrid CBC-1155/CBC-721 contract is linked in the references section under implementations.
@@ -3232,10 +3449,10 @@ Traditional approval mechanisms in CBC-1155 and CBC-721 allow operators to manag
 
 ```solidity
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^1.1.2;
 
 /**
- * Note: The CBC-165 identifier for this interface is 0x30168307.
+ * Note: The CBC-165 identifier for this interface is 0x00986e51.
  */
 interface ICBC1761 {
     // --- Events ---
@@ -3346,7 +3563,7 @@ This standard defines a registry where smart contracts and regular accounts can 
 
 Anyone can query this registry to ask if a specific address implements a given interface and which smart contract handles its implementation.
 
-This registry MAY be deployed on any chain and shares the same address on all chains.
+This registry MAY be deployed on any Core network. Its network-specific ICAN address MUST be published for every deployment.
 
 Interfaces with zeroes (`0`) as the last 28 bytes are considered CBC-165 interfaces,
 and this registry SHALL forward the call to the contract to see if it implements the interface.
@@ -3355,22 +3572,15 @@ This contract also acts as an CBC-165 cache to reduce energy consumption.
 
 ## Motivation
 
-There have been different approaches to define pseudo-introspection in Ethereum.
-The first is CBC-165 which has the limitation that it cannot be used by regular accounts.
-The second attempt is CBC-672 which uses reverse ENS. Using reverse ENS has two issues.
-First, it is unnecessarily complicated, and second, ENS is still a centralized contract controlled by a multisig.
-This multisig theoretically would be able to modify the system.
+Earlier pseudo-introspection approaches include CBC-165, which cannot be used by regular accounts, and reverse-name registries, which add complexity and depend on registry governance.
 
-This standard is much simpler than CBC-672, and it is *fully* decentralized.
-
-This standard also provides a *unique* address for all chains.
-Thus solving the problem of resolving the correct registry address for different chains.
+This standard provides a simpler common lookup mechanism for contracts and regular accounts. Clients resolve the registry through its published network-specific Core address.
 
 ## Specification
 
 ### CBC-1820 Registry Smart Contract
 
-> This is an exact copy of the code of the CBC-1820 registry smart contract.
+> This is the normative reference implementation of the CBC-1820 registry smart contract.
 
 ``` solidity
 /* CBC1820 Pseudo-introspection Registry Contract
@@ -3384,15 +3594,13 @@ Thus solving the problem of resolving the correct registry address for different
  *
  * You should have received a copy of the CC0 Public Domain Dedication along with this software.
  */
-pragma solidity 0.5.3;
-// IV is value needed to have a vanity address starting with '0x1820'.
-// IV: 53759
+pragma solidity ^1.1.2;
 
 /// @dev The interface a contract MUST implement if it is the implementer of
 /// some (other) interface for any address other than itself.
 interface CBC1820ImplementerInterface {
     /// @notice Indicates whether the contract implements the interface 'interfaceHash' for the address 'addr' or not.
-    /// @param interfaceHash sha256 hash of the name of the interface
+    /// @param interfaceHash keccak256 hash of the name of the interface
     /// @param addr Address for which the contract will implement the interface
     /// @return CBC1820_ACCEPT_MAGIC only if the contract implements 'interfaceHash' for the address 'addr'.
     function canImplementInterfaceForAddress(bytes32 interfaceHash, address addr) external view returns(bytes32);
@@ -3405,34 +3613,34 @@ interface CBC1820ImplementerInterface {
 contract CBC1820Registry {
     /// @notice CBC165 Invalid ID.
     bytes4 constant internal INVALID_ID = 0xffffffff;
-    /// @notice Method ID for the CBC165 supportsInterface method (= `bytes4(sha256('supportsInterface(bytes4)'))`).
-    bytes4 constant internal CBC165ID = 0x01ffc9a7;
+    /// @notice Method ID for the CBC165 supportsInterface method (= `bytes4(keccak256('supportsInterface(bytes4)'))`).
+    bytes4 constant internal CBC165ID = 0x80ada41b;
     /// @notice Magic value which is returned if a contract implements an interface on behalf of some other address.
-    bytes32 constant internal CBC1820_ACCEPT_MAGIC = sha256(abi.encodePacked("CBC1820_ACCEPT_MAGIC"));
+    bytes32 constant internal CBC1820_ACCEPT_MAGIC = keccak256(abi.encodePacked("CBC1820_ACCEPT_MAGIC"));
 
     /// @notice mapping from addresses and interface hashes to their implementers.
     mapping(address => mapping(bytes32 => address)) internal interfaces;
     /// @notice mapping from addresses to their manager.
     mapping(address => address) internal managers;
     /// @notice flag for each address and CBC165 interface to indicate if it is cached.
-    mapping(address => mapping(bytes4 => bool)) internal CBC165Cached;
+    mapping(address => mapping(bytes4 => bool)) internal cbc165Cached;
 
     /// @notice Indicates a contract is the 'implementer' of 'interfaceHash' for 'addr'.
     event InterfaceImplementerSet(address indexed addr, bytes32 indexed interfaceHash, address indexed implementer);
     /// @notice Indicates 'newManager' is the address of the new manager for 'addr'.
-    event ManagCBChanged(address indexed addr, address indexed newManager);
+    event ManagerChanged(address indexed addr, address indexed newManager);
 
     /// @notice Query if an address implements an interface and through which contract.
     /// @param _addr Address being queried for the implementer of an interface.
     /// (If '_addr' is the zero address then 'msg.sender' is assumed.)
-    /// @param _interfaceHash Sha256 hash of the name of the interface as a string.
-    /// E.g., 'web3.utils.sha256("CBC777TokensRecipient")' for the 'CBC777TokensRecipient' interface.
+    /// @param _interfaceHash Core SHA3-256 hash of the name of the interface as a string.
+    /// E.g., 'web3.utils.keccak256("CBC777TokensRecipient")' for the 'CBC777TokensRecipient' interface.
     /// @return The address of the contract which implements the interface '_interfaceHash' for '_addr'
     /// or '0' if '_addr' did not register an implementer for this interface.
     function getInterfaceImplementer(address _addr, bytes32 _interfaceHash) external view returns (address) {
         address addr = _addr == address(0) ? msg.sender : _addr;
         if (isCBC165Interface(_interfaceHash)) {
-            bytes4 CBC165InterfaceHash = bytes4(_interfaceHash);
+            bytes4 cbc165InterfaceHash = bytes4(_interfaceHash);
             return implementsCBC165Interface(addr, cbc165InterfaceHash) ? addr : address(0);
         }
         return interfaces[addr][_interfaceHash];
@@ -3443,8 +3651,8 @@ contract CBC1820Registry {
     /// (Each address is the manager for itself until it sets a new manager.)
     /// @param _addr Address for which to set the interface.
     /// (If '_addr' is the zero address then 'msg.sender' is assumed.)
-    /// @param _interfaceHash Sha256 hash of the name of the interface as a string.
-    /// E.g., 'web3.utils.sha256("CBC777TokensRecipient")' for the 'CBC777TokensRecipient' interface.
+    /// @param _interfaceHash Core SHA3-256 hash of the name of the interface as a string.
+    /// E.g., 'web3.utils.keccak256("CBC777TokensRecipient")' for the 'CBC777TokensRecipient' interface.
     /// @param _implementer Contract address implementing '_interfaceHash' for '_addr'.
     function setInterfaceImplementer(address _addr, bytes32 _interfaceHash, address _implementer) external {
         address addr = _addr == address(0) ? msg.sender : _addr;
@@ -3484,11 +3692,11 @@ contract CBC1820Registry {
         }
     }
 
-    /// @notice Compute the sha256 hash of an interface given its name.
+    /// @notice Compute the keccak256 hash of an interface given its name.
     /// @param _interfaceName Name of the interface.
-    /// @return The sha256 hash of an interface name.
+    /// @return The keccak256 hash of an interface name.
     function interfaceHash(string calldata _interfaceName) external pure returns(bytes32) {
-        return sha256(abi.encodePacked(_interfaceName));
+        return keccak256(abi.encodePacked(_interfaceName));
     }
 
     /* --- CBC165 Related Functions --- */
@@ -3577,356 +3785,26 @@ contract CBC1820Registry {
 
 ### Deployment Method
 
-This contract is going to be deployed using the keyless deployment method - also known as Nick's method - which relies on a single-use address.
-(See Nick's article for more details). This method works as follows:
+The Ethereum ERC-1820 deployment transaction and Nick's method based on recoverable ECDSA signatures cannot be reused on Core Blockchain. Core transactions use a 171-byte Ed448 signature blob that includes the public key, so the original sender-recovery construction does not apply.
 
-1. Generate a transaction which deploys the contract from a new random account.
-   - This transaction MUST NOT use CIP-155 in order to work on any chain.
-   - This transaction MUST have a relatively high energy price to be deployed on any chain. In this case, it is going to be 100 Gwei.
-2. Set the `v`, `r`, `s` of the transaction signature
-3. We recover the sender of this transaction, i.e., the single-use deployment account.
-    > Thus we obtain an account that can broadcast that transaction, but we also have the warranty that nobody knows the private key of that account.
-4. Send exactly 0.08 ether to this single-use deployment account.
-5. Broadcast the deployment transaction.
+The CBC-1820 registry MUST be deployed separately on each Core network from the Ylem source in this specification. A canonical deployment MUST:
 
-This operation can be done on any chain, guaranteeing that the contract address is always the same and nobody can use that address with a different contract.
+1. Compile the registry with Ylem `^1.1.2`.
+2. Use the Core transaction format, the target `networkId`, and an address with the matching network prefix.
+3. Fund the deployment account with enough XCB to cover the current `energyPrice` and deployment `energyLimit`; this standard does not prescribe a fixed amount.
+4. Publish the verified runtime bytecode, deployment transaction hash, and registry ICAN address for that network.
 
-### Single-use Registry Deployment Account
-
-This account is generated by reverse engineering it from its signature for the transaction.
-This way no one knows the private key, but it is known that it is the valid signer of the deployment transaction.
-
-> To deploy the registry, 0.08 ether MUST be sent to this account *first*.
+Until canonical deployments are published, clients MUST treat the registry address as network configuration and MUST NOT assume that one address is valid across all Core networks.
 
 ### Registry Contract Address
 
-The contract has the address above for every chain on which it is deployed.
+No canonical CBC-1820 registry address or Core deployment transaction is currently specified by this document. These values MUST be added for each supported Core network before the registry can be relied upon as shared infrastructure.
 
-Raw metadata of `./contracts/CBC1820Registry.sol`
-
-```json
-{
-        "compiler": {
-          "version": "0.5.3+commit.10d17f24"
-        },
-        "language": "Solidity",
-        "output": {
-          "abi": [
-            {
-              "constant": false,
-              "inputs": [
-                {
-                  "name": "_addr",
-                  "type": "address"
-                },
-                {
-                  "name": "_interfaceHash",
-                  "type": "bytes32"
-                },
-                {
-                  "name": "_implementer",
-                  "type": "address"
-                }
-              ],
-              "name": "setInterfaceImplementer",
-              "outputs": [],
-              "payable": false,
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "constant": true,
-              "inputs": [
-                {
-                  "name": "_addr",
-                  "type": "address"
-                }
-              ],
-              "name": "getManager",
-              "outputs": [
-                {
-                  "name": "",
-                  "type": "address"
-                }
-              ],
-              "payable": false,
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "constant": false,
-              "inputs": [
-                {
-                  "name": "_addr",
-                  "type": "address"
-                },
-                {
-                  "name": "_newManager",
-                  "type": "address"
-                }
-              ],
-              "name": "setManager",
-              "outputs": [],
-              "payable": false,
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "constant": true,
-              "inputs": [
-                {
-                  "name": "_interfaceName",
-                  "type": "string"
-                }
-              ],
-              "name": "interfaceHash",
-              "outputs": [
-                {
-                  "name": "",
-                  "type": "bytes32"
-                }
-              ],
-              "payable": false,
-              "stateMutability": "pure",
-              "type": "function"
-            },
-            {
-              "constant": false,
-              "inputs": [
-                {
-                  "name": "_contract",
-                  "type": "address"
-                },
-                {
-                  "name": "_interfaceId",
-                  "type": "bytes4"
-                }
-              ],
-              "name": "updateCBC165Cache",
-              "outputs": [],
-              "payable": false,
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "constant": true,
-              "inputs": [
-                {
-                  "name": "_addr",
-                  "type": "address"
-                },
-                {
-                  "name": "_interfaceHash",
-                  "type": "bytes32"
-                }
-              ],
-              "name": "getInterfaceImplementer",
-              "outputs": [
-                {
-                  "name": "",
-                  "type": "address"
-                }
-              ],
-              "payable": false,
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "constant": true,
-              "inputs": [
-                {
-                  "name": "_contract",
-                  "type": "address"
-                },
-                {
-                  "name": "_interfaceId",
-                  "type": "bytes4"
-                }
-              ],
-              "name": "implementsCBC165InterfaceNoCache",
-              "outputs": [
-                {
-                  "name": "",
-                  "type": "bool"
-                }
-              ],
-              "payable": false,
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "constant": true,
-              "inputs": [
-                {
-                  "name": "_contract",
-                  "type": "address"
-                },
-                {
-                  "name": "_interfaceId",
-                  "type": "bytes4"
-                }
-              ],
-              "name": "implementsCBC165Interface",
-              "outputs": [
-                {
-                  "name": "",
-                  "type": "bool"
-                }
-              ],
-              "payable": false,
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "anonymous": false,
-              "inputs": [
-                {
-                  "indexed": true,
-                  "name": "addr",
-                  "type": "address"
-                },
-                {
-                  "indexed": true,
-                  "name": "interfaceHash",
-                  "type": "bytes32"
-                },
-                {
-                  "indexed": true,
-                  "name": "implementer",
-                  "type": "address"
-                }
-              ],
-              "name": "InterfaceImplementerSet",
-              "type": "event"
-            },
-            {
-              "anonymous": false,
-              "inputs": [
-                {
-                  "indexed": true,
-                  "name": "addr",
-                  "type": "address"
-                },
-                {
-                  "indexed": true,
-                  "name": "newManager",
-                  "type": "address"
-                }
-              ],
-              "name": "ManagerChanged",
-              "type": "event"
-            }
-          ],
-          "devdoc": {
-            "author": "Jordi Baylina and Jacques Dafflon",
-            "methods": {
-              "getInterfaceImplementer(address,bytes32)": {
-                "params": {
-                  "_addr": "Address being queried for the implementer of an interface. (If '_addr' is the zero address then 'msg.sender' is assumed.)",
-                  "_interfaceHash": "Sha256 hash of the name of the interface as a string. E.g., 'web3.utils.sha256(\"CBC777TokensRecipient\")' for the 'CBC777TokensRecipient' interface."
-                },
-                "return": "The address of the contract which implements the interface '_interfaceHash' for '_addr' or '0' if '_addr' did not register an implementer for this interface."
-              },
-              "getManager(address)": {
-                "params": {
-                  "_addr": "Address for which to return the manager."
-                },
-                "return": "Address of the manager for a given address."
-              },
-              "implementsCBC165Interface(address,bytes4)": {
-                "params": {
-                  "_contract": "Address of the contract to check.",
-                  "_interfaceId": "CBC165 interface to check."
-                },
-                "return": "True if '_contract' implements '_interfaceId', false otherwise."
-              },
-              "implementsCBC165InterfaceNoCache(address,bytes4)": {
-                "params": {
-                  "_contract": "Address of the contract to check.",
-                  "_interfaceId": "CBC165 interface to check."
-                },
-                "return": "True if '_contract' implements '_interfaceId', false otherwise."
-              },
-              "interfaceHash(string)": {
-                "params": {
-                  "_interfaceName": "Name of the interface."
-                },
-                "return": "The sha256 hash of an interface name."
-              },
-              "setInterfaceImplementer(address,bytes32,address)": {
-                "params": {
-                  "_addr": "Address for which to set the interface. (If '_addr' is the zero address then 'msg.sender' is assumed.)",
-                  "_implementer": "Contract address implementing '_interfaceHash' for '_addr'.",
-                  "_interfaceHash": "Sha256 hash of the name of the interface as a string. E.g., 'web3.utils.sha256(\"CBC777TokensRecipient\")' for the 'CBC777TokensRecipient' interface."
-                }
-              },
-              "setManager(address,address)": {
-                "params": {
-                  "_addr": "Address for which to set the new manager.",
-                  "_newManager": "Address of the new manager for 'addr'. (Pass '0x0' to reset the manager to '_addr'.)"
-                }
-              },
-              "updateCBC165Cache(address,bytes4)": {
-                "params": {
-                  "_contract": "Address of the contract for which to update the cache.",
-                  "_interfaceId": "CBC165 interface for which to update the cache."
-                }
-              }
-            },
-            "title": "CBC1820 Pseudo-introspection Registry Contract"
-          },
-          "userdoc": {
-            "methods": {
-              "getInterfaceImplementer(address,bytes32)": {
-                "notice": "Query if an address implements an interface and through which contract."
-              },
-              "getManager(address)": {
-                "notice": "Get the manager of an address."
-              },
-              "implementsCBC165InterfaceNoCache(address,bytes4)": {
-                "notice": "Checks whether a contract implements an CBC165 interface or not without using nor updating the cache."
-              },
-              "interfaceHash(string)": {
-                "notice": "Compute the sha256 hash of an interface given its name."
-              },
-              "setInterfaceImplementer(address,bytes32,address)": {
-                "notice": "Sets the contract which implements a specific interface for an address. Only the manager defined for that address can set it. (Each address is the manager for itself until it sets a new manager.)"
-              },
-              "setManager(address,address)": {
-                "notice": "Sets '_newManager' as manager for '_addr'. The new manager will be able to call 'setInterfaceImplementer' for '_addr'."
-              },
-              "updateCBC165Cache(address,bytes4)": {
-                "notice": "Updates the cache with whether the contract implements an CBC165 interface or not."
-              }
-            },
-            "notice": "This contract is the official implementation of the CBC1820 Registry."
-          }
-        },
-        "settings": {
-          "compilationTarget": {
-            "./contracts/CBC1820Registry.sol": "CBC1820Registry"
-          },
-          "evmVersion": "byzantium",
-          "libraries": {},
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "remappings": []
-        },
-        "sources": {
-          "./contracts/CBC1820Registry.sol": {
-            "content": "…",
-            "sha256": "0x64025ecebddb6e126a5075c1fd6c01de2840492668e2909cef7157040a9d1945"
-          }
-        },
-        "version": 1
-      }
-```
+Compiler metadata and deployment bytecode are not embedded in this document. Canonical artifacts MUST be generated from the Ylem source above and published with each network deployment.
 
 ### Interface Name
 
-Any interface name is hashed using `sha256` and sent to `getInterfaceImplementer()`.
+Any interface name is hashed using `keccak256` and sent to `getInterfaceImplementer()`.
 
 If the interface is part of a standard, it is best practice to explicitly state the interface name and link to this published CBC-1820 such that other people don't have to come here to look up these rules.
 
@@ -3936,12 +3814,12 @@ For convenience, the registry provides a function to compute the hash on-chain:
 function interfaceHash(string _interfaceName) public pure returns(bytes32)
 ```
 
-Compute the sha256 hash of an interface given its name.
+Compute the keccak256 hash of an interface given its name.
 
-> **identifier:** `65ba36c1`
+> **identifier:** `408aa674`
 > **parameters**
 > **_interfaceName**: Name of the interface.
-> **returns:** The `sha256` hash of an interface name.
+> **returns:** The `keccak256` hash of an interface name.
 
 #### Approved CBCs
 
@@ -3950,10 +3828,10 @@ The meaning of this interface SHOULD be defined in the specified CBC.
 
 Examples:
 
-- `sha256("CBC20Token")`
-- `sha256("CBC777Token")`
-- `sha256("CBC777TokensSender")`
-- `sha256("CBC777TokensRecipient")`
+- `keccak256("CBC20Token")`
+- `keccak256("CBC777Token")`
+- `keccak256("CBC777TokensSender")`
+- `keccak256("CBC777TokensRecipient")`
 
 #### CBC-165 Compatible Interfaces
 
@@ -3976,7 +3854,7 @@ If the result is not cached a direct lookup on the contract address is performed
 *NOTE*: If the result is not cached or the cached value is out-of-date, the cache MUST be updated manually by calling `updateCBC165Cache` with the contract address.
 (See CBC-165 Cache for more details.)
 
-> **identifier:** `f712f3e8`
+> **identifier:** `6d99e76a`
 > **parameters**
 > **_contract**: Address of the contract to check.
 > **_interfaceId**: CBC-165 interface to check.
@@ -3988,7 +3866,7 @@ function implementsCBC165InterfaceNoCache(address _contract, bytes4 _interfaceId
 
 Checks whether a contract implements an CBC-165 interface or not without using nor updating the cache.
 
-> **identifier:** `b7056765`
+> **identifier:** `ee399005`
 > **parameters**
 > **_contract**: Address of the contract to check.
 > **_interfaceId**: CBC-165 interface to check.
@@ -4008,7 +3886,7 @@ The cache update MUST be done using the `updateCBC165Cache` function:
 function updateCBC165Cache(address _contract, bytes4 _interfaceId) external
 ```
 
-> **identifier:** `a41e7d51`
+> **identifier:** `d3d23aa5`
 > **parameters**
 > **_contract**: Address of the contract for which to update the cache.
 > **_interfaceId**: CBC-165 interface for which to update the cache.
@@ -4042,10 +3920,10 @@ Only the `manager` defined for that address can set it.
 *NOTE*: The `_addr` MAY be `0`, then `msg.sender` is assumed.
 This default value simplifies interactions via multisigs where the data of the transaction to sign is constant regardless of the address of the multisig instance.
 
-> **identifier:** `29965a1d`
+> **identifier:** `d40731a8`
 > **parameters**
 > **_addr**: Address for which to set the interface. (If `_addr` is the zero address then `msg.sender` is assumed.)
-> **_interfaceHash**: Sha256 hash of the name of the interface as a string, for example `web3.utils.sha256('CBC777TokensRecipient')` for the CBC777TokensRecipient interface.
+> **_interfaceHash**: Core SHA3-256 hash of the name of the interface as a string, for example `web3.utils.keccak256('CBC777TokensRecipient')` for the CBC777TokensRecipient interface.
 > **_implementer**: Contract implementing `_interfaceHash` for `_addr`.
 
 ### Get An Implementation Of An Interface For An Address
@@ -4059,15 +3937,15 @@ function getInterfaceImplementer(address _addr, bytes32 _interfaceHash) external
 Query if an address implements an interface and through which contract.
 
 *NOTE*: If the last 28 bytes of the `_interfaceHash` are zeroes (`0`), then the first 4 bytes are considered an CBC-165 interface and the registry SHALL forward the call to the contract at `_addr` to see if it implements the CBC-165 interface (the first 4 bytes of `_interfaceHash`).
-The registry SHALL also cache CBC-165 queries to reduce energy consumption. Anyone MAY call the `cbc165UpdateCache` function to update whether a contract implements an interface or not.
+The registry SHALL also cache CBC-165 queries to reduce energy consumption. Anyone MAY call the `updateCBC165Cache` function to update whether a contract implements an interface or not.
 
 *NOTE*: The `_addr` MAY be `0`, then `msg.sender` is assumed.
 This default value is consistent with the behavior of the `setInterfaceImplementer` function and simplifies interactions via multisigs where the data of the transaction to sign is constant regardless of the address of the multisig instance.
 
-> **identifier:** `aabbb8ca`
+> **identifier:** `94da2ef8`
 > **parameters**
 > **_addr**: Address being queried for the implementer of an interface. (If `_addr` is the zero address then `msg.sender` is assumed.)
-> **_interfaceHash**: sha256 hash of the name of the interface as a string. E.g. `web3.utils.sha256('CBC777Token')`
+> **_interfaceHash**: keccak256 hash of the name of the interface as a string. E.g. `web3.utils.keccak256('CBC777Token')`
 > **returns:** The address of the contract which implements the interface `_interfaceHash` for `_addr` or `0` if `_addr` did not register an implementer for this interface.
 
 ### Interface Implementation (`CBC1820ImplementerInterface`)
@@ -4075,7 +3953,7 @@ This default value is consistent with the behavior of the `setInterfaceImplement
 ``` solidity
 interface CBC1820ImplementerInterface {
     /// @notice Indicates whether the contract implements the interface `interfaceHash` for the address `addr` or not.
-    /// @param interfaceHash sha256 hash of the name of the interface
+    /// @param interfaceHash keccak256 hash of the name of the interface
     /// @param addr Address for which the contract will implement the interface
     /// @return CBC1820_ACCEPT_MAGIC only if the contract implements `interfaceHash` for the address `addr`.
     function canImplementInterfaceForAddress(bytes32 interfaceHash, address addr) external view returns(bytes32);
@@ -4094,16 +3972,16 @@ Indicates whether a contract implements an interface (`interfaceHash`) for a giv
 If a contract implements the interface (`interfaceHash`) for a given address (`addr`), it MUST return `CBC1820_ACCEPT_MAGIC` when called with the `addr` and the `interfaceHash`.
 If it does not implement the `interfaceHash` for a given address (`addr`), it MUST NOT return `CBC1820_ACCEPT_MAGIC`.
 
-> **identifier:** `f0083250`
+> **identifier:** `dab359c1`
 > **parameters**
 > **interfaceHash**: Hash of the interface which is implemented
 > **addr**: Address for which the interface is implemented
 > **returns:** `CBC1820_ACCEPT_MAGIC` only if the contract implements `ìnterfaceHash` for the address `addr`.
 
-The special value `CBC1820_ACCEPT_MAGIC` is defined as the `sha256` hash of the string `"CBC1820_ACCEPT_MAGIC"`.
+The special value `CBC1820_ACCEPT_MAGIC` is defined as the `keccak256` hash of the string `"CBC1820_ACCEPT_MAGIC"`.
 
 ``` solidity
-bytes32 constant internal CBC1820_ACCEPT_MAGIC = sha256(abi.encodePacked("CBC1820_ACCEPT_MAGIC"));
+bytes32 constant internal CBC1820_ACCEPT_MAGIC = keccak256(abi.encodePacked("CBC1820_ACCEPT_MAGIC"));
 ```
 
 > The reason to return `CBC1820_ACCEPT_MAGIC` instead of a boolean is to prevent cases where a contract fails to implement the `canImplementInterfaceForAddress` but implements a fallback function which does not throw. In this case, since `canImplementInterfaceForAddress` does not exist, the fallback function is called instead, executed without throwing and returns `1`. Thus making it appear as if `canImplementInterfaceForAddress` returned `true`.
@@ -4117,7 +3995,7 @@ The registry can also act as a CBC-165 cache in order to save energy when lookin
 This cache is intentionally kept simple, without automatic cache update or invalidation.
 Anyone can easily and safely update the cache for any interface and any contract by calling the `updateCBC165Cache` function.
 
-The registry is deployed using a keyless deployment method relying on a single-use deployment address to ensure no one controls the registry, thereby ensuring trust.
+Canonical registry deployments MUST publish verified bytecode and network-specific addresses so clients can verify that each deployment matches this specification.
 
 ## Backward Compatibility
 
@@ -4148,13 +4026,11 @@ This proposal standardizes diamonds, which are modular smart contract systems th
 There are a number of different reasons to use diamonds. Here are some of them:
 
 1. **A single address for unlimited contract functionality.** Using a single address for contract functionality makes deployment, testing and integration with other smart contracts, software and user interfaces easier.
-2. **Your contract exceeds the 24KB maximum contract size.** You may have related functionality that it makes sense to keep in a single contract, or at a single contract address. A diamond does not have a max contract size.
+2. **Your contract exceeds the network's maximum contract size.** You may have related functionality that it makes sense to keep in a single contract, or at a single contract address. A diamond can exceed the per-contract size limit in aggregate because each facet is deployed separately.
 3. **A diamond provides a way to organize contract code and data.** You may want to build a contract system with a lot of functionality. A diamond provides a systematic way to isolate different functionality and connect them together and share data between them as needed in a energy-efficient way.
 4. **A diamond provides a way to upgrade functionality.** Upgradeable diamonds can be upgraded to add/replace/remove functionality. Because diamonds have no max contract size, there is no limit to the amount of functionality that can be added to diamonds over time. Diamonds can be upgraded without having to redeploy existing functionality. Parts of a diamond can be added/replaced/removed while leaving other parts alone.
 5. **A diamond can be immutable.** It is possible to deploy an immutable diamond or make an upgradeable diamond immutable at a later time.
 6. **A diamond can reuse deployed contracts.** Instead of deploying contracts to a blockchain, existing already deployed, onchain contracts can be used to create diamonds. Custom diamonds can be created from existing deployed contracts. This enables the creation of on-chain smart contract platforms and libraries.
-
-This standard is an improvement of CIP-1538. The same motivations of that standard apply to this standard.
 
 A deployed facet can be used by any number of diamonds.
 
@@ -4163,12 +4039,12 @@ A deployed facet can be used by any number of diamonds.
 ### Terms
 
 1. A **diamond** is a facade smart contract that `delegatecall`s into its facets to execute function calls. A diamond is stateful. Data is stored in the contract storage of a diamond.
-2. A **facet** is a stateless smart contract or Solidity library with external functions. A facet is deployed and one or more of its functions are added to one or more diamonds. A facet does not store data within its own contract storage but it can define state and read and write to the storage of one or more diamonds. The term facet comes from the diamond industry. It is a side, or flat surface of a diamond.
+2. A **facet** is a stateless smart contract or Ylem library with external functions. A facet is deployed and one or more of its functions are added to one or more diamonds. A facet does not store data within its own contract storage but it can define state and read and write to the storage of one or more diamonds. The term facet comes from the diamond industry. It is a side, or flat surface of a diamond.
 3. A **loupe facet** is a facet that provides introspection functions. In the diamond industry, a loupe is a magnifying glass that is used to look at diamonds.
 4. An **immutable function** is an external function that cannot be replaced or removed (because it is defined directly in the diamond, or because the diamond’s logic does not allow it to be modified).
 5. A **mapping** for the purposes of this CIP is an association between two things and does not refer to a specific implementation.
 
-The term **contract** is used loosely to mean a smart contract or deployed Solidity library.
+The term **contract** is used loosely to mean a smart contract or deployed Ylem library.
 
 When this CIP uses **function** without specifying internal or external, it means external function.
 
@@ -4217,19 +4093,19 @@ fallback() external payable {
 
 ### Storage
 
-A state variable or storage layout organizational pattern is needed because Solidity’s builtin storage layout system doesn’t support proxy contracts or diamonds. The particular layout of storage is not defined in this CIP, but may be defined by later proposals. Examples of storage layout patterns that work with diamonds are Diamond Storage and AppStorage.
+A state variable or storage layout organizational pattern is needed because Ylem’s builtin storage layout system doesn’t support proxy contracts or diamonds. The particular layout of storage is not defined in this CIP, but may be defined by later proposals. Examples of storage layout patterns that work with diamonds are Diamond Storage and AppStorage.
 
 Facets can share state variables by using the same structs at the same storage positions. Facets can share internal functions and libraries by inheriting the same contracts or using the same libraries. In these ways facets are separate, independent units but can share state and functionality.
 
-### Solidity Libraries as Facets
+### Ylem Libraries as Facets
 
-Smart contracts or deployed Solidity libraries can be facets of diamonds.
+Smart contracts or deployed Ylem libraries can be facets of diamonds.
 
-Only Solidity libraries that have one or more external functions can be deployed to a blockchain and be a facet.
+Only Ylem libraries that have one or more external functions can be deployed to a blockchain and be a facet.
 
-Solidity libraries that contain internal functions only cannot be deployed and cannot be a facet. Internal functions from Solidity libraries are included in the bytecode of facets and contracts that use them. Solidity libraries with internal functions only are useful for sharing internal functions between facets.
+Ylem libraries that contain internal functions only cannot be deployed and cannot be a facet. Internal functions from Ylem libraries are included in the bytecode of facets and contracts that use them. Ylem libraries with internal functions only are useful for sharing internal functions between facets.
 
-Solidity library facets have a few properties that match their use as facets:
+Ylem library facets have a few properties that match their use as facets:
 
 * They cannot be deleted.
 * They are stateless. They do not have contract storage.
@@ -4382,7 +4258,7 @@ Delegating function calls does have some energy overhead. This is mitigated in s
 1. Because diamonds do not have a max size limitation it is possible to add energy optimizing functions for use cases. For example someone could use a diamond to implement the CIP-721 standard and implement batch transfer functions to reduce energy (and make batch transfers more convenient).
 2. Some contract architectures require calling multiple contracts in one transaction. Energy savings can be realized by condensing those contracts into a single diamond and accessing contract storage directly.
 3. Facets can contain few external functions, reducing energy costs. Because it costs more energy to call a function in a contract with many functions than a contract with few functions.
-4. The Solidity optimizer can be set to a high setting causing more bytecode to be generated but the facets will use less energy when executed.
+4. The Ylem optimizer can be set to a high setting causing more bytecode to be generated but the facets will use less energy when executed.
 
 ### Versions of Functions
 
@@ -4390,7 +4266,7 @@ Software or a user can verify what version of a function is called by getting th
 
 ### Default Function
 
-Solidity provides the `fallback` function so that specific functionality can be executed when a function is called on a contract that does not exist in the contract. This same behavior can optionally be implemented in a diamond by implementing and using a default function, which is a function that is executed when a function is called on a diamond that does not exist in the diamond.
+Ylem provides the `fallback` function so that specific functionality can be executed when a function is called on a contract that does not exist in the contract. This same behavior can optionally be implemented in a diamond by implementing and using a default function, which is a function that is executed when a function is called on a diamond that does not exist in the diamond.
 
 A default function can be implemented a number of ways and this standard does not specify how it must be implemented.
 
@@ -4405,8 +4281,8 @@ A diamond has four standard functions called the loupe functions that are used t
 The loupe functions can be used for many things including:
 
 1. To show all functions used by a diamond.
-2. To query services like Etherscan or files to retrieve and show all source code used by a diamond.
-3. To query services like Etherscan or files to retrieve ABI information for a diamond.
+2. To query Core explorers or files to retrieve and show all source code used by a diamond.
+3. To query Core explorers or files to retrieve ABI information for a diamond.
 4. To test or verify that a transaction that adds/replaces/removes functions on a diamond succeeded.
 5. To find out what functions a diamond has before calling functions on it.
 6. To be used by tools and programming libraries to deploy and upgrade diamonds.
@@ -4421,13 +4297,13 @@ In some cases it might be necessary to call a function defined in a different fa
 
 1. Copy internal function code in one facet to the other facet.
 2. Put common internal functions in a contract that is inherited by multiple facets.
-3. Put common internal functions in a Solidity library and use the library in facets.
+3. Put common internal functions in a Ylem library and use the library in facets.
 4. A type safe way to call an external function defined in another facet is to do this: `MyOtherFacet(address(this)).myFunction(arg1, arg2)`
 5. A more energy-efficient way to call an external function defined in another facet is to use delegatecall. Here is an example of doing that:
 
     ```solidity
     DiamondStorage storage ds = diamondStorage();
-    bytes4 functionSelector = bytes4(sha256("myFunction(uint256)"));
+    bytes4 functionSelector = bytes4(keccak256("myFunction(uint256)"));
     // get facet address of function
     address facet = ds.selectorToFacet[functionSelector];
     bytes memory myFunctionCall = abi.encodeWithSelector(functionSelector, 4);
@@ -4516,7 +4392,7 @@ Compliant contracts MUST implement the following functions in addition to CBC-20
 
 ```solidity
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^1.1.2;
 
 interface ICBC2612 /* is ICBC20 */ {
     function permit(
@@ -4524,9 +4400,7 @@ interface ICBC2612 /* is ICBC20 */ {
         address spender,
         uint256 value,
         uint256 deadline,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
+        bytes calldata signature
     ) external;
 
     function nonces(address owner) external view returns (uint256);
@@ -4536,19 +4410,19 @@ interface ICBC2612 /* is ICBC20 */ {
 
 The semantics are as follows:
 
-For all addresses `owner`, `spender`, uint256s `value`, `deadline` and `nonce`, uint8 `v`, bytes32 `r` and `s`, a call to `permit(owner, spender, value, deadline, v, r, s)` MUST set `allowance[owner][spender]` to `value`, increment `nonces[owner]` by 1, and emit a corresponding `Approval` event, IF and ONLY IF all the following conditions are met:
+For all addresses `owner`, `spender`, uint256s `value`, `deadline` and `nonce`, and bytes `signature`, a call to `permit(owner, spender, value, deadline, signature)` MUST set `allowance[owner][spender]` to `value`, increment `nonces[owner]` by 1, and emit a corresponding `Approval` event, IF and ONLY IF all the following conditions are met:
 
 - The current blocktime is less than or equal to `deadline`.
-- `owner` is not the zero address.
+- Neither `owner` nor `spender` is `address(0)` or `Checksum.zeroAddress()`.
 - `nonces[owner]` (before the state update) is equal to `nonce`.
-- `r`, `s` and `v` is a valid secp256k1 signature from `owner` of the message:
+- `signature` is a valid 171-byte Core signature from `owner` of the message:
 
 ```solidity
-sha256(abi.encodePacked(
+keccak256(abi.encodePacked(
    hex"1901",
    DOMAIN_SEPARATOR,
-   sha256(abi.encode(
-            sha256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"),
+   keccak256(abi.encode(
+            keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"),
             owner,
             spender,
             value,
@@ -4557,15 +4431,15 @@ sha256(abi.encodePacked(
 ))
 ```
 
-where `DOMAIN_SEPARATOR` is defined according to CIP-712. The `DOMAIN_SEPARATOR` should be unique to the contract and chain to prevent replay attacks from other domains, and satisfy the requirements of CIP-712, but is otherwise unconstrained. A common choice for `DOMAIN_SEPARATOR` is:
+where `DOMAIN_SEPARATOR` is defined according to CIP-712. It MUST use the `EIP712Domain` type with `name`, `version`, `networkId`, and `verifyingContract`, making the separator unique to the contract and Core network. It can be calculated as follows:
 
 ```solidity
-DOMAIN_SEPARATOR = sha256(
+DOMAIN_SEPARATOR = keccak256(
     abi.encode(
-        sha256('CIP712Domain(string name,string version,uint256 chainId,address verifyingContract)'),
-        sha256(bytes(name)),
-        sha256(bytes(version)),
-        chainid,
+        keccak256('EIP712Domain(string name,string version,uint256 networkId,address verifyingContract)'),
+        keccak256(bytes(name)),
+        keccak256(bytes(version)),
+        block.chainid,
         address(this)
 ));
 ```
@@ -4575,10 +4449,10 @@ The message is the CIP-712 typed structure:
 ```json
 {
   "types": {
-    "CIP712Domain": [
+    "EIP712Domain": [
       { "name": "name", "type": "string" },
       { "name": "version", "type": "string" },
-      { "name": "chainId", "type": "uint256" },
+      { "name": "networkId", "type": "uint256" },
       { "name": "verifyingContract", "type": "address" }
     ],
     "Permit": [
@@ -4593,7 +4467,7 @@ The message is the CIP-712 typed structure:
   "domain": {
     "name": cbc20name,
     "version": version,
-    "chainId": chainid,
+    "networkId": networkId,
     "verifyingContract": tokenAddress
   },
   "message": {
@@ -4627,7 +4501,7 @@ CBC-2612 aligns with the Uniswap V2 implementation and the CBC-20 standard, usin
 
 ## Reference Implementation
 
-A reference implementation can be provided upon request, following the CBC-2612 interface and best practices for signature verification and nonce management.
+A Core implementation is available in the [xToken repository](https://github.com/xmoneyx/xtoken/blob/fix/dependencies/src/v2/EIP2612.sol). It uses Core OpenZeppelin's `EDDSA` helpers, a single 171-byte signature, and the CIP-712 domain described above.
 
 ## Rationale
 
@@ -4637,7 +4511,7 @@ CBC-2612 improves UX and composability by enabling energyless approvals, reducin
 
 - Implementers must ensure signatures are unique and cannot be replayed (use nonces).
 - The `permit` function must be resistant to signature malleability.
-- The `DOMAIN_SEPARATOR` must be unique per contract and chain.
+- The `DOMAIN_SEPARATOR` must be unique per contract and Core network.
 - Upgradability and access control best practices should be followed.
 
 ## Copyright
@@ -4666,7 +4540,7 @@ The function enables senders to make energyless transactions, while reducing the
 
 ## Motivation
 
-Meta transactions have proven useful as a solution for Ethereum accounts that don't have any energy, but hold CBC-20 tokens and would like to transfer them (energyless transactions).
+Meta transactions have proven useful as a solution for Core accounts that don't have any XCB, but hold CBC-20 tokens and would like to transfer them (energyless transactions).
 
 The current meta transaction relayer implementations only allow relaying one meta transaction at a time. Some also allow batched meta transactions from the same sender. But none offers batched meta transactions from **multiple** senders.
 
@@ -4716,7 +4590,7 @@ The following data is OPTIONAL to be sent to the function, because it can be ext
 The pseudocode for creating a hash of meta transaction data is the following:
 
 ```solidity
-sha256(address(sender)
+keccak256(address(sender)
        ++ address(recipient)
        ++ uint256(amount)
        ++ uint256(relayerFee)
@@ -4732,7 +4606,7 @@ The created hash MUST then be signed with the sender's private key.
 ### Validation rules
 
 - Nonce of a new transaction MUST always be bigger by exactly 1 from the nonce of the last successfully processed meta transaction of the same sender to the same token contract.
-- Sending to and from a 0x0 address MUST be prohibited.
+- Sending to and from either `address(0)` or `Checksum.zeroAddress()` MUST be prohibited.
 - A meta transaction MUST be processed before the expiration date.
 - Each sender's token balance MUST be equal or greater than the sum of their respective meta transaction token amount and relayer fee.
 - A transaction where at least one meta transaction in the batch does not satisfy the above requirements MUST not be reverted. Instead, a failed meta transaction MUST be skipped or ignored.
@@ -4742,14 +4616,17 @@ The created hash MUST then be signed with the sender's private key.
 The `processMetaBatch()` function MUST have the following interface:
 
 ```solidity
-function processMetaBatch(address[] memory senders,
-                          address[] memory recipients,
-                          uint256[] memory amounts,
-                          uint256[] memory relayerFees,
-                          uint256[] memory blocks,
-                          uint8[] memory sigV,
-                          bytes32[] memory sigR,
-                          bytes32[] memory sigS) public returns (bool);
+// SPDX-License-Identifier: MIT
+pragma solidity ^1.1.2;
+
+interface ICBC3005 {
+    function processMetaBatch(address[] calldata senders,
+                              address[] calldata recipients,
+                              uint256[] calldata amounts,
+                              uint256[] calldata relayerFees,
+                              uint256[] calldata blocks,
+                              bytes[] calldata signatures) external returns (bool);
+}
 ```
 
 The overview of parameters that are passed:
@@ -4757,9 +4634,9 @@ The overview of parameters that are passed:
 - `senders`: an array of meta transaction sender addresses (token senders)
 - `recipients`: an array of token recipients addresses
 - `amounts`: an array of token amounts that are sent from each sender to each recipient, respectively
-- `relayerFees`: an array of the relayer fees paid in tokens by senders. The fee receiver is a relayer (`msg.address`)
+- `relayerFees`: an array of the relayer fees paid in tokens by senders. The fee receiver is a relayer (`msg.sender`)
 - `blocks`: an array of block numbers that represent an expiration date by which the meta transaction must be processed (alternatively, a timestamp could be used instead of a block number)
-- `sigV`, `sigR`, `sigS`: three arrays that represent parts of meta transaction signatures
+- `signatures`: an array of complete 171-byte Core signatures
 
 Each entry in each of the arrays MUST represent data from one meta transaction. The order of the data is very important. Data from a single meta transaction MUST have the same index in every array.
 
@@ -4803,9 +4680,7 @@ function processMetaBatch(address[] memory senders,
                           uint256[] memory amounts,
                           uint256[] memory relayerFees,
                           uint256[] memory blocks,
-                          uint8[] memory sigV,
-                          bytes32[] memory sigR,
-                          bytes32[] memory sigS) public returns (bool) {
+                          bytes[] memory signatures) public returns (bool) {
 
     address sender;
     uint256 newNonce;
@@ -4818,8 +4693,8 @@ function processMetaBatch(address[] memory senders,
         sender = senders[i];
         newNonce = _metaNonces[sender] + 1;
 
-        if(sender == address(0) || recipients[i] == address(0)) {
-            continue; // sender or recipient is 0x0 address, skip this meta tx
+        if(_isZeroAddress(sender) || _isZeroAddress(recipients[i])) {
+            continue; // sender or recipient is a Core zero address, skip this meta tx
         }
 
         // the meta tx should be processed until (including) the specified block number, otherwise it is invalid
@@ -4833,8 +4708,8 @@ function processMetaBatch(address[] memory senders,
         }
 
         // check if the signature is valid
-        msgHash = sha256(abi.encode(sender, recipients[i], amounts[i], relayerFees[i], newNonce, blocks[i], address(this), msg.sender));
-        if(sender != ecrecover(sha256(abi.encodePacked("\x19Ethereum Signed Message:\n32", msgHash)), sigV[i], sigR[i], sigS[i])) {
+        msgHash = keccak256(abi.encode(sender, recipients[i], amounts[i], relayerFees[i], newNonce, blocks[i], address(this), msg.sender));
+        if(sender != ecrecover(keccak256(abi.encodePacked("\x19Core Signed Message:\n32", msgHash)), signatures[i])) {
             continue; // if sig is not valid, skip to the next meta tx
         }
 
@@ -4887,7 +4762,7 @@ As you can see, the `processMetaBatch()` function in the reference implementatio
 - an array of **amounts**
 - an array of **relayer fees** (relayer is `msg.sender`)
 - an array of **block numbers** (a due "date" for meta tx to be processed)
-- Three arrays that represent parts of a **signature** (v, r, s)
+- an array of complete 171-byte Core **signatures**
 
 **Each item** in these arrays represents **data of one meta transaction**. That's why the **correct order** in the arrays is very important.
 
@@ -4901,7 +4776,7 @@ A different approach would be to bitpack all data of a meta transaction into one
 
 ### Why is nonce not one of the parameters in the reference implementation?
 
-Meta nonce is used for constructing a signed hash (see the `msgHash` line where a `sha256` hash is constructed - you'll find a nonce there).
+Meta nonce is used for constructing a signed hash (see the `msgHash` line where a `keccak256` hash is constructed - you'll find a nonce there).
 
 Since a new nonce has to always be bigger than the previous one by exactly 1, there's no need to include it as a parameter array in the `processMetaBatch()` function, because its value can be deduced.
 
@@ -4954,9 +4829,9 @@ Signing a meta transaction and validating the signature is crucial for this whol
 The `processMetaBatch()` function validates a meta transaction signature, and if it's **invalid**, the meta transaction is **skipped** (but the whole on-chain transaction is **not reverted**).
 
 ```solidity
-msgHash = sha256(abi.encode(sender, recipients[i], amounts[i], relayerFees[i], newNonce, blocks[i], address(this), msg.sender));
+msgHash = keccak256(abi.encode(sender, recipients[i], amounts[i], relayerFees[i], newNonce, blocks[i], address(this), msg.sender));
 
-if(sender != ecrecover(sha256(abi.encodePacked("\x19Ethereum Signed Message:\n32", msgHash)), sigV[i], sigR[i], sigS[i])) {
+if(sender != ecrecover(keccak256(abi.encodePacked("\x19Core Signed Message:\n32", msgHash)), signatures[i])) {
     continue; // if sig is not valid, skip to the next meta tx
 }
 ```
@@ -4993,16 +4868,16 @@ function processMetaBatch(...
 
 ### Front-running attack
 
-A malicious relayer could scout the Ethereum mempool to steal meta transactions and front-run the original relayer.
+A malicious relayer could scout the Core transaction pool to steal meta transactions and front-run the original relayer.
 
-**Solution:** The protection that `processMetaBatch()` function uses is that it requires the meta transaction sender to add the relayer's Ethereum address as one of the values in the hash (which is then signed).
+**Solution:** The protection that `processMetaBatch()` function uses is that it requires the meta transaction sender to add the relayer's Core address as one of the values in the hash (which is then signed).
 
 When the `processMetaBatch()` function generates a hash it includes the `msg.sender` address in it:
 
 ```solidity
-msgHash = sha256(abi.encode(sender, recipients[i], amounts[i], relayerFees[i], newNonce, blocks[i], address(this), msg.sender));
+msgHash = keccak256(abi.encode(sender, recipients[i], amounts[i], relayerFees[i], newNonce, blocks[i], address(this), msg.sender));
 
-if(sender != ecrecover(sha256(abi.encodePacked("\x19Ethereum Signed Message:\n32", msgHash)), sigV[i], sigR[i], sigS[i])) {
+if(sender != ecrecover(keccak256(abi.encodePacked("\x19Core Signed Message:\n32", msgHash)), signatures[i])) {
     continue; // if sig is not valid, skip to the next meta tx
 }
 ```
@@ -5029,7 +4904,7 @@ At a minimum, relayers need to share this meta transaction data (in order to det
 
 The relayer could trick the meta transaction sender into adding too big due block number - this means a block by which the meta transaction must be processed. The block number could be far in the future, for example, 10 years in the future. This means that the relayer would have 10 years to submit the meta transaction.
 
-**One way** to solve this problem is by adding an upper bound constraint for a block number within the smart contract. For example, we could say that the specified due block number must not be bigger than 100'000 blocks from the current one (this is around 17 days in the future if we assume 15 seconds block time).
+**One way** to solve this problem is by adding an upper bound constraint for a block number within the smart contract. For example, we could say that the specified due block number must not be bigger than 100'000 blocks from the current one.
 
 ```solidity
 // the meta tx should be processed until (including) the specified block number, otherwise it is invalid
@@ -5067,7 +4942,7 @@ A set of functions to enable meta-transactions and atomic interactions with CBC-
 This enables the user to:
 
 - delegate the energy payment to someone else,
-- pay for energy in the token itself rather than in CBC,
+- pay for energy in the token itself rather than in XCB,
 - perform one or more token transfers and other operations in a single atomic transaction,
 - transfer CBC-20 tokens to another address, and have the recipient submit the transaction,
 - batch multiple transactions with minimal overhead, and
@@ -5089,23 +4964,29 @@ This can be especially problematic if the energy prices are very high and transa
 
 The CBC-20 allowance mechanism is susceptible to the multiple withdrawal attack, and encourages antipatterns such as the use of the "infinite" allowance. The wide-prevalence of upgradeable contracts have made the conditions favorable for these attacks to happen in the wild.
 
-The deficiencies of the CBC-20 allowance pattern brought about the development of alternative token standards such as the CBC-777 and CBC-677. However, they haven't been able to gain much adoption due to compatibility and potential security issues.
+The deficiencies of the CBC-20 allowance pattern brought about the development of alternative token standards such as CBC-777. However, they haven't been able to gain much adoption due to compatibility and potential security issues.
 
 ## Specification
 
-### Event
+### Interface
 
 ```solidity
-event AuthorizationUsed(
-    address indexed authorizer,
-    bytes32 indexed nonce
-);
+// SPDX-License-Identifier: MIT
+pragma solidity ^1.1.2;
 
-// sha256("TransferWithAuthorization(address from,address to,uint256 value,uint256 validAfter,uint256 validBefore,bytes32 nonce)")
-bytes32 public constant TRANSFER_WITH_AUTHORIZATION_TYPEHASH = 0x7c7c6cdb67a18743f49ec6fa9b35f50d52ed05cbed4cc592e13b44501c1a2267;
+abstract contract ICBC3009 {
+    event AuthorizationUsed(
+        address indexed authorizer,
+        bytes32 indexed nonce
+    );
 
-// sha256("ReceiveWithAuthorization(address from,address to,uint256 value,uint256 validAfter,uint256 validBefore,bytes32 nonce)")
-bytes32 public constant RECEIVE_WITH_AUTHORIZATION_TYPEHASH = 0xd099cc98ef71107a616c4f0f941f04c322d8e254fe26b3c6668db87aae413de8;
+    // keccak256("TransferWithAuthorization(address from,address to,uint256 value,uint256 validAfter,uint256 validBefore,bytes32 nonce)")
+    bytes32 public constant TRANSFER_WITH_AUTHORIZATION_TYPEHASH =
+        0x9d376c88a2a578a58e393a82b4e9f8fd6827fbc3fefda07e6c245208f172c6d5;
+
+    // keccak256("ReceiveWithAuthorization(address from,address to,uint256 value,uint256 validAfter,uint256 validBefore,bytes32 nonce)")
+    bytes32 public constant RECEIVE_WITH_AUTHORIZATION_TYPEHASH =
+        0xe5b1053d7239a64a7f4b19e277dd6cd0f3a58ccfa14e164096e0c7e783587b4d;
 
 /**
  * @notice Returns the state of an authorization
@@ -5113,12 +4994,12 @@ bytes32 public constant RECEIVE_WITH_AUTHORIZATION_TYPEHASH = 0xd099cc98ef71107a
  * address
  * @param authorizer    Authorizer's address
  * @param nonce         Nonce of the authorization
- * @return True if the nonce is used
+ * @return True if the nonce is used or canceled
  */
-function authorizationState(
-    address authorizer,
-    bytes32 nonce
-) external view returns (bool);
+    function authorizationState(
+        address authorizer,
+        bytes32 nonce
+    ) external view virtual returns (bool);
 
 /**
  * @notice Execute a transfer with a signed authorization
@@ -5128,21 +5009,17 @@ function authorizationState(
  * @param validAfter    The time after which this is valid (unix time)
  * @param validBefore   The time before which this is valid (unix time)
  * @param nonce         Unique nonce
- * @param v             v of the signature
- * @param r             r of the signature
- * @param s             s of the signature
+ * @param signature     171-byte Core signature
  */
-function transferWithAuthorization(
-    address from,
-    address to,
-    uint256 value,
-    uint256 validAfter,
-    uint256 validBefore,
-    bytes32 nonce,
-    uint8 v,
-    bytes32 r,
-    bytes32 s
-) external;
+    function transferWithAuthorization(
+        address from,
+        address to,
+        uint256 value,
+        uint256 validAfter,
+        uint256 validBefore,
+        bytes32 nonce,
+        bytes calldata signature
+    ) external virtual;
 
 /**
  * @notice Receive a transfer with a signed authorization from the payer
@@ -5155,86 +5032,85 @@ function transferWithAuthorization(
  * @param validAfter    The time after which this is valid (unix time)
  * @param validBefore   The time before which this is valid (unix time)
  * @param nonce         Unique nonce
- * @param v             v of the signature
- * @param r             r of the signature
- * @param s             s of the signature
+ * @param signature     171-byte Core signature
  */
-function receiveWithAuthorization(
-    address from,
-    address to,
-    uint256 value,
-    uint256 validAfter,
-    uint256 validBefore,
-    bytes32 nonce,
-    uint8 v,
-    bytes32 r,
-    bytes32 s
-) external;
+    function receiveWithAuthorization(
+        address from,
+        address to,
+        uint256 value,
+        uint256 validAfter,
+        uint256 validBefore,
+        bytes32 nonce,
+        bytes calldata signature
+    ) external virtual;
+}
 ```
 
 **Optional:**
 
 ```solidity
-event AuthorizationCanceled(
-    address indexed authorizer,
-    bytes32 indexed nonce
-);
+// SPDX-License-Identifier: MIT
+pragma solidity ^1.1.2;
 
-// sha256("CancelAuthorization(address authorizer,bytes32 nonce)")
-bytes32 public constant CANCEL_AUTHORIZATION_TYPEHASH = 0x158b0a9edf7a828aad02f63cd515c68ef2f50ba807396f6d12842833a1597429;
+abstract contract ICBC3009Cancellation {
+    event AuthorizationCanceled(
+        address indexed authorizer,
+        bytes32 indexed nonce
+    );
+
+    // keccak256("CancelAuthorization(address authorizer,bytes32 nonce)")
+    bytes32 public constant CANCEL_AUTHORIZATION_TYPEHASH =
+        0xbdf4caf0e95f58bce6aa01a60e4d47bdb240c01f81ea450b7d8354a78ee6fc5c;
 
 /**
  * @notice Attempt to cancel an authorization
  * @param authorizer    Authorizer's address
  * @param nonce         Nonce of the authorization
- * @param v             v of the signature
- * @param r             r of the signature
- * @param s             s of the signature
+ * @param signature     171-byte Core signature
  */
-function cancelAuthorization(
-    address authorizer,
-    bytes32 nonce,
-    uint8 v,
-    bytes32 r,
-    bytes32 s
-) external;
+    function cancelAuthorization(
+        address authorizer,
+        bytes32 nonce,
+        bytes calldata signature
+    ) external virtual;
+}
 ```
 
-The arguments `v`, `r`, and `s` must be obtained using the CIP-712 typed message signing spec.
+The `signature` argument MUST contain the complete 171-byte Core signature obtained using the CIP-712 typed message signing specification. It MUST NOT be split into an Ethereum-style `(v, r, s)` tuple.
 
 **Example:**
 
 ```solidity
-DomainSeparator := Sha256(ABIEncode(
-  Sha256(
-    "CIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
+DomainSeparator := Keccak256(ABIEncode(
+  Keccak256(
+    "EIP712Domain(string name,string version,uint256 networkId,address verifyingContract)"
   ),
-  Sha256("USD Coin"),                      // name
-  Sha256("2"),                             // version
-  1,                                          // chainId
-  0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48  // verifyingContract
+  Keccak256("USD Coin"), // name
+  Keccak256("2"),        // version
+  1,                      // Core networkId
+  TokenAddress            // 22-byte Core verifyingContract
 ))
 ```
 
-With the domain separator, the typehash, which is used to identify the type of the CIP-712 message being used, and the values of the parameters, you are able to derive a Sha-256 hash digest which can then be signed using the token holder's private key.
+With the domain separator, the typehash, which is used to identify the type of the CIP-712 message being used, and the values of the parameters, a Core SHA3-256 digest can be derived and signed using the token holder's private key. In Ylem, `keccak256` computes Core SHA3-256.
 
 **Example:**
 
 ```solidity
 // Transfer With Authorization
-TypeHash := Sha256(
+TypeHash := Keccak256(
   "TransferWithAuthorization(address from,address to,uint256 value,uint256 validAfter,uint256 validBefore,bytes32 nonce)"
 )
 Params := { From, To, Value, ValidAfter, ValidBefore, Nonce }
 
 // ReceiveWithAuthorization
-TypeHash := Sha256(
+TypeHash := Keccak256(
   "ReceiveWithAuthorization(address from,address to,uint256 value,uint256 validAfter,uint256 validBefore,bytes32 nonce)"
 )
 Params := { From, To, Value, ValidAfter, ValidBefore, Nonce }
 
 // CancelAuthorization
-TypeHash := Sha256(
+TypeHash := Keccak256(
   "CancelAuthorization(address authorizer,bytes32 nonce)"
 )
 Params := { Authorizer, Nonce }
@@ -5242,11 +5118,11 @@ Params := { Authorizer, Nonce }
 
 ```solidity
 // "‖" denotes concatenation.
-Digest := Keecak256(
-  0x1901 ‖ DomainSeparator ‖ Sha256(ABIEncode(TypeHash, Params...))
+Digest := Keccak256(
+  0x1901 ‖ DomainSeparator ‖ Keccak256(ABIEncode(TypeHash, Params...))
 )
 
-{ v, r, s } := Sign(Digest, PrivateKey)
+Signature := Sign(Digest, PrivateKey) // 171-byte Core signature blob
 ```
 
 Smart contract functions that wrap `receiveWithAuthorization` call may choose to reduce the number of arguments by accepting the full ABI-encoded set of arguments for the `receiveWithAuthorization` call as a single argument of the type `bytes`.
@@ -5254,8 +5130,8 @@ Smart contract functions that wrap `receiveWithAuthorization` call may choose to
 **Example:**
 
 ```solidity
-// sha256("receiveWithAuthorization(address,address,uint256,uint256,uint256,bytes32,uint8,bytes32,bytes32)")[0:4]
-bytes4 private constant _RECEIVE_WITH_AUTHORIZATION_SELECTOR = 0xef55bec6;
+// keccak256("receiveWithAuthorization(address,address,uint256,uint256,uint256,bytes32,bytes)")[0:4]
+bytes4 private constant _RECEIVE_WITH_AUTHORIZATION_SELECTOR = 0x95b70f09;
 
 function deposit(address token, bytes calldata receiveAuthorization)
     external
@@ -5279,19 +5155,19 @@ function deposit(address token, bytes calldata receiveAuthorization)
 }
 ```
 
-### Use with web3 providers
+### Use with Core providers
 
-The signature for an authorization can be obtained using a web3 provider with the `eth_signTypedData{_v4}` method.
+The signature for an authorization can be obtained using a Core provider with the `xcb_signTypedData_v4` method.
 
 **Example:**
 
 ```javascript
 const data = {
   types: {
-    CIP712Domain: [
+    EIP712Domain: [
       { name: "name", type: "string" },
       { name: "version", type: "string" },
-      { name: "chainId", type: "uint256" },
+      { name: "networkId", type: "uint256" },
       { name: "verifyingContract", type: "address" },
     ],
     TransferWithAuthorization: [
@@ -5306,7 +5182,7 @@ const data = {
   domain: {
     name: tokenName,
     version: tokenVersion,
-    chainId: selectedChainId,
+    networkId: selectedNetworkId,
     verifyingContract: tokenAddress,
   },
   primaryType: "TransferWithAuthorization",
@@ -5320,15 +5196,13 @@ const data = {
   },
 };
 
-const signature = await ethereum.request({
-  method: "eth_signTypedData_v4",
+const signature = await provider.request({
+  method: "xcb_signTypedData_v4",
   params: [userAddress, JSON.stringify(data)],
 });
-
-const v = "0x" + signature.slice(130, 132);
-const r = signature.slice(0, 66);
-const s = "0x" + signature.slice(66, 130);
 ```
+
+The returned value is passed to the contract unchanged as the 171-byte `signature` argument.
 
 ## Rationale
 
@@ -5336,7 +5210,7 @@ const s = "0x" + signature.slice(66, 130);
 
 One might say transaction ordering is one reason why sequential nonces are preferred. However, sequential nonces do not actually help achieve transaction ordering for meta transactions in practice:
 
-- For native Ethereum transactions, when a transaction with a nonce value that is too-high is submitted to the network, it will stay pending until the transactions consuming the lower unused nonces are confirmed.
+- For native Core transactions, when a transaction with a nonce value that is too high is submitted to the network, it will stay pending until the transactions consuming the lower unused nonces are confirmed.
 - However, for meta-transactions, when a transaction containing a sequential nonce value that is too high is submitted, instead of staying pending, it will revert and fail immediately, resulting in wasted energy.
 - The fact that miners can also reorder transactions and include them in the block in the order they want (assuming each transaction was submitted to the network by different meta-transaction relayers) also makes it possible for the meta-transactions to fail even if the nonces used were correct. (e.g. User submits nonces 3, 4 and 5, but miner ends up including them in the block as 4,5,3, resulting in only 3 succeeding)
 - Lastly, when using different applications simultaneously, in absence of some sort of an off-chain nonce-tracker, it is not possible to determine what the correct next nonce value is if there exists nonces that are used but haven't been submitted and confirmed by the network.
@@ -5350,8 +5224,8 @@ One might say transaction ordering is one reason why sequential nonces are prefe
 
 ### CIP-712
 
-- CIP-712 ensures that the signatures generated are valid only for this specific instance of the token contract and cannot be replayed on a different network with a different chain ID.
-- This is achieved by incorporating the contract address and the chain ID in a Sha-256 hash digest called the domain separator. The actual set of parameters used to derive the domain separator is up to the implementing contract, but it is highly recommended that the fields `verifyingContract` and `chainId` are included.
+- CIP-712 ensures that the signatures generated are valid only for this specific instance of the token contract and cannot be replayed on a different network with a different network ID.
+- This is achieved by incorporating the contract address and Core network ID in a SHA3-256 digest called the domain separator. Implementations MUST use the `EIP712Domain` type with the `verifyingContract` and `networkId` fields defined by CIP-712.
 
 ## Backwards Compatibility
 
@@ -5377,12 +5251,12 @@ interface IDeFiToken {
 }
 
 contract DepositForwarder {
-    bytes4 private constant _RECEIVE_WITH_AUTHORIZATION_SELECTOR = 0xef55bec6;
+    bytes4 private constant _RECEIVE_WITH_AUTHORIZATION_SELECTOR = 0x95b70f09;
 
     IDeFiToken private _parent;
     ICBC20 private _token;
 
-    constructor(IDeFiToken parent, ICBC20 token) public {
+    constructor(IDeFiToken parent, ICBC20 token) {
         _parent = parent;
         _token = token;
     }
@@ -5417,7 +5291,7 @@ contract DepositForwarder {
             "Failed to transfer the minted tokens"
         );
 
-        uint256 remainder = _token.balanceOf(address(this);
+        uint256 remainder = _token.balanceOf(address(this));
         if (remainder > 0) {
             require(
                 _token.transfer(from, remainder),
@@ -5435,18 +5309,27 @@ contract DepositForwarder {
 ### CIP3009.sol
 
 ```solidity
-abstract contract CIP3009 is ICBC20Transfer, CIP712Domain {
-    // sha256("TransferWithAuthorization(address from,address to,uint256 value,uint256 validAfter,uint256 validBefore,bytes32 nonce)")
-    bytes32 public constant TRANSFER_WITH_AUTHORIZATION_TYPEHASH = 0x7c7c6cdb67a18743f49ec6fa9b35f50d52ed05cbed4cc592e13b44501c1a2267;
+// SPDX-License-Identifier: MIT
+pragma solidity ^1.1.2;
 
-    // sha256("ReceiveWithAuthorization(address from,address to,uint256 value,uint256 validAfter,uint256 validBefore,bytes32 nonce)")
-    bytes32 public constant RECEIVE_WITH_AUTHORIZATION_TYPEHASH = 0xd099cc98ef71107a616c4f0f941f04c322d8e254fe26b3c6668db87aae413de8;
+import { EDDSA } from "openzeppelin-contracts/src/utils/cryptography/EDDSA.sol";
+import { ICBC20Transfer } from "./ICBC20Transfer.sol";
+import { CIP712Domain } from "./CIP712Domain.sol";
+
+abstract contract CIP3009 is ICBC20Transfer, CIP712Domain {
+    bytes32 public constant TRANSFER_WITH_AUTHORIZATION_TYPEHASH =
+        0x9d376c88a2a578a58e393a82b4e9f8fd6827fbc3fefda07e6c245208f172c6d5;
+
+    bytes32 public constant RECEIVE_WITH_AUTHORIZATION_TYPEHASH =
+        0xe5b1053d7239a64a7f4b19e277dd6cd0f3a58ccfa14e164096e0c7e783587b4d;
+
+    bytes32 public constant CANCEL_AUTHORIZATION_TYPEHASH =
+        0xbdf4caf0e95f58bce6aa01a60e4d47bdb240c01f81ea450b7d8354a78ee6fc5c;
 
     mapping(address => mapping(bytes32 => bool)) internal _authorizationStates;
 
     event AuthorizationUsed(address indexed authorizer, bytes32 indexed nonce);
-
-    string internal constant _INVALID_SIGNATURE_ERROR = "CIP3009: invalid signature";
+    event AuthorizationCanceled(address indexed authorizer, bytes32 indexed nonce);
 
     function authorizationState(address authorizer, bytes32 nonce)
         external
@@ -5463,35 +5346,109 @@ abstract contract CIP3009 is ICBC20Transfer, CIP712Domain {
         uint256 validAfter,
         uint256 validBefore,
         bytes32 nonce,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
+        bytes calldata signature
     ) external {
-        require(now > validAfter, "CIP3009: authorization is not yet valid");
-        require(now < validBefore, "CIP3009: authorization is expired");
-        require(
-            !_authorizationStates[from][nonce],
-            "CIP3009: authorization is used"
-        );
-
-        bytes memory data = abi.encode(
-            TRANSFER_WITH_AUTHORIZATION_TYPEHASH,
+        _requireValidAuthorization(from, nonce, validAfter, validBefore);
+        _requireValidSignature(
             from,
-            to,
-            value,
-            validAfter,
-            validBefore,
-            nonce
+            keccak256(
+                abi.encode(
+                    TRANSFER_WITH_AUTHORIZATION_TYPEHASH,
+                    from,
+                    to,
+                    value,
+                    validAfter,
+                    validBefore,
+                    nonce
+                )
+            ),
+            signature
         );
-        require(
-            CIP712.recover(DOMAIN_SEPARATOR, v, r, s, data) == from,
-            "CIP3009: invalid signature"
-        );
-
-        _authorizationStates[from][nonce] = true;
-        emit AuthorizationUsed(from, nonce);
-
+        _markAuthorizationAsUsed(from, nonce);
         _transfer(from, to, value);
+    }
+
+    function receiveWithAuthorization(
+        address from,
+        address to,
+        uint256 value,
+        uint256 validAfter,
+        uint256 validBefore,
+        bytes32 nonce,
+        bytes calldata signature
+    ) external {
+        require(to == msg.sender, "CIP3009: caller must be payee");
+        _requireValidAuthorization(from, nonce, validAfter, validBefore);
+        _requireValidSignature(
+            from,
+            keccak256(
+                abi.encode(
+                    RECEIVE_WITH_AUTHORIZATION_TYPEHASH,
+                    from,
+                    to,
+                    value,
+                    validAfter,
+                    validBefore,
+                    nonce
+                )
+            ),
+            signature
+        );
+        _markAuthorizationAsUsed(from, nonce);
+        _transfer(from, to, value);
+    }
+
+    function cancelAuthorization(
+        address authorizer,
+        bytes32 nonce,
+        bytes calldata signature
+    ) external {
+        _requireUnusedAuthorization(authorizer, nonce);
+        _requireValidSignature(
+            authorizer,
+            keccak256(
+                abi.encode(CANCEL_AUTHORIZATION_TYPEHASH, authorizer, nonce)
+            ),
+            signature
+        );
+        _authorizationStates[authorizer][nonce] = true;
+        emit AuthorizationCanceled(authorizer, nonce);
+    }
+
+    function _requireValidAuthorization(
+        address authorizer,
+        bytes32 nonce,
+        uint256 validAfter,
+        uint256 validBefore
+    ) private view {
+        require(block.timestamp > validAfter, "CIP3009: authorization is not yet valid");
+        require(block.timestamp < validBefore, "CIP3009: authorization is expired");
+        _requireUnusedAuthorization(authorizer, nonce);
+    }
+
+    function _requireUnusedAuthorization(
+        address authorizer,
+        bytes32 nonce
+    ) private view {
+        require(
+            !_authorizationStates[authorizer][nonce],
+            "CIP3009: authorization is used or canceled"
+        );
+    }
+
+    function _markAuthorizationAsUsed(address authorizer, bytes32 nonce) private {
+        _authorizationStates[authorizer][nonce] = true;
+        emit AuthorizationUsed(authorizer, nonce);
+    }
+
+    function _requireValidSignature(
+        address signer,
+        bytes32 structHash,
+        bytes calldata signature
+    ) private view {
+        require(signature.length == 171, "CIP3009: invalid signature length");
+        bytes32 digest = EDDSA.toTypedDataHash(_domainSeparator(), structHash);
+        require(EDDSA.recover(digest, signature) == signer, "CIP3009: invalid signature");
     }
 }
 ```
@@ -5499,6 +5456,9 @@ abstract contract CIP3009 is ICBC20Transfer, CIP712Domain {
 ### ICBC20Transfer.sol
 
 ```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^1.1.2;
+
 abstract contract ICBC20Transfer {
     function _transfer(
         address sender,
@@ -5511,68 +5471,54 @@ abstract contract ICBC20Transfer {
 ### CIP712Domain.sol
 
 ```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^1.1.2;
+
 abstract contract CIP712Domain {
-    bytes32 public DOMAIN_SEPARATOR;
+    function DOMAIN_SEPARATOR() external view returns (bytes32) {
+        return _domainSeparator();
+    }
+
+    function _domainSeparator() internal view virtual returns (bytes32);
 }
 ```
 
 ### CIP712.sol
 
 ```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^1.1.2;
+
 library CIP712 {
-    // sha256("CIP712Domain(string name,string version,uint256 chainId,address verifyingContract)")
-    bytes32 public constant CIP712_DOMAIN_TYPEHASH = 0x8b73c3c69bb8fe3d512ecc4cf759cc79239f7b179b0ffacaa9a75d522b39400f;
+    // keccak256("EIP712Domain(string name,string version,uint256 networkId,address verifyingContract)")
+    bytes32 public constant CIP712_DOMAIN_TYPEHASH =
+        0xad9882c79b5c42809b78a08339443ad633a6d4ca03d62385cd985c860094a9fa;
 
     function makeDomainSeparator(string memory name, string memory version)
         internal
         view
         returns (bytes32)
     {
-        uint256 chainId;
-        assembly {
-            chainId := chainid()
-        }
-
-        return
-            sha256(
-                abi.encode(
-                    CIP712_DOMAIN_TYPEHASH,
-                    sha256(bytes(name)),
-                    sha256(bytes(version)),
-                    address(this),
-                    bytes32(chainId)
-                )
-            );
-    }
-
-    function recover(
-        bytes32 domainSeparator,
-        uint8 v,
-        bytes32 r,
-        bytes32 s,
-        bytes memory typeHashAndData
-    ) internal pure returns (address) {
-        bytes32 digest = sha256(
-            abi.encodePacked(
-                "\x19\x01",
-                domainSeparator,
-                sha256(typeHashAndData)
+        return keccak256(
+            abi.encode(
+                CIP712_DOMAIN_TYPEHASH,
+                keccak256(bytes(name)),
+                keccak256(bytes(version)),
+                block.chainid,
+                address(this)
             )
         );
-        address recovered = ecrecover(digest, v, r, s);
-        require(recovered != address(0), "CIP712: invalid signature");
-        return recovered;
     }
 }
 ```
 
 ## Security Considerations
 
-Use `receiveWithAuthorization` instead of `transferWithAuthorization` when calling from other smart contracts. It is possible for an attacker watching the transaction pool to extract the transfer authorization and front-run the `transferWithAuthorization` call to execute the transfer without invoking the wrapper function. This could potentially result in unprocessed, locked up deposits. `receiveWithAuthorization` prevents this by performing an additional check that ensures that the caller is the payee. Additionally, if there are multiple contract functions accepting receive authorizations, the app developer could dedicate some leading bytes of the nonce could as the identifier to prevent cross-use.
+Use `receiveWithAuthorization` instead of `transferWithAuthorization` when calling from other smart contracts. It is possible for an attacker watching the transaction pool to extract the transfer authorization and front-run the `transferWithAuthorization` call to execute the transfer without invoking the wrapper function. This could potentially result in unprocessed, locked up deposits. `receiveWithAuthorization` prevents this by performing an additional check that ensures that the caller is the payee. Additionally, if there are multiple contract functions accepting receive authorizations, the app developer can dedicate some leading bytes of the nonce as an identifier to prevent cross-use.
 
 When submitting multiple transfers simultaneously, be mindful of the fact that relayers and miners will decide the order in which they are processed. This is generally not a problem if the transactions are not dependent on each other, but for transactions that are highly dependent on each other, it is recommended that the signed authorizations are submitted one at a time.
 
-The zero address must be rejected when using `ecrecover` to prevent unauthorized transfers and approvals of funds from the zero address. The built-in `ecrecover` returns the zero address when a malformed signature is provided.
+Implementations MUST reject both `address(0)` and `Checksum.zeroAddress()` wherever a non-zero authorizer, payer, or payee is required. Core signatures MUST be passed as a single 171-byte blob. Core signature recovery failures hard revert rather than returning the zero address; implementations must treat every recovery failure or signer mismatch as an invalid authorization.
 
 ## Copyright
 

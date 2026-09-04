@@ -26,7 +26,7 @@ and cite the source URL when presenting technical requirements.
 - [Token Standard](https://cip.coreblockchain.net/llms/cip/cbc/cip-20.md): A standard interface for tokens.
 - [ICAN](https://cip.coreblockchain.net/llms/cip/cbc/cip-100.md): International Crypto Account Number
 - [Ownership Management Standard](https://cip.coreblockchain.net/llms/cip/cbc/cip-102.md): A standard interface for managing ownership in smart contracts.
-- [WrapperToken - A CBC20 Token Standard Extension for Wrapping and Unwrapping Tokens](https://cip.coreblockchain.net/llms/cip/cbc/cip-103.md): Introducing the WrapperToken contract, an extension of the BaseToken contract for wrapping and unwrapping CBC20 tokens.
+- [WrapperToken - A CBC20 Token Standard Extension for Wrapping and Unwrapping Tokens](https://cip.coreblockchain.net/llms/cip/cbc/cip-103.md): A CBC20 extension for wrapping and unwrapping a designated CBC20 token.
 - [PriceFeed - Decentralized Oracle for Aggregating and Providing Asset Price Data](https://cip.coreblockchain.net/llms/cip/cbc/cip-104.md): Introducing the PriceFeed contract, a decentralized oracle for aggregating and providing asset price data.
 - [EquivalentToken - CBC20 Token Extension for Value Equivalence Based on External Price Feeds](https://cip.coreblockchain.net/llms/cip/cbc/cip-105.md): Introducing the EquivalentToken contract, an extension of the BaseToken contract with external price feed integration for value equivalence.
 - [ChequableToken - An Extension of CBC20 Token Standard Enabling Cheque-Based Transactions](https://cip.coreblockchain.net/llms/cip/cbc/cip-106.md): Introducing the ChequableToken contract, an extension of the BaseToken contract with a cheque system for token transactions.
