@@ -1,24 +1,32 @@
 name: CIP linter
+
 on:
   pull_request:
     branches:
       - master
     paths:
-      - "cip/*.md"
-      - "cip/*.mdx"
+      - "cip/**/*.md"
+      - "cip/**/*.mdx"
+      - "docs/**/*.md"
+      - "docs/**/*.mdx"
+      - "README.md"
       - ".github/workflows/markdownlint.yml"
       - ".github/.markdownlint.json"
 
 jobs:
   cip-linter:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v3
+      - name: Check out repository
+        uses: actions/checkout@v7
 
-      - name: Markdown Lint
-        uses: ruzickap/action-my-markdown-linter@v1
+      - name: Lint Markdown
+        uses: ruzickap/action-my-markdown-linter@v1.3.1
         with:
           config_file: .github/.markdownlint.json
           search_paths: |
-            cip/*.md
-            cip/*.mdx
+            README.md
+            docs
+            cip

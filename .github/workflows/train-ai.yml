@@ -1,13 +1,7 @@
 name: Train CoreAI Model on CIP Changes
 
 on:
-  pull_request:
-    types: [closed]
-    paths:
-      - 'cip/**/*.md'
-      - 'cip/**/*.mdx'
-      - 'docs/**/*.md'
-      - 'docs/**/*.mdx'
+  workflow_dispatch:
   push:
     branches: [master]
     paths:
@@ -18,37 +12,41 @@ on:
 
 jobs:
   train-coreai:
-    if: github.event.pull_request.merged == true || github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: '24'
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --no-audit --no-fund
 
       - name: Get changed files
         id: changed-files
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.before }}
+          HEAD_SHA: ${{ github.sha }}
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            git diff --name-only origin/main...HEAD > changed_files.txt
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            find cip docs -type f \( -name '*.md' -o -name '*.mdx' \) -print > final_files.txt
           else
-            git diff --name-only HEAD~1...HEAD > changed_files.txt
+            git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- cip docs \
+              | grep -E '\.(md|mdx)$' > final_files.txt || true
           fi
 
-          grep -E '\.(md|mdx)$' changed_files.txt > filtered_files.txt
-          grep -E '^(cip/|docs/)' filtered_files.txt > final_files.txt
-
-          echo "files=$(cat final_files.txt | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+          files=$(jq -R -s -c 'split("\n") | map(select(length > 0))' < final_files.txt)
+          echo "files=$files" >> "$GITHUB_OUTPUT"
           echo "Changed files:"
           cat final_files.txt
 
@@ -86,7 +84,7 @@ jobs:
 
       - name: Upload training data
         if: steps.changed-files.outputs.files != '[]'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cip-training-data
           path: training_data/
@@ -102,7 +100,7 @@ jobs:
             exit 0
           fi
 
-          npm install openai
+          npm install --no-save openai@latest
 
           cat > train_coreai.js << 'EOF'
           const OpenAI = require('openai');
@@ -132,41 +130,38 @@ jobs:
 
                   console.log(`Processing: ${data.file_path}`);
 
-                  // Create training examples for CoreAI
-                  trainingData.push({
-                    messages: [
-                      {
-                        role: "system",
-                        content: "You are CoreAI, an AI assistant specialized in Core Blockchain Improvement Proposals (CIPs). You help users understand CIP documentation, standards, and specifications."
-                      },
-                      {
-                        role: "user",
-                        content: `What is ${data.metadata.filename} about?`
-                      },
-                      {
-                        role: "assistant",
-                        content: `Based on the CIP documentation, ${data.metadata.filename} is about: ${data.content.substring(0, 200)}...`
-                      }
-                    ]
-                  });
+                  const questions = [
+                    'What does this proposal specify?',
+                    'Summarize this proposal.',
+                    'What problem does this proposal address?',
+                    'What are the main technical details?',
+                    'What is the motivation for this proposal?',
+                    'Are there compatibility concerns?',
+                    'What are the security considerations?',
+                    'Who should read this proposal?',
+                    'What changes does this proposal introduce?',
+                    'Explain this proposal in plain language.'
+                  ];
+                  const excerpt = data.content.substring(0, 4000);
 
-                  // Add more training examples
-                  trainingData.push({
-                    messages: [
-                      {
-                        role: "system",
-                        content: "You are CoreAI, an AI assistant specialized in Core Blockchain Improvement Proposals (CIPs)."
-                      },
-                      {
-                        role: "user",
-                        content: `Explain the key features of ${data.metadata.filename}`
-                      },
-                      {
-                        role: "assistant",
-                        content: `The key features of ${data.metadata.filename} include: [Extracted from CIP content]`
-                      }
-                    ]
-                  });
+                  for (const question of questions) {
+                    trainingData.push({
+                      messages: [
+                        {
+                          role: 'system',
+                          content: 'You are CoreAI, an assistant specialized in Core Improvement Proposals (CIPs).'
+                        },
+                        {
+                          role: 'user',
+                          content: `${question} File: ${data.metadata.filename}`
+                        },
+                        {
+                          role: 'assistant',
+                          content: `According to ${data.metadata.filename}:\n\n${excerpt}`
+                        }
+                      ]
+                    });
+                  }
                 }
               }
 
@@ -175,9 +170,9 @@ jobs:
               // Create fine-tuning job
               console.log('🚀 Creating CoreAI fine-tuning job...');
 
-              const fineTuningJob = await openai.beta.fineTuning.jobs.create({
+              const fineTuningJob = await openai.fineTuning.jobs.create({
                 training_file: await createTrainingFile(trainingData),
-                model: "gpt-3.5-turbo", // Base model to fine-tune
+                model: "gpt-4.1-mini-2025-04-14",
                 hyperparameters: {
                   n_epochs: 3, // Number of training epochs
                 },
@@ -208,7 +203,12 @@ jobs:
             fs.writeFileSync(tempFile, jsonlContent);
 
             console.log(`Created training file: ${tempFile}`);
-            return tempFile;
+            const uploadedFile = await openai.files.create({
+              file: fs.createReadStream(tempFile),
+              purpose: 'fine-tune',
+            });
+            console.log(`Uploaded training file: ${uploadedFile.id}`);
+            return uploadedFile.id;
           }
 
           trainCoreAI();
@@ -216,52 +216,12 @@ jobs:
 
           node train_coreai.js
 
-      - name: Notify training completion
-        if: always()
+      - name: Report training submission
         run: |
           if [ "${{ steps.changed-files.outputs.files }}" != "[]" ]; then
-            echo "✅ CoreAI model training completed for CIP changes"
+            echo "✅ CoreAI model training submitted for CIP changes"
             echo "📁 Training data: $(ls -1 training_data/ | wc -l) files processed"
             echo "🤖 Model: CoreAI CIP Assistant"
           else
             echo "ℹ️ No CIP files changed. Skipping CoreAI training."
           fi
-
-      - name: Comment on PR
-        if: github.event_name == 'pull_request' && steps.changed-files.outputs.files != '[]'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const { data: comments } = await github.rest.issues.listComments({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo
-            });
-
-            const botComment = comments.find(comment =>
-              comment.user.type === 'Bot' &&
-              comment.body.includes('ChatGPT model training')
-            );
-
-            const message = `🤖 **CoreAI Model Training Completed**
-
-            The CoreAI model has been updated with the following CIP changes:
-            ${JSON.parse('${{ steps.changed-files.outputs.files }}').map(file => `- \`${file}\``).join('\n')}
-
-            CoreAI is now ready to answer questions about these updated CIPs!`;
-
-            if (botComment) {
-              await github.rest.issues.updateComment({
-                comment_id: botComment.id,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: message
-              });
-            } else {
-              await github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: message
-              });
-            }
