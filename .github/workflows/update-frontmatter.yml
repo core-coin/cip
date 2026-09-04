@@ -48,3 +48,4 @@ jobs:
     uses: ./.github/workflows/content-pipeline.yml
     permissions:
       contents: write
+      actions: write

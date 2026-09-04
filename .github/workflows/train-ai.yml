@@ -5,7 +5,12 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+  actions: write
+
+concurrency:
+  group: coreai-knowledge-artifacts
+  cancel-in-progress: false
 
 jobs:
   prepare-knowledge:
@@ -28,6 +33,29 @@ jobs:
       - name: Validate retrieval corpus
         run: npm run validate:llms
 
+      - name: Publish durable latest knowledge bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          archive_name="coreai-knowledge-latest.tar.gz"
+          archive="$RUNNER_TEMP/$archive_name"
+          checksum="$RUNNER_TEMP/$archive_name.sha256"
+          tar -czf "$archive" static/llms.txt static/llms-full.txt static/llms
+          (cd "$RUNNER_TEMP" && sha256sum "$archive_name" > "$archive_name.sha256")
+
+          if ! gh release view coreai-knowledge-latest >/dev/null 2>&1; then
+            gh release create coreai-knowledge-latest \
+              --target master \
+              --title "Latest CoreAI knowledge" \
+              --notes "Automatically updated machine-readable CIP knowledge." \
+              --prerelease
+          fi
+
+          gh release upload coreai-knowledge-latest \
+            "$archive#CoreAI knowledge corpus" \
+            "$checksum#SHA-256 checksum" \
+            --clobber
+
       - name: Upload CoreAI knowledge artifact
         uses: actions/upload-artifact@v7
         with:
@@ -38,3 +66,33 @@ jobs:
             static/llms/
           if-no-files-found: error
           retention-days: 30
+
+      - name: Keep the latest 10 knowledge artifacts
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const prefix = 'coreai-knowledge-';
+            const artifacts = await github.paginate(
+              github.rest.actions.listArtifactsForRepo,
+              {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                per_page: 100,
+              },
+            );
+
+            const knowledgeArtifacts = artifacts
+              .filter((artifact) => !artifact.expired && artifact.name.startsWith(prefix))
+              .sort((left, right) => new Date(right.created_at) - new Date(left.created_at));
+
+            const artifactsToDelete = knowledgeArtifacts.slice(10);
+            core.info(`Found ${knowledgeArtifacts.length} knowledge artifacts; deleting ${artifactsToDelete.length}.`);
+
+            for (const artifact of artifactsToDelete) {
+              core.info(`Deleting ${artifact.name} (${artifact.id}).`);
+              await github.rest.actions.deleteArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id,
+              });
+            }
