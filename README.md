@@ -65,4 +65,14 @@ CIPs are categorized into various types, each with its own list:
 - [Discussions](https://github.com/core-coin/cip/discussions)
 - [GitHub Issues](https://github.com/core-coin/cip/issues)
 
+## Machine-readable documentation
+
+Automated tools and language models can use the generated
+[`llms.txt`](static/llms.txt) index or the complete
+[`llms-full.txt`](static/llms-full.txt) corpus. Individual Markdown sources are
+published under [`static/llms/`](static/llms). These files are generated after
+validated content is merged into `master` and refreshed daily. General
+documentation and CIPs with `final` status are included; do not edit generated
+files manually.
+
 [new-cip]: https://github.com/core-coin/cip/new/master?filename=cip/cip-ID.md

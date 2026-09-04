@@ -42,3 +42,9 @@ jobs:
           fi
           git commit -m "chore: update front matter tags"
           git push origin HEAD:master
+
+  publish-knowledge:
+    needs: update-front-matter
+    uses: ./.github/workflows/content-pipeline.yml
+    permissions:
+      contents: write

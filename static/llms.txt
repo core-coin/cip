@@ -1,0 +1,62 @@
+# Core Improvement Proposals
+
+> Authoritative specifications, standards, and process documentation for the Core platform.
+
+Use these sources to answer questions about Core Improvement Proposals (CIPs).
+Only final proposals are included. Preserve normative terms such as MUST and SHOULD,
+and cite the source URL when presenting technical requirements.
+
+## Documentation
+
+- [CIP Editors](https://cip.coreblockchain.net/llms/docs/cip-editors.md): CIP editors are members of the GitHub team — CIP.
+- [CIP Rationale](https://cip.coreblockchain.net/llms/docs/cip-rationale.md): CIPs are intended to serve as the primary mechanisms for proposing new features, gathering community technical feedback on an issue, and documenting the design decisions made within Core. Since CIPs are maintained as text files in a...
+- [CIP Tags](https://cip.coreblockchain.net/llms/docs/cip-tags.md): We have six tags for CIPs.
+- [CIP Workflow](https://cip.coreblockchain.net/llms/docs/cip-workflow.md): Key Stakeholders:
+- [CIP-0 example](https://cip.coreblockchain.net/llms/docs/cip-0.md): CIP-0 example template
+- [Core Improvement Proposals](https://cip.coreblockchain.net/llms/docs/cip.md): The Core Improvement Proposal (CIP) sets standards for the Core platform, encompassing core protocol specifications, client APIs, and contract standards.
+- [What is a CIP](https://cip.coreblockchain.net/llms/docs/what-is-cip.md): CIP stands for Core Improvement Proposal.
+
+## Core proposals
+
+- [Core Cryptography Scheme](https://cip.coreblockchain.net/llms/cip/core/cip-98.md): The cryptography scheme employed in the Core Blockchain.
+- [Core HD-Wallet Scheme](https://cip.coreblockchain.net/llms/cip/core/cip-99.md): The HD-wallet derivation scheme for Core Coin.
+
+## CBC proposals
+
+- [Token Standard](https://cip.coreblockchain.net/llms/cip/cbc/cip-20.md): A standard interface for tokens.
+- [ICAN](https://cip.coreblockchain.net/llms/cip/cbc/cip-100.md): International Crypto Account Number
+- [Ownership Management Standard](https://cip.coreblockchain.net/llms/cip/cbc/cip-102.md): A standard interface for managing ownership in smart contracts.
+- [WrapperToken - A CBC20 Token Standard Extension for Wrapping and Unwrapping Tokens](https://cip.coreblockchain.net/llms/cip/cbc/cip-103.md): Introducing the WrapperToken contract, an extension of the BaseToken contract for wrapping and unwrapping CBC20 tokens.
+- [PriceFeed - Decentralized Oracle for Aggregating and Providing Asset Price Data](https://cip.coreblockchain.net/llms/cip/cbc/cip-104.md): Introducing the PriceFeed contract, a decentralized oracle for aggregating and providing asset price data.
+- [EquivalentToken - CBC20 Token Extension for Value Equivalence Based on External Price Feeds](https://cip.coreblockchain.net/llms/cip/cbc/cip-105.md): Introducing the EquivalentToken contract, an extension of the BaseToken contract with external price feed integration for value equivalence.
+- [ChequableToken - An Extension of CBC20 Token Standard Enabling Cheque-Based Transactions](https://cip.coreblockchain.net/llms/cip/cbc/cip-106.md): Introducing the ChequableToken contract, an extension of the BaseToken contract with a cheque system for token transactions.
+- [Caller Contract for Secure Execution of On-Chain Transactions in CBC20 Token Ecosystems](https://cip.coreblockchain.net/llms/cip/cbc/cip-108.md): Introducing the Caller contract for secure execution of transactions within CBC20 token ecosystems.
+- [BountiableToken - On-Chain Bounties for Transaction Execution](https://cip.coreblockchain.net/llms/cip/cbc/cip-109.md): Introducing the BountiableToken contract, enabling on-chain bounties for transaction execution within CBC20 token ecosystems.
+- [BaseToken - Enhanced CBC20 Token Implementation](https://cip.coreblockchain.net/llms/cip/cbc/cip-110.md): Introducing the BaseToken contract, extending the CBC20 token standard with additional features for efficiency and control.
+- [AssetToken - Fixed Supply CBC20 Token](https://cip.coreblockchain.net/llms/cip/cbc/cip-111.md): An extension of the BaseToken contract with a fixed total supply and standard CBC20 functionality.
+- [RWA Metadata Storage](https://cip.coreblockchain.net/llms/cip/cbc/cip-150.md): A standardized smart contract interface for storing compact key-value metadata on-chain with support for sealed and unsealed entries.
+- [Token Lifecycle Metadata Standard](https://cip.coreblockchain.net/llms/cip/cbc/cip-151.md): Standard for controlling token usability over time through metadata fields for expiration and trading stop dates.
+- [Standard for Publishing Lab Certificates as On-Chain Metadata](https://cip.coreblockchain.net/llms/cip/cbc/cip-152.md): A standard method to publish verifiable lab certificates for physical or tokenized assets using structured metadata.
+- [Standard Interface Detection](https://cip.coreblockchain.net/llms/cip/cbc/cip-165.md): A standard method to publish and detect what interfaces a smart contract implements on Core Blockchain.
+- [CoreToken - Comprehensive CBC20 Token Standard Extension](https://cip.coreblockchain.net/llms/cip/cbc/cip-200.md): An extension of the BaseToken contract integrating functionalities from WrapperToken, EquivalentToken, ChequableToken, and BountiableToken contracts to create a versatile and comprehensive token standard.
+- [Core Signature Verification Standard](https://cip.coreblockchain.net/llms/cip/cbc/cip-712.md): Standard for Securely Encoding and Verifying Structured Data Signatures in Core Blockchain Applications.
+- [CoreNFT: Non-Fungible Token Standard for Core Blockchain](https://cip.coreblockchain.net/llms/cip/cbc/cip-721.md): A standard interface for non-fungible tokens (NFTs) on the Core Blockchain with ownership tracking, transfer capabilities, and interoperability.
+- [Token Standard](https://cip.coreblockchain.net/llms/cip/cbc/cip-777.md): A standardized smart contract interface for advanced token functionality on Core Blockchain (CBC), supporting operators, hooks, and improved composability over CBC-20.
+- [Multi Token Standard](https://cip.coreblockchain.net/llms/cip/cbc/cip-1155.md): A standardized smart contract interface for managing multiple token types (fungible, non-fungible, and semi-fungible) in a single contract on Core Blockchain (CBC).
+- [Scoped Approval Interface](https://cip.coreblockchain.net/llms/cip/cbc/cip-1761.md): A standardized smart contract interface for restricted (scoped) approval of token IDs, enabling fine-grained operator permissions for CBC-1155, CBC-721, and similar token contracts.
+- [Pseudo-introspection Registry Contract](https://cip.coreblockchain.net/llms/cip/cbc/cip-1820.md): A universal registry smart contract where any address (contract or regular account) can register which interface it supports and which smart contract is responsible for its implementation. This standard keeps backward compatibility with CBC-165.
+- [Diamonds, Multi-Facet Proxy](https://cip.coreblockchain.net/llms/cip/cbc/cip-2535.md): A standard for modular smart contract systems (diamonds) that can be extended after deployment, supporting unlimited contract size and upgradeability via facets.
+- [Permit Extension](https://cip.coreblockchain.net/llms/cip/cbc/cip-2612.md): A standardized smart contract interface for approvals via signatures (CIP-712), enabling energyless approvals for CBC-20 tokens and similar standards.
+- [Batched Meta Transactions](https://cip.coreblockchain.net/llms/cip/cbc/cip-3005.md): A standardized smart contract interface for batching meta transactions (off-chain signed token transfers) for CBC-20 and similar tokens, enabling energyless, multi-sender, multi-recipient transfers in a single on-chain transaction.
+- [Transfer With Authorization](https://cip.coreblockchain.net/llms/cip/cbc/cip-3009.md): A standardized smart contract interface for transferring CBC-20 tokens via signed authorizations (CIP-712), enabling energyless, atomic, and meta-transaction-based transfers with random nonces and replay protection.
+- [Tokenized Vaults Standard](https://cip.coreblockchain.net/llms/cip/cbc/cip-4626.md): A standardized smart contract interface for tokenized vaults with a single underlying CBC-20 token, supporting deposit, withdrawal, and share accounting.
+
+## Informational proposals
+
+- [Core Denomination Units](https://cip.coreblockchain.net/llms/cip/informational/cip-9.md): Informational specification describing Core's denomination units
+- [PayTo URI Scheme](https://cip.coreblockchain.net/llms/cip/informational/cip-10.md): Informational specification adopting the RFC 8905 'payto' URI scheme for Core.
+
+## Optional
+
+- [Complete machine-readable corpus](https://cip.coreblockchain.net/llms-full.txt): All documentation and proposals in one file.
+- [Human-readable website](https://cip.coreblockchain.net): Browse the published CIP registry.

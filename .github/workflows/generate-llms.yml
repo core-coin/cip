@@ -1,0 +1,48 @@
+name: Generate machine-readable LLM files
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: generate-llms-master
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out master
+        uses: actions/checkout@v7
+        with:
+          ref: master
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Generate machine-readable files
+        run: npm run generate:llms
+
+      - name: Validate generated files
+        run: npm run validate:llms
+
+      - name: Commit generated files
+        run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add -- static/llms.txt static/llms-full.txt static/llms
+          if git diff --staged --quiet; then
+            echo "Machine-readable files are already current."
+            exit 0
+          fi
+          git commit -m "chore: update machine-readable CIP corpus"
+          git push origin HEAD:master

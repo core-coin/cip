@@ -129,6 +129,14 @@ const config: Config = {
 
   headTags: [
     {
+      tagName: 'link',
+      attributes: {
+        rel: 'describedby',
+        type: 'text/markdown',
+        href: '/llms.txt',
+      },
+    },
+    {
       tagName: "link",
       attributes: {
         rel: "manifest",
@@ -248,8 +256,9 @@ const config: Config = {
               to: '/cip/tags',
             },
             {
-              label: 'Archive',
-              to: '/cip/archive',
+              label: 'LLMS',
+              href: 'https://cip.coreblockchain.net/llms/llms.txt',
+              target: '_blank',
             },
           ],
         },
