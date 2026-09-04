@@ -29,7 +29,11 @@ const config: Config = {
   projectName: 'cip', // Usually your repo name.
 
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
+  },
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
@@ -75,6 +79,8 @@ const config: Config = {
         },
         blog: {
           showReadingTime: true,
+          // CIP front matter preserves authors as free-form specification metadata.
+          onInlineAuthors: 'ignore',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
@@ -122,6 +128,14 @@ const config: Config = {
   ],
 
   headTags: [
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'describedby',
+        type: 'text/markdown',
+        href: '/llms.txt',
+      },
+    },
     {
       tagName: "link",
       attributes: {
@@ -242,8 +256,9 @@ const config: Config = {
               to: '/cip/tags',
             },
             {
-              label: 'Archive',
-              to: '/cip/archive',
+              label: 'LLMS',
+              href: 'https://cip.coreblockchain.net/llms/llms.txt',
+              target: '_blank',
             },
           ],
         },

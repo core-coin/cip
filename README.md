@@ -1,56 +1,78 @@
-# CIP
+# Core Improvement Proposals (CIPs)
 
-> The Core Improvement Proposal (CIP) sets standards for the Core platform, encompassing core protocol specifications, client APIs, and contract standards.
+Core Improvement Proposals define standards for the Core platform, including
+protocol specifications, client APIs, and contract standards.
 
 ## Contributing
 
-You can begin by opening your proposal under the [issues section of this repository](https://github.com/core-coin/cip/issues).
+Before writing a proposal, open a
+[CIP issue](https://github.com/core-coin/cip/issues/new/choose) to describe the
+idea and gather early feedback. An editor will assign the CIP number.
 
 ### Review
 
-- [What is a CIP](/docs/what-is-cip.md)
-- [CIP rationale](/docs/cip-rationale.md)
-- [CIP tags](/docs/cip-tags.md)
-- [CIP workflow](/docs/cip-workflow.md)
-- [CIP editors](/docs/cip-editors.md)
-- [CIP example](/docs/cip-0.md)
+- [What is a CIP](docs/what-is-cip.md)
+- [CIP rationale](docs/cip-rationale.md)
+- [CIP tags](docs/cip-tags.md)
+- [CIP workflow](docs/cip-workflow.md)
+- [CIP editors](docs/cip-editors.md)
+- [CIP template](docs/cip-0.md)
 
 ### How to start
 
-Begin by contributing to the [issues section of this repository](https://github.com/core-coin/cip/issues/new/choose). Once done, you'll be able to draft a CIP using the associated issue number (if available).
+After discussing the idea and receiving a CIP number:
 
-**Next steps:**
-
-1. Review the template [cip-0](/docs/cip-0.md)
-2. [Create a CIP in the Online Editor](https://github.com/core-coin/cip/new/master?filename=cip/cip-0.md&message=CIP%20Proposal&description=CIP%20Proposal%20Draft&value=---%0Acip%3A%20%0Atitle%3A%20%0Adescription%3A%20%0Akeywords%3A%20%5B%5D%0Aauthor%3A%20%0Alang%3A%20en-US%0Astatus%3A%20%5Bdraft%5D%0Atags%3A%20%5B%5D%0Adate%3A%202022-12-01%0Adiscussions-to%3A%20%0A---%0A%3C%21--Introduction--%3E%0A%0A%3C%21--truncate--%3E%0A%0A%23%23%20Abstract%0A%0A%0A%0A%23%23%20Motivation%0A%0A%0A%0A%23%23%20Specification%0A%0A%0A%0A%23%23%20Rationale%0A%0A%0A%0A%23%23%20Backwards%20Compatibility%0A%0A%0A%0A%23%23%20Test%20Cases%0A%0A%0A%0A%23%23%20Implementation%0A%0A%0A%0A%23%23%20Security%20Considerations%0A%0A%0A%0A%23%23%20Copyright%0A%0ACopyright%20and%20related%20rights%20waived%20via%20%5BCC0%5D%28https%3A%2F%2Fcreativecommons.org%2Fpublicdomain%2Fzero%2F1.0%2F%29.%0A)
+1. Review the [CIP template](docs/cip-0.md).
+2. [Create a draft in the online editor][new-cip], replacing `ID` with the
+   assigned number.
 
 Or
 
-1. [Fork](https://github.com/core-coin/cip/fork) this repository.
-2. Modify the template [cip-0](https://github.com/core-coin/cip/blob/master/cip/docs/cip-0.md) and move it to the [`cip` folder](https://github.com/core-coin/cip/blob/master/cip).
-3. [Submit a Pull Request](https://github.com/core-coin/cip/compare) to the Core CIP repository.
+1. [Fork](https://github.com/core-coin/cip/fork) the repository.
+2. Copy [the template](docs/cip-0.md) into the appropriate category under
+   [`cip/`](cip), and name it `cip-ID.md`.
+3. [Open a pull request](https://github.com/core-coin/cip/compare) against the
+   `master` branch.
 
-For graphical content, place it in the [CIP image directory](https://github.com/core-coin/cip/blob/master/static/cip) `/static/cip/cip-x`, where 'x' is the CIP number. Link images using the path `/cip/cip-x/cip-x-1.png`.
+Place images in `static/cip/cip-ID/`, where `ID` is the CIP number. Reference
+them from Markdown as `/cip/cip-ID/image-name.png`.
 
 ## Tags
 
-- `Draft`: Consideration phase for a CIP.
-- `Accepted`: A CIP set for immediate adoption, often slated for the next hard fork (relevant for Core/Consensus layer CIPs).
-- `Final`: A CIP adopted in a prior hard fork (pertinent to Core/Consensus layer CIPs).
-- `Deferred`: A CIP not up for immediate adoption, but might be reconsidered for future hard forks.
+- `Draft`: The CIP is under consideration.
+- `Accepted`: The CIP is approved for adoption, often in an upcoming hard fork.
+- `Final`: The CIP has been adopted.
+- `Deferred`: The CIP is not being considered now but may be revisited later.
 
 ## Categories
 
 CIPs are categorized into various types, each with its own list:
 
-- **Core**: Improvements involving a consensus fork or changes significant to core development discussions.
+- **Core**: Improvements involving a consensus fork or changes significant to
+  core development discussions.
 - **Networking**: Enhancements concerning network protocol specs.
-- **Interface**: Focuses on client API/RPC specs, language standards like method names, and contract ABIs. Discussions should mainly take place in the interfaces repo before submitting a CIP here.
-- **CBC**: Application standards and conventions like token standards and name registries.
-- **Informational**: Addresses Core design issues or provides guidelines to the Core community without suggesting new features.
-- **Meta**: Outlines processes around Core or proposes process changes. These are more binding than informational CIPs and often require community consensus.
+- **Interface**: Client API and RPC specifications, language-level standards,
+  method names, and contract ABIs.
+- **CBC**: Application standards and conventions, such as token standards and
+  name registries.
+- **Informational**: Core design issues and guidance for the community that do
+  not propose new features.
+- **Meta**: Core processes and process changes. These CIPs are more binding
+  than informational CIPs and often require community consensus.
 
 ## Channels
 
 - [Discussions](https://github.com/core-coin/cip/discussions)
-- [GH Issues](https://github.com/core-coin/cip/issues)
+- [GitHub Issues](https://github.com/core-coin/cip/issues)
+
+## Machine-readable documentation
+
+Automated tools and language models can use the generated
+[`llms.txt`](static/llms.txt) index or the complete
+[`llms-full.txt`](static/llms-full.txt) corpus. Individual Markdown sources are
+published under [`static/llms/`](static/llms). These files are generated after
+validated content is merged into `master` and refreshed daily. General
+documentation and CIPs with `final` status are included; do not edit generated
+files manually.
+
+[new-cip]: https://github.com/core-coin/cip/new/master?filename=cip/cip-ID.md

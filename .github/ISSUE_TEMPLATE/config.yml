@@ -2,7 +2,7 @@ blank_issues_enabled: false
 contact_links:
   - name: Community Discussion
     url: https://github.com/core-coin/cip/discussions/categories/cip
-    about: Share your CIP comments in Discussions — CIPs
-  - name: Security Bugs
+    about: Discuss CIP ideas and share feedback with the community.
+  - name: Security vulnerabilities
     url: https://dev.coreblockchain.net/report-bug/
-    about: Please report security vulnerabilities here.
+    about: Report security vulnerabilities privately; do not open a public issue.

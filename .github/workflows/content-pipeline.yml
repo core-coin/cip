@@ -1,0 +1,65 @@
+name: Publish CIP knowledge
+
+on:
+  workflow_call:
+  push:
+    branches: [master]
+    paths:
+      - 'cip/**/*.md'
+      - 'cip/**/*.mdx'
+      - 'docs/**/*.md'
+      - 'docs/**/*.mdx'
+      - 'scripts/generate_llms.mjs'
+      - 'scripts/validate_llms.mjs'
+      - '.github/.markdownlint.json'
+      - '.github/workflows/content-pipeline.yml'
+      - '.github/workflows/generate-llms.yml'
+      - '.github/workflows/markdownlint.yml'
+      - '.github/workflows/train-ai.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: publish-cip-knowledge-master
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    uses: ./.github/workflows/markdownlint.yml
+    permissions:
+      contents: read
+
+  build-site:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Type-check site
+        run: npm run typecheck
+
+      - name: Build site
+        run: npm run build
+
+  generate-llm-files:
+    needs: build-site
+    uses: ./.github/workflows/generate-llms.yml
+    permissions:
+      contents: write
+
+  prepare-ai-knowledge:
+    needs: generate-llm-files
+    uses: ./.github/workflows/train-ai.yml
+    permissions:
+      contents: read

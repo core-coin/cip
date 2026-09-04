@@ -1,5 +1,5 @@
-name: Create new CIP
-description: Create a new CIP draft
+name: Propose a CIP
+description: Start a new Core Improvement Proposal draft
 title: "[CIP] "
 labels:
   - cip
@@ -10,7 +10,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        This is the suggested template for new CIPs. Note that a CIP number will be assigned by an editor. When opening a pull request to submit your CIP, use an abbreviated title in the filename, `cip-ID.md`, where "ID" is the CIP ID. The title should be 44 characters or fewer.
+        Use this form to propose a new CIP. An editor will assign the CIP number. When you later open a pull request, name the file `cip-ID.md`, replacing `ID` with the assigned number. Keep the proposal title to 44 characters or fewer.
 
   - type: dropdown
     id: lang
@@ -31,7 +31,7 @@ body:
     id: category
     attributes:
       label: Category
-      description: CIP categories
+      description: Select the category that best fits the proposal.
       multiple: false
       options:
         - core
@@ -47,8 +47,8 @@ body:
     id: abstract
     attributes:
       label: Abstract
-      description: A short (~200 words) description of the technical issue being addressed.
-      placeholder: Abstract
+      description: Summarize the technical issue and proposed solution in about 200 words.
+      placeholder: Describe the problem and the proposed solution.
     validations:
       required: true
 
@@ -80,9 +80,9 @@ body:
     id: backwards-compatibility
     attributes:
       label: Backwards Compatibility
-      description: All CIPs introducing backward incompatibilities must include a section detailing these incompatibilities and their severity. The CIP should explain how the author proposes to address these incompatibilities. CIP submissions without a comprehensive backward compatibility analysis may be rejected outright.
+      description: Describe every backward incompatibility, its severity, and how it will be addressed. Use "Not applicable" if the proposal is fully backward compatible.
     validations:
-      required: false
+      required: true
 
   - type: textarea
     id: test-cases
@@ -104,9 +104,9 @@ body:
     id: security-considerations
     attributes:
       label: Security Considerations
-      description: All CIPs must include a section discussing the security implications and considerations relevant to the proposed change. Highlight risks and provide details crucial for security discussions. CIP submissions without the "Security Considerations" section will be rejected. A CIP cannot achieve "Final" status without a satisfactory Security Considerations discussion, as determined by the reviewers.
+      description: Explain the security implications and risks of the proposed change. Use "No known security implications" only when appropriate.
     validations:
-      required: false
+      required: true
 
   - type: input
     id: requires
