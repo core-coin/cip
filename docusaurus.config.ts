@@ -257,7 +257,7 @@ const config: Config = {
             },
             {
               label: 'LLMS',
-              href: 'https://cip.coreblockchain.net/llms/llms.txt',
+              href: 'https://raw.githubusercontent.com/core-coin/cip/refs/heads/master/static/llms.txt',
               target: '_blank',
             },
           ],
