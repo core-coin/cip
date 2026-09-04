@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import type {ReactElement} from 'react';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
@@ -41,7 +42,7 @@ function HomepageHeader() {
   );
 }
 
-export default function Home(): JSX.Element {
+export default function Home(): ReactElement {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
