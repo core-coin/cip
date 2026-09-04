@@ -2,20 +2,6 @@ name: Publish CIP knowledge
 
 on:
   workflow_call:
-  push:
-    branches: [master]
-    paths:
-      - 'cip/**/*.md'
-      - 'cip/**/*.mdx'
-      - 'docs/**/*.md'
-      - 'docs/**/*.mdx'
-      - 'scripts/generate_llms.mjs'
-      - 'scripts/validate_llms.mjs'
-      - '.github/.markdownlint.json'
-      - '.github/workflows/content-pipeline.yml'
-      - '.github/workflows/generate-llms.yml'
-      - '.github/workflows/markdownlint.yml'
-      - '.github/workflows/train-ai.yml'
   workflow_dispatch:
 
 concurrency:
@@ -25,6 +11,8 @@ concurrency:
 jobs:
   validate:
     uses: ./.github/workflows/markdownlint.yml
+    with:
+      checkout_ref: master
     permissions:
       contents: read
 
@@ -37,6 +25,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+        with:
+          ref: master
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -62,4 +52,5 @@ jobs:
     needs: generate-llm-files
     uses: ./.github/workflows/train-ai.yml
     permissions:
-      contents: read
+      contents: write
+      actions: write
