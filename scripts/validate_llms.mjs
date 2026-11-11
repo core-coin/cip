@@ -14,7 +14,6 @@ for (const sourcePath of candidatePaths) {
 	if (String(parsed.data.status).toLowerCase() === 'final') sourcePaths.push(sourcePath);
 }
 const index = await fs.readFile(path.join('static', 'llms.txt'), 'utf8');
-const full = await fs.readFile(path.join('static', 'llms-full.txt'), 'utf8');
 const errors = [];
 
 if (!index.startsWith('# Core Improvement Proposals\n\n> ')) {
@@ -22,32 +21,13 @@ if (!index.startsWith('# Core Improvement Proposals\n\n> ')) {
 }
 
 for (const sourcePath of sourcePaths) {
-	const machinePath = path.join('static', 'llms', sourcePath);
-	try {
-		const [source, machineCopy] = await Promise.all([
-			fs.readFile(sourcePath, 'utf8'),
-			fs.readFile(machinePath, 'utf8'),
-		]);
-		if (source.trimEnd() !== machineCopy.trimEnd()) errors.push(`${machinePath} is stale.`);
-	} catch {
-		errors.push(`${machinePath} is missing.`);
-	}
-
-	if (!index.includes(`/llms/${sourcePath}`)) errors.push(`static/llms.txt does not reference ${sourcePath}.`);
-	if (!full.includes(`Repository path: ${sourcePath}`)) {
-		errors.push(`static/llms-full.txt does not include ${sourcePath}.`);
-	}
-}
-
-const generatedCopies = await glob('static/llms/**/*.{md,mdx}', {nodir: true});
-if (generatedCopies.length !== sourcePaths.length) {
-	errors.push(`Expected ${sourcePaths.length} generated source files, found ${generatedCopies.length}.`);
+	const route = `https://cip.coreblockchain.net/${sourcePath.replace(/\\/g, '/').replace(/\.(md|mdx)$/u, '')}/`;
+	if (!index.includes(`](${route})`)) errors.push(`static/llms.txt does not reference ${sourcePath}.`);
 }
 
 for (const candidatePath of candidatePaths.filter((value) => !sourcePaths.includes(value))) {
-	if (generatedCopies.includes(path.join('static', 'llms', candidatePath))) {
-		errors.push(`Non-final proposal ${candidatePath} must not be in the generated corpus.`);
-	}
+	const route = `https://cip.coreblockchain.net/${candidatePath.replace(/\\/g, '/').replace(/\.(md|mdx)$/u, '')}/`;
+	if (index.includes(`](${route})`)) errors.push(`Non-final proposal ${candidatePath} must not be in llms.txt.`);
 }
 
 if (errors.length > 0) {
@@ -55,4 +35,4 @@ if (errors.length > 0) {
 	process.exit(1);
 }
 
-console.log(`Validated ${sourcePaths.length} machine-readable sources.`);
+console.log(`Validated ${sourcePaths.length} llms.txt entries.`);
