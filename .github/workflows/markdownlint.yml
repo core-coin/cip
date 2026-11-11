@@ -28,12 +28,12 @@ jobs:
       contents: read
     steps:
       - name: Check out repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
         with:
           ref: ${{ inputs.checkout_ref || github.sha }}
 
       - name: Lint Markdown
-        uses: DavidAnson/markdownlint-cli2-action@v24.2.0
+        uses: DavidAnson/markdownlint-cli2-action@v25.0.0
         with:
           config: .github/.markdownlint.json
           globs: |

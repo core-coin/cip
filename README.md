@@ -68,13 +68,10 @@ CIPs are categorized into various types, each with its own list:
 ## Machine-readable documentation
 
 Automated tools and language models can use the generated
-[`llms.txt`](static/llms.txt) index or the complete
-[`llms-full.txt`](static/llms-full.txt) corpus. Individual Markdown sources are
-published under [`static/llms/`](static/llms). These files are generated after
-the daily front-matter workflow completes successfully. General documentation
-and CIPs with `final` status are included; do not edit generated files manually.
-The newest packaged corpus is also retained as the non-expiring
-[Latest CoreAI knowledge release](https://github.com/core-coin/cip/releases/tag/coreai-knowledge-latest),
+[`llms.txt`](static/llms.txt) index. It links to general documentation and CIPs
+with `final` status. The index is regenerated after the daily front-matter
+workflow completes; do not edit it manually. The latest index is also retained
+in the [CoreAI knowledge release](https://github.com/core-coin/cip/releases/tag/coreai-knowledge-latest),
 while GitHub Actions keeps the 10 newest temporary workflow artifacts.
 
 [new-cip]: https://github.com/core-coin/cip/new/master?filename=cip/cip-ID.md

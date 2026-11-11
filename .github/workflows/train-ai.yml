@@ -18,12 +18,12 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Check out generated knowledge
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
         with:
           ref: master
 
       - name: Set up Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v7.1.0
         with:
           node-version: '24'
 
@@ -40,7 +40,7 @@ jobs:
           archive_name="coreai-knowledge-latest.tar.gz"
           archive="$RUNNER_TEMP/$archive_name"
           checksum="$RUNNER_TEMP/$archive_name.sha256"
-          tar -czf "$archive" static/llms.txt static/llms-full.txt static/llms
+          tar -czf "$archive" static/llms.txt
           (cd "$RUNNER_TEMP" && sha256sum "$archive_name" > "$archive_name.sha256")
 
           if ! gh release view coreai-knowledge-latest >/dev/null 2>&1; then
@@ -57,18 +57,15 @@ jobs:
             --clobber
 
       - name: Upload CoreAI knowledge artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: coreai-knowledge-${{ github.sha }}
-          path: |
-            static/llms.txt
-            static/llms-full.txt
-            static/llms/
+          path: static/llms.txt
           if-no-files-found: error
           retention-days: 30
 
       - name: Keep the latest 10 knowledge artifacts
-        uses: actions/github-script@v9
+        uses: actions/github-script@v9.0.0
         with:
           script: |
             const prefix = 'coreai-knowledge-';

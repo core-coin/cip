@@ -17,12 +17,12 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Check out master
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
         with:
           ref: master
 
       - name: Set up Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v7.1.0
         with:
           node-version: '24'
 
@@ -39,10 +39,10 @@ jobs:
         run: |
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
-          git add -- static/llms.txt static/llms-full.txt static/llms
+          git add -- static/llms.txt
           if git diff --staged --quiet; then
             echo "Machine-readable files are already current."
             exit 0
           fi
-          git commit -m "chore: update machine-readable CIP corpus"
+          git commit -m "chore: update llms.txt index"
           git push origin HEAD:master
